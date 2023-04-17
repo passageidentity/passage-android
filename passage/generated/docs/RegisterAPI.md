@@ -1,0 +1,208 @@
+# RegisterAPI
+
+All URIs are relative to *https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1*
+
+Method | HTTP request | Description
+------------- | ------------- | -------------
+[**registerMagicLink**](RegisterAPI.md#registerMagicLink) | **POST** /apps/{app_id}/register/magic-link/ | Register with Magic Link
+[**registerOneTimePasscode**](RegisterAPI.md#registerOneTimePasscode) | **POST** /apps/{app_id}/register/otp | Register with OTP
+[**registerWebauthnFinish**](RegisterAPI.md#registerWebauthnFinish) | **POST** /apps/{app_id}/register/webauthn/finish/ | Finish WebAuthn Registration
+[**registerWebauthnStart**](RegisterAPI.md#registerWebauthnStart) | **POST** /apps/{app_id}/register/webauthn/start/ | Start WebAuthn Register
+
+
+<a name="registerMagicLink"></a>
+# **registerMagicLink**
+> ApiregisterMagicLinkResponse registerMagicLink(appId, user)
+
+Register with Magic Link
+
+Create a user and send an registration email or SMS to the user. The user will receive an email or text with a link to complete their registration.
+
+### Example
+```kotlin
+// Import classes:
+//import id.passage.client.infrastructure.*
+//import id.passage.android.model.*
+
+val apiInstance = RegisterAPI()
+val appId : kotlin.String = appId_example // kotlin.String | App ID
+val user : ApiregisterMagicLinkRequest =  // ApiregisterMagicLinkRequest | User Data
+try {
+    val result : ApiregisterMagicLinkResponse = apiInstance.registerMagicLink(appId, user)
+    println(result)
+} catch (e: ClientException) {
+    println("4xx response calling RegisterAPI#registerMagicLink")
+    e.printStackTrace()
+} catch (e: ServerException) {
+    println("5xx response calling RegisterAPI#registerMagicLink")
+    e.printStackTrace()
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **appId** | **kotlin.String**| App ID |
+ **user** | [**ApiregisterMagicLinkRequest**](ApiregisterMagicLinkRequest.md)| User Data |
+
+### Return type
+
+[**ApiregisterMagicLinkResponse**](ApiregisterMagicLinkResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+<a name="registerOneTimePasscode"></a>
+# **registerOneTimePasscode**
+> OneTimePasscodeResponse registerOneTimePasscode(appId, registerOneTimePasscodeRequest)
+
+Register with OTP
+
+Create a user and send a registration email or SMS to the user. The user will receive an email or text with a one-time passcode to complete their registration.
+
+### Example
+```kotlin
+// Import classes:
+//import id.passage.client.infrastructure.*
+//import id.passage.android.model.*
+
+val apiInstance = RegisterAPI()
+val appId : kotlin.String = appId_example // kotlin.String | App ID
+val registerOneTimePasscodeRequest : RegisterOneTimePasscodeRequest =  // RegisterOneTimePasscodeRequest | User Data
+try {
+    val result : OneTimePasscodeResponse = apiInstance.registerOneTimePasscode(appId, registerOneTimePasscodeRequest)
+    println(result)
+} catch (e: ClientException) {
+    println("4xx response calling RegisterAPI#registerOneTimePasscode")
+    e.printStackTrace()
+} catch (e: ServerException) {
+    println("5xx response calling RegisterAPI#registerOneTimePasscode")
+    e.printStackTrace()
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **appId** | **kotlin.String**| App ID |
+ **registerOneTimePasscodeRequest** | [**RegisterOneTimePasscodeRequest**](RegisterOneTimePasscodeRequest.md)| User Data |
+
+### Return type
+
+[**OneTimePasscodeResponse**](OneTimePasscodeResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+<a name="registerWebauthnFinish"></a>
+# **registerWebauthnFinish**
+> ApiAuthResponse registerWebauthnFinish(appId, user)
+
+Finish WebAuthn Registration
+
+Complete a WebAuthn registration and authenticate the user. This endpoint accepts and verifies the response from &#x60;navigator.credential.create()&#x60; and returns an authentication token for the user.
+
+### Example
+```kotlin
+// Import classes:
+//import id.passage.client.infrastructure.*
+//import id.passage.android.model.*
+
+val apiInstance = RegisterAPI()
+val appId : kotlin.String = appId_example // kotlin.String | App ID
+val user : ApiregisterWebAuthnFinishRequest =  // ApiregisterWebAuthnFinishRequest | WebAuthn Response Data
+try {
+    val result : ApiAuthResponse = apiInstance.registerWebauthnFinish(appId, user)
+    println(result)
+} catch (e: ClientException) {
+    println("4xx response calling RegisterAPI#registerWebauthnFinish")
+    e.printStackTrace()
+} catch (e: ServerException) {
+    println("5xx response calling RegisterAPI#registerWebauthnFinish")
+    e.printStackTrace()
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **appId** | **kotlin.String**| App ID |
+ **user** | [**ApiregisterWebAuthnFinishRequest**](ApiregisterWebAuthnFinishRequest.md)| WebAuthn Response Data |
+
+### Return type
+
+[**ApiAuthResponse**](ApiAuthResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+<a name="registerWebauthnStart"></a>
+# **registerWebauthnStart**
+> ApiregisterWebAuthnStartResponse registerWebauthnStart(appId, user)
+
+Start WebAuthn Register
+
+Initiate a WebAuthn registration and create the user. This endpoint creates a WebAuthn credential creation challenge that is used to perform the registration ceremony from the browser.
+
+### Example
+```kotlin
+// Import classes:
+//import id.passage.client.infrastructure.*
+//import id.passage.android.model.*
+
+val apiInstance = RegisterAPI()
+val appId : kotlin.String = appId_example // kotlin.String | App ID
+val user : ApiregisterWebAuthnStartRequest =  // ApiregisterWebAuthnStartRequest | User Data
+try {
+    val result : ApiregisterWebAuthnStartResponse = apiInstance.registerWebauthnStart(appId, user)
+    println(result)
+} catch (e: ClientException) {
+    println("4xx response calling RegisterAPI#registerWebauthnStart")
+    e.printStackTrace()
+} catch (e: ServerException) {
+    println("5xx response calling RegisterAPI#registerWebauthnStart")
+    e.printStackTrace()
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **appId** | **kotlin.String**| App ID |
+ **user** | [**ApiregisterWebAuthnStartRequest**](ApiregisterWebAuthnStartRequest.md)| User Data |
+
+### Return type
+
+[**ApiregisterWebAuthnStartResponse**](ApiregisterWebAuthnStartResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
