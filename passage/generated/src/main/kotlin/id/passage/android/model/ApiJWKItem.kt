@@ -17,6 +17,7 @@ package id.passage.android.model
 
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -28,7 +29,7 @@ import com.squareup.moshi.Json
  * @param n the modulus for a standard pem
  * @param use how the key is meant to be used (i.e. 'sig' represents signature)
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ApiJWKItem (
 

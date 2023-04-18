@@ -17,6 +17,7 @@ package id.passage.android.model
 
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -31,7 +32,7 @@ import com.squareup.moshi.Json
  * @param webauthn 
  * @param webauthnTypes 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ModelsUser (
 

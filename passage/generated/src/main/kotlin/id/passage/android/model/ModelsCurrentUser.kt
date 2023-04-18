@@ -18,6 +18,7 @@ package id.passage.android.model
 import id.passage.android.model.ModelsCredential
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -37,7 +38,7 @@ import com.squareup.moshi.Json
  * @param webauthnDevices The list of devices this user has authenticated with via webAuthn
  * @param webauthnTypes List of credential types that user has created
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ModelsCurrentUser (
 

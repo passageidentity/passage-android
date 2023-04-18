@@ -17,6 +17,7 @@ package id.passage.android.model
 
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -26,7 +27,7 @@ import com.squareup.moshi.Json
  * @param residentKey ResidentKey this member describes the Relying Party's requirements regarding resident credentials per Webauthn Level 2.
  * @param userVerification UserVerification This member describes the Relying Party's requirements regarding user verification for the create() operation. Eligible authenticators are filtered to only those capable of satisfying this requirement.
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ProtocolAuthenticatorSelection (
 

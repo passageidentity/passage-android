@@ -18,13 +18,14 @@ package id.passage.android.model
 import id.passage.android.model.ApiJWKItem
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
  *
  * @param propertyKeys 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ApiJWKResponse (
 

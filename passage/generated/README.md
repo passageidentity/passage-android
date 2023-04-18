@@ -40,7 +40,7 @@ This runs all tests and packages the library.
 <a name="documentation-for-api-endpoints"></a>
 ## Documentation for API Endpoints
 
-All URIs are relative to *https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1*
+All URIs are relative to *http://auth.passage.id/v1*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------

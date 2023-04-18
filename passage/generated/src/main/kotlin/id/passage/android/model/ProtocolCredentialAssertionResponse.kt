@@ -18,6 +18,7 @@ package id.passage.android.model
 import id.passage.android.model.ProtocolAuthenticatorAssertionResponse
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -25,11 +26,11 @@ import com.squareup.moshi.Json
  * @param authenticatorAttachment 
  * @param clientExtensionResults 
  * @param id ID is The credential’s identifier. The requirements for the identifier are distinct for each type of credential. It might represent a username for username/password tuples, for example.
- * @param rawId CredentialID The ID of a credential to allow/disallow.
+ * @param rawId 
  * @param response 
  * @param type Type is the value of the object’s interface object's [[type]] slot, which specifies the credential type represented by this object. This should be type \"public-key\" for Webauthn credentials.
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ProtocolCredentialAssertionResponse (
 
@@ -43,9 +44,8 @@ data class ProtocolCredentialAssertionResponse (
     @Json(name = "id")
     val id: kotlin.String? = null,
 
-    /* CredentialID The ID of a credential to allow/disallow. */
     @Json(name = "rawId")
-    val rawId: kotlin.collections.List<kotlin.Int>? = null,
+    val rawId: kotlin.String? = null,
 
     @Json(name = "response")
     val response: ProtocolAuthenticatorAssertionResponse? = null,

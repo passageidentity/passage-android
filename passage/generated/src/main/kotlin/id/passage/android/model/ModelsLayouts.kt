@@ -18,6 +18,7 @@ package id.passage.android.model
 import id.passage.android.model.ModelsLayoutConfig
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -25,7 +26,7 @@ import com.squareup.moshi.Json
  * @param profile 
  * @param registration 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ModelsLayouts (
 

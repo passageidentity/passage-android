@@ -1,6 +1,6 @@
 # OpenIDAPI
 
-All URIs are relative to *https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1*
+All URIs are relative to *http://auth.passage.id/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

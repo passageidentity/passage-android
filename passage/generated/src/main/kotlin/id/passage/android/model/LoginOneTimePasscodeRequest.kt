@@ -17,6 +17,7 @@ package id.passage.android.model
 
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -24,7 +25,7 @@ import com.squareup.moshi.Json
  * @param identifier valid email or E164 phone number
  * @param language language of the email to send (optional)
  */
-
+@JsonClass(generateAdapter = true)
 
 data class LoginOneTimePasscodeRequest (
 

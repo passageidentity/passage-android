@@ -22,6 +22,7 @@ import id.passage.android.model.ProtocolRelyingPartyEntity
 import id.passage.android.model.ProtocolUserEntity
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -36,7 +37,7 @@ import com.squareup.moshi.Json
  * @param timeout 
  * @param user 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ProtocolPublicKeyCredentialCreationOptions (
 
@@ -47,7 +48,7 @@ data class ProtocolPublicKeyCredentialCreationOptions (
     val authenticatorSelection: ProtocolAuthenticatorSelection? = null,
 
     @Json(name = "challenge")
-    val challenge: kotlin.collections.List<kotlin.Int>? = null,
+    val challenge: kotlin.String? = null,
 
     @Json(name = "excludeCredentials")
     val excludeCredentials: kotlin.collections.List<ProtocolCredentialDescriptor>? = null,

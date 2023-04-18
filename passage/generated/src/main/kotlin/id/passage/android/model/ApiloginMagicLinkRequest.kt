@@ -17,6 +17,7 @@ package id.passage.android.model
 
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -25,7 +26,7 @@ import com.squareup.moshi.Json
  * @param language language of the email to send (optional)
  * @param magicLinkPath path relative to the app's auth_origin (optional)
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ApiloginMagicLinkRequest (
 

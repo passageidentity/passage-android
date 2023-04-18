@@ -17,13 +17,14 @@ package id.passage.android.model
 
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
  *
  * @param magicLink 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ApiactivateMagicLinkRequest (
 

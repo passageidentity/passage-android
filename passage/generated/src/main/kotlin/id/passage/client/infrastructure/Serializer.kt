@@ -1,7 +1,6 @@
 package id.passage.client.infrastructure
 
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 object Serializer {
     @JvmStatic
@@ -12,7 +11,6 @@ object Serializer {
         .add(UUIDAdapter())
         .add(ByteArrayAdapter())
         .add(URIAdapter())
-        .add(KotlinJsonAdapterFactory())
         .add(BigDecimalAdapter())
         .add(BigIntegerAdapter())
 

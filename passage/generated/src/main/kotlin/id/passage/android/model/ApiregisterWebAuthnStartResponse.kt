@@ -19,6 +19,7 @@ import id.passage.android.model.ApiCredentialCreationChallenge
 import id.passage.android.model.ModelsUser
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -26,7 +27,7 @@ import com.squareup.moshi.Json
  * @param handshake 
  * @param user 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ApiregisterWebAuthnStartResponse (
 
