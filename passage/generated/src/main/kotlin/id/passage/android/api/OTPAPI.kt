@@ -45,7 +45,7 @@ class OTPAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient = A
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "http://auth.passage.id/v1")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1")
         }
     }
 

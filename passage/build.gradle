@@ -62,8 +62,7 @@ dependencies {
 
 openApiGenerate {
     generatorName = "kotlin"
-    inputSpec = "$rootDir/tempopenapi.json".toString()
-//    remoteInputSpec = "https://api.swaggerhub.com/apis/passage_swagger/auth-gw/v1"
+    remoteInputSpec = "https://api.swaggerhub.com/apis/passage_swagger/auth-gw/v1"
     outputDir = "$projectDir/generated".toString()
     apiPackage = "id.passage.android.api"
     modelPackage = "id.passage.android.model"
