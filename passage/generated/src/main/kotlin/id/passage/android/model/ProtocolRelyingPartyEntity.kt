@@ -17,6 +17,7 @@ package id.passage.android.model
 
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -25,7 +26,7 @@ import com.squareup.moshi.Json
  * @param id A unique identifier for the Relying Party entity, which sets the RP ID.
  * @param name A human-palatable name for the entity. Its function depends on what the PublicKeyCredentialEntity represents:  When inherited by PublicKeyCredentialRpEntity it is a human-palatable identifier for the Relying Party, intended only for display. For example, \"ACME Corporation\", \"Wonderful Widgets, Inc.\" or \"ОАО Примертех\".  When inherited by PublicKeyCredentialUserEntity, it is a human-palatable identifier for a user account. It is intended only for display, i.e., aiding the user in determining the difference between user accounts with similar displayNames. For example, \"alexm\", \"alex.p.mueller@example.com\" or \"+14255551234\".
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ProtocolRelyingPartyEntity (
 

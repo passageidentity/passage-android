@@ -18,6 +18,7 @@ package id.passage.android.model
 import id.passage.android.model.ProtocolCredentialCreationResponse
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -28,7 +29,7 @@ import com.squareup.moshi.Json
  * @param magicLink 
  * @param userId 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ApimagicLinkNewDeviceWebAuthnFinishRequest (
 

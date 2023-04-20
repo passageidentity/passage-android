@@ -18,13 +18,14 @@ package id.passage.android.model
 import id.passage.android.model.ModelsUser
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
  *
  * @param user 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ApiUserResponse (
 

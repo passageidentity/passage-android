@@ -17,6 +17,7 @@ package id.passage.android.model
 
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -24,7 +25,7 @@ import com.squareup.moshi.Json
  * @param otp 
  * @param otpId The ID of the one-time passcode.
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ActivateOneTimePasscodeRequest (
 

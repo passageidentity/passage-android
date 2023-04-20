@@ -18,13 +18,14 @@ package id.passage.android.model
 import id.passage.android.model.ModelsCredential
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
  *
  * @param device 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ApiCurrentUserDevice (
 

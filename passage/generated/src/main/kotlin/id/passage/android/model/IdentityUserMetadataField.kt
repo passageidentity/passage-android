@@ -17,6 +17,7 @@ package id.passage.android.model
 
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -28,7 +29,7 @@ import com.squareup.moshi.Json
  * @param registration 
  * @param type 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class IdentityUserMetadataField (
 

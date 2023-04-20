@@ -17,13 +17,14 @@ package id.passage.android.model
 
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
  *
  * @param identifier valid email or E164 phone number
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ApiregisterWebAuthnStartRequest (
 

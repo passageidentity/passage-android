@@ -19,6 +19,7 @@ import id.passage.android.model.IdentityUserMetadataField
 import id.passage.android.model.ModelsLayouts
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -42,7 +43,7 @@ import com.squareup.moshi.Json
  * @param sessionTimeoutLength 
  * @param userMetadataSchema 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class IdentityApp (
 

@@ -17,6 +17,7 @@ package id.passage.android.model
 
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
@@ -25,13 +26,13 @@ import com.squareup.moshi.Json
  * @param transports The authenticator transports that can be used.
  * @param type The valid credential types.
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ProtocolCredentialDescriptor (
 
     /* CredentialID The ID of a credential to allow/disallow. */
     @Json(name = "id")
-    val id: kotlin.collections.List<kotlin.Int>? = null,
+    val id: kotlin.String? = null,
 
     /* The authenticator transports that can be used. */
     @Json(name = "transports")

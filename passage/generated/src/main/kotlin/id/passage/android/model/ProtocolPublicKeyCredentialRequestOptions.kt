@@ -18,27 +18,27 @@ package id.passage.android.model
 import id.passage.android.model.ProtocolCredentialDescriptor
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
  *
  * @param allowCredentials 
- * @param challenge AttestationObject is the byte slice version of attestationObject. This attribute contains an attestation object, which is opaque to, and cryptographically protected against tampering by, the client. The attestation object contains both authenticator data and an attestation statement. The former contains the AAGUID, a unique credential ID, and the credential public key. The contents of the attestation statement are determined by the attestation statement format used by the authenticator. It also contains any additional information that the Relying Party's server requires to validate the attestation statement, as well as to decode and validate the authenticator data along with the JSON-serialized client data.
+ * @param challenge 
  * @param extensions 
  * @param rpId 
  * @param timeout 
  * @param userVerification UserVerification This member describes the Relying Party's requirements regarding user verification for the create() operation. Eligible authenticators are filtered to only those capable of satisfying this requirement.
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ProtocolPublicKeyCredentialRequestOptions (
 
     @Json(name = "allowCredentials")
     val allowCredentials: kotlin.collections.List<ProtocolCredentialDescriptor>? = null,
 
-    /* AttestationObject is the byte slice version of attestationObject. This attribute contains an attestation object, which is opaque to, and cryptographically protected against tampering by, the client. The attestation object contains both authenticator data and an attestation statement. The former contains the AAGUID, a unique credential ID, and the credential public key. The contents of the attestation statement are determined by the attestation statement format used by the authenticator. It also contains any additional information that the Relying Party's server requires to validate the attestation statement, as well as to decode and validate the authenticator data along with the JSON-serialized client data. */
     @Json(name = "challenge")
-    val challenge: kotlin.collections.List<kotlin.Int>? = null,
+    val challenge: kotlin.String? = null,
 
     @Json(name = "extensions")
     val extensions: kotlin.Any? = null,

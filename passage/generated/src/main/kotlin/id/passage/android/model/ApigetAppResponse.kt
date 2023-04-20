@@ -18,13 +18,14 @@ package id.passage.android.model
 import id.passage.android.model.IdentityApp
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 
  *
  * @param app 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ApigetAppResponse (
 
