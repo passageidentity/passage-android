@@ -1,6 +1,7 @@
 package id.passage.android
 
 import android.app.Activity
+import android.util.Log
 import androidx.credentials.CreateCredentialResponse
 import androidx.credentials.CreatePublicKeyCredentialRequest
 import androidx.credentials.CredentialManager
@@ -29,6 +30,8 @@ import id.passage.android.model.ProtocolCredentialCreationResponseJsonAdapter
 import id.passage.android.model.ProtocolPublicKeyCredentialCreationOptionsJsonAdapter
 import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptionsJsonAdapter
 import id.passage.android.model.RegisterOneTimePasscodeRequest
+import id.passage.client.infrastructure.ClientError
+import id.passage.client.infrastructure.ServerError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -36,7 +39,7 @@ import java.io.IOException
 import java.lang.IllegalStateException
 
 @Suppress("UNUSED")
-class Passage(val activity: Activity) {
+class Passage(private val activity: Activity) {
 
     private companion object {
         private const val TAG = "Passage"
@@ -62,8 +65,21 @@ class Passage(val activity: Activity) {
 
         private fun checkException(e: Exception): Exception {
             return when (e) {
-                is IOException, is IllegalStateException, is UnsupportedOperationException -> {
-                    PassageException(e.message ?: "$e")
+                is PassageClientException -> {
+                    val errorBody = (e.response as? ClientError<*>)?.body?.toString()
+                    errorBody?.let {
+                        val message = PassageErrorBody.getMessageString(it)
+                        return PassageClientException(message, e.statusCode, e.response)
+                    }
+                    e
+                }
+                is PassageServerException -> {
+                    val errorBody = (e.response as? ServerError<*>)?.body?.toString()
+                    errorBody?.let {
+                        val message = PassageErrorBody.getMessageString(it)
+                        return PassageServerException(message, e.statusCode, e.response)
+                    }
+                    e
                 }
                 else -> {
                     e
@@ -80,12 +96,16 @@ class Passage(val activity: Activity) {
     // endregion
 
     // region SIMPLE AUTH METHODS
+    // TODO: This method should attempt a passkey registration, then try the designated fallback,
+    // and throw specific errors if/when any of the steps fail.
     suspend fun register(identifier: String) {
         // Check if we should use passkeys
         registerWithPasskey(identifier)
         // Handle fallback methods
     }
 
+    // TODO: This method should attempt a passkey login, then try the designated fallback,
+    // and throw specific errors if/when any of the steps fail.
     suspend fun login(identifier: String) {
         // Check if we should use passkeys
         loginWithPasskey(identifier)
