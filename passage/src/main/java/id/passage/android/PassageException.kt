@@ -1,5 +1,6 @@
 package id.passage.android
 
+import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
 import id.passage.client.infrastructure.ClientException
@@ -27,14 +28,15 @@ class PassageAppException(message: String): Exception(message) {
     }
 }
 
-class PassageErrorBody(val status: String?, val err: String?) {
+@JsonClass(generateAdapter = true)
+class PassageErrorBody(val status: String?, val error: String?) {
     companion object {
         @OptIn(ExperimentalStdlibApi::class)
         fun getMessageString(errorBody: String): String? {
             val moshi = Moshi.Builder().build()
             val jsonAdapter = moshi.adapter<PassageErrorBody>()
             val error = jsonAdapter.fromJson(errorBody)
-            return error?.err
+            return error?.error
         }
     }
 }
