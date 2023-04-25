@@ -96,16 +96,12 @@ class Passage(private val activity: Activity) {
     // endregion
 
     // region SIMPLE AUTH METHODS
-    // TODO: This method should attempt a passkey registration, then try the designated fallback,
-    // and throw specific errors if/when any of the steps fail.
     suspend fun register(identifier: String) {
         // Check if we should use passkeys
         registerWithPasskey(identifier)
         // Handle fallback methods
     }
 
-    // TODO: This method should attempt a passkey login, then try the designated fallback,
-    // and throw specific errors if/when any of the steps fail.
     suspend fun login(identifier: String) {
         // Check if we should use passkeys
         loginWithPasskey(identifier)
