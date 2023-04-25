@@ -70,6 +70,7 @@ class PassageUser private constructor(
 
         /**
          * Get Current User
+         *
          * Returns an instance of PassageUser, which represents an authenticated Passage user.
          * The PassageUser class has methods that can be used to retrieve data on the current user
          * which require authentication.
@@ -122,6 +123,7 @@ class PassageUser private constructor(
 
     /**
      * Change Email
+     *
      * Initiate an email change for the authenticated user. An email change requires verification, so an email will be sent to the user which they must verify before the email change takes effect.
      * @param newEmail valid email
      * @return MagicLink?
@@ -138,6 +140,7 @@ class PassageUser private constructor(
 
     /**
      * Change Phone
+     *
      * Initiate a phone number change for the authenticated user. An phone number change requires verification, so an SMS with a link will be sent to the user which they must verify before the phone number change takes effect.
      * @param newPhone valid E164 phone number
      * @return MagicLink?
@@ -154,6 +157,7 @@ class PassageUser private constructor(
 
     /**
      * List Devices
+     *
      * List all WebAuthn devices for the authenticated user. User must be authenticated via bearer token.
      * @return ApiCurrentUserDevices
      * @throws PassageClientException If the API returns a client error response
@@ -167,6 +171,7 @@ class PassageUser private constructor(
 
     /**
      * Edit Device
+     *
      * Update a device by ID for the current user. Currently the only field that can be updated is
      * the friendly name. User must be authenticated via a bearer token.
      * @param deviceId Device ID
@@ -219,6 +224,7 @@ class PassageUser private constructor(
 
     /**
      * Delete Device
+     *
      * Revoke a device by ID for the current user. User must be authenticated via a bearer token.
      * @param deviceId Device ID
      * @return void

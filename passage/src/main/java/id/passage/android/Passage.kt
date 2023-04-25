@@ -384,6 +384,7 @@ class Passage(private val activity: Activity) {
 
     /**
      * Get Current User
+     * 
      * Returns an instance of PassageUser, which represents an authenticated Passage user.
      * The PassageUser class has methods that can be used to retrieve data on the current user
      * which require authentication.
@@ -419,6 +420,7 @@ class Passage(private val activity: Activity) {
 
     /**
      * App Info
+     *
      * Get information about an application.
      * @return PassageApp?
      * @throws PassageClientException If the API returns a client error response
