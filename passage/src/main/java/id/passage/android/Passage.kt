@@ -91,11 +91,19 @@ class Passage(private val activity: Activity) {
         }
     }
 
+    private var passageStore: PassageStore? = null
+
     // region INITIALIZATION
 
     init {
         appId = getRequiredResourceFromApp(activity, "passage_app_id")
         language = getOptionalResourceFromApp(activity, "passage_language")
+
+        // NOTE: Not sure I love this implementation yet
+        val usePassageStore = getOptionalResourceFromApp(activity, "use_passage_store")
+        if (usePassageStore == "true") {
+            passageStore = PassageStore(activity)
+        }
     }
 
     // endregion

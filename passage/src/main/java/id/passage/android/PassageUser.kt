@@ -11,6 +11,7 @@ import id.passage.android.model.ModelsCurrentUser
 import id.passage.android.model.ModelsUser
 import id.passage.android.model.UserUpdateUserEmailRequest
 import id.passage.android.model.UserUpdateUserPhoneRequest
+import id.passage.client.infrastructure.ApiClient
 import java.lang.Exception
 
 @Suppress("UNUSED")
@@ -60,6 +61,11 @@ class PassageUser private constructor(
 ) {
 
     companion object {
+
+        // TODO: Document this. Its for developer if they don't want to use the PassageStore
+        fun setAuthToken(token: String?) {
+            ApiClient.accessToken = token
+        }
 
         /**
          * Get Current User
