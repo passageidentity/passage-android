@@ -11,10 +11,12 @@ import androidx.credentials.GetPublicKeyCredentialOption
 import androidx.credentials.exceptions.CreateCredentialException
 import androidx.credentials.exceptions.GetCredentialException
 import com.squareup.moshi.Moshi
+import id.passage.android.api.AppsAPI
 import id.passage.android.api.LoginAPI
 import id.passage.android.api.MagicLinkAPI
 import id.passage.android.api.OTPAPI
 import id.passage.android.api.RegisterAPI
+import id.passage.android.api.UsersAPI
 import id.passage.android.model.ActivateOneTimePasscodeRequest
 import id.passage.android.model.ApiactivateMagicLinkRequest
 import id.passage.android.model.ApigetMagicLinkStatusRequest
@@ -35,17 +37,18 @@ import id.passage.client.infrastructure.ServerError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import java.io.IOException
-import java.lang.IllegalStateException
 
 @Suppress("UNUSED")
 class Passage(private val activity: Activity) {
 
-    private companion object {
-        private const val TAG = "Passage"
-        private const val BASE_PATH = "https://auth-uat.passage.dev/v1"
+    internal companion object {
+        internal const val TAG = "Passage"
+        internal const val BASE_PATH = "https://auth-uat.passage.dev/v1"
         private const val REGISTRATION_RESPONSE_BUNDLE_KEY = "androidx.credentials.BUNDLE_KEY_REGISTRATION_RESPONSE_JSON"
         private const val AUTH_RESPONSE_BUNDLE_KEY = "androidx.credentials.BUNDLE_KEY_AUTHENTICATION_RESPONSE_JSON"
+
+        internal lateinit var appId: String
+        internal var language: String? = null
 
         private fun getOptionalResourceFromApp(activity: Activity, resName: String): String? {
             val stringRes = activity.resources.getIdentifier(resName, "string", activity.packageName)
@@ -88,10 +91,12 @@ class Passage(private val activity: Activity) {
         }
     }
 
-    // region INSTANCE VARIABLES
+    // region INITIALIZATION
 
-    private val appId = getRequiredResourceFromApp(activity, "passage_app_id")
-    var language = getOptionalResourceFromApp(activity, "passage_language")
+    init {
+        appId = getRequiredResourceFromApp(activity, "passage_app_id")
+        language = getOptionalResourceFromApp(activity, "passage_language")
+    }
 
     // endregion
 
@@ -436,4 +441,49 @@ class Passage(private val activity: Activity) {
     }
 
     // endregion
+
+    /**
+     * Get Current User
+     * Returns an instance of PassageUser, which represents an authenticated Passage user.
+     * The PassageUser class has methods that can be used to retrieve data on the current user
+     * which require authentication.
+     * @return PassageUser?
+     * @throws PassageClientException If the API returns a client error response
+     * @throws PassageServerException If the API returns a server error response
+     * @throws PassageException If the request fails for another reason
+     */
+    suspend fun getCurrentUser(): PassageUser? {
+        val user = try {
+            PassageUser.getCurrentUser()
+        } catch (e: Exception) {
+            throw checkException(e)
+        }
+        return user
+    }
+
+    /**
+     * App Info
+     * Get information about an application.
+     * @return PassageApp?
+     * @throws PassageClientException If the API returns a client error response
+     * @throws PassageServerException If the API returns a server error response
+     * @throws PassageException If the request fails for another reason
+     */
+    suspend fun appInfo(): PassageApp? {
+        val appsAPI = AppsAPI()
+        val appInfo = try {
+            appsAPI.getApp(appId)
+        } catch (e: Exception) {
+            throw checkException(e)
+        }
+        return appInfo.app
+    }
+
+    suspend fun identifierExists(identifier: String) {
+        val usersAPI = UsersAPI()
+        val response = usersAPI.checkUserIdentifier(BASE_PATH, identifier)
+        response.user
+        // TODO: return PassageUser
+    }
+
 }

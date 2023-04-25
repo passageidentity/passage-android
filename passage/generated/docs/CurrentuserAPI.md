@@ -68,7 +68,7 @@ Configure bearerAuth:
 
 <a name="getCurrentuser"></a>
 # **getCurrentuser**
-> ModelsCurrentUser getCurrentuser(appId)
+> ApiCurrentUserResponse getCurrentuser(appId)
 
 Get Current User
 
@@ -83,7 +83,7 @@ Get information about a user that is currently authenticated via bearer token.
 val apiInstance = CurrentuserAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
 try {
-    val result : ModelsCurrentUser = apiInstance.getCurrentuser(appId)
+    val result : ApiCurrentUserResponse = apiInstance.getCurrentuser(appId)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling CurrentuserAPI#getCurrentuser")
@@ -102,7 +102,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ModelsCurrentUser**](ModelsCurrentUser.md)
+[**ApiCurrentUserResponse**](ApiCurrentUserResponse.md)
 
 ### Authorization
 
@@ -166,7 +166,7 @@ Configure bearerAuth:
 
 <a name="getCurrentuserMetadata"></a>
 # **getCurrentuserMetadata**
-> ModelsCurrentUser getCurrentuserMetadata(appId)
+> ApiUserMetadataResponse getCurrentuserMetadata(appId)
 
 Get user&#39;s metadata
 
@@ -181,7 +181,7 @@ Get the user-metadata for the current user.
 val apiInstance = CurrentuserAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
 try {
-    val result : ModelsCurrentUser = apiInstance.getCurrentuserMetadata(appId)
+    val result : ApiUserMetadataResponse = apiInstance.getCurrentuserMetadata(appId)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling CurrentuserAPI#getCurrentuserMetadata")
@@ -200,7 +200,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ModelsCurrentUser**](ModelsCurrentUser.md)
+[**ApiUserMetadataResponse**](ApiUserMetadataResponse.md)
 
 ### Authorization
 
@@ -368,7 +368,7 @@ Configure bearerAuth:
 
 <a name="updateCurrentuserMetadata"></a>
 # **updateCurrentuserMetadata**
-> ModelsCurrentUser updateCurrentuserMetadata(appId, userMetadata)
+> ApiCurrentUserResponse updateCurrentuserMetadata(appId, userMetadata)
 
 Update user&#39;s metadata
 
@@ -384,7 +384,7 @@ val apiInstance = CurrentuserAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
 val userMetadata : ApiupdateMetadataRequest =  // ApiupdateMetadataRequest | User Metadata
 try {
-    val result : ModelsCurrentUser = apiInstance.updateCurrentuserMetadata(appId, userMetadata)
+    val result : ApiCurrentUserResponse = apiInstance.updateCurrentuserMetadata(appId, userMetadata)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling CurrentuserAPI#updateCurrentuserMetadata")
@@ -404,7 +404,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ModelsCurrentUser**](ModelsCurrentUser.md)
+[**ApiCurrentUserResponse**](ApiCurrentUserResponse.md)
 
 ### Authorization
 

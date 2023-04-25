@@ -10,6 +10,7 @@ docs/ApiCredentialAssertionChallenge.md
 docs/ApiCredentialCreationChallenge.md
 docs/ApiCurrentUserDevice.md
 docs/ApiCurrentUserDevices.md
+docs/ApiCurrentUserResponse.md
 docs/ApiGetAppResponse.md
 docs/ApiGetMagicLinkStatusRequest.md
 docs/ApiJWKItem.md
@@ -34,6 +35,7 @@ docs/ApiRegisterWebAuthnStartRequest.md
 docs/ApiRegisterWebAuthnStartResponse.md
 docs/ApiUpdateDeviceRequest.md
 docs/ApiUpdateMetadataRequest.md
+docs/ApiUserMetadataResponse.md
 docs/ApiUserResponse.md
 docs/AppsAPI.md
 docs/AuthResponse.md
@@ -97,11 +99,13 @@ src/main/kotlin/id/passage/android/model/ApiCredentialAssertionChallenge.kt
 src/main/kotlin/id/passage/android/model/ApiCredentialCreationChallenge.kt
 src/main/kotlin/id/passage/android/model/ApiCurrentUserDevice.kt
 src/main/kotlin/id/passage/android/model/ApiCurrentUserDevices.kt
+src/main/kotlin/id/passage/android/model/ApiCurrentUserResponse.kt
 src/main/kotlin/id/passage/android/model/ApiJWKItem.kt
 src/main/kotlin/id/passage/android/model/ApiJWKResponse.kt
 src/main/kotlin/id/passage/android/model/ApiMagicLink.kt
 src/main/kotlin/id/passage/android/model/ApiMagicLinkResponse.kt
 src/main/kotlin/id/passage/android/model/ApiOpenIdConfiguration.kt
+src/main/kotlin/id/passage/android/model/ApiUserMetadataResponse.kt
 src/main/kotlin/id/passage/android/model/ApiUserResponse.kt
 src/main/kotlin/id/passage/android/model/ApiactivateMagicLinkRequest.kt
 src/main/kotlin/id/passage/android/model/ApiaddDeviceFinishRequest.kt

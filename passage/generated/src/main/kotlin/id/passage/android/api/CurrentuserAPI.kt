@@ -21,13 +21,14 @@ import okhttp3.HttpUrl
 
 import id.passage.android.model.ApiCurrentUserDevice
 import id.passage.android.model.ApiCurrentUserDevices
+import id.passage.android.model.ApiCurrentUserResponse
 import id.passage.android.model.ApiMagicLinkResponse
+import id.passage.android.model.ApiUserMetadataResponse
 import id.passage.android.model.ApiaddDeviceFinishRequest
 import id.passage.android.model.ApiaddDeviceStartResponse
 import id.passage.android.model.ApiupdateDeviceRequest
 import id.passage.android.model.ApiupdateMetadataRequest
 import id.passage.android.model.HttpErrorsHTTPError
-import id.passage.android.model.ModelsCurrentUser
 import id.passage.android.model.UserUpdateUserEmailRequest
 import id.passage.android.model.UserUpdateUserPhoneRequest
 
@@ -133,7 +134,7 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Get Current User
      * Get information about a user that is currently authenticated via bearer token.
      * @param appId App ID
-     * @return ModelsCurrentUser
+     * @return ApiCurrentUserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -142,11 +143,11 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun getCurrentuser(appId: kotlin.String) : ModelsCurrentUser = withContext(Dispatchers.IO) {
+    suspend fun getCurrentuser(appId: kotlin.String) : ApiCurrentUserResponse = withContext(Dispatchers.IO) {
         val localVarResponse = getCurrentuserWithHttpInfo(appId = appId)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ModelsCurrentUser
+            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiCurrentUserResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -164,16 +165,16 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Get Current User
      * Get information about a user that is currently authenticated via bearer token.
      * @param appId App ID
-     * @return ApiResponse<ModelsCurrentUser?>
+     * @return ApiResponse<ApiCurrentUserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun getCurrentuserWithHttpInfo(appId: kotlin.String) : ApiResponse<ModelsCurrentUser?> = withContext(Dispatchers.IO) {
+    suspend fun getCurrentuserWithHttpInfo(appId: kotlin.String) : ApiResponse<ApiCurrentUserResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = getCurrentuserRequestConfig(appId = appId)
 
-        return@withContext request<Unit, ModelsCurrentUser>(
+        return@withContext request<Unit, ApiCurrentUserResponse>(
             localVariableConfig
         )
     }
@@ -275,7 +276,7 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Get user&#39;s metadata
      * Get the user-metadata for the current user.
      * @param appId App ID
-     * @return ModelsCurrentUser
+     * @return ApiUserMetadataResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -284,11 +285,11 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun getCurrentuserMetadata(appId: kotlin.String) : ModelsCurrentUser = withContext(Dispatchers.IO) {
+    suspend fun getCurrentuserMetadata(appId: kotlin.String) : ApiUserMetadataResponse = withContext(Dispatchers.IO) {
         val localVarResponse = getCurrentuserMetadataWithHttpInfo(appId = appId)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ModelsCurrentUser
+            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiUserMetadataResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -306,16 +307,16 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Get user&#39;s metadata
      * Get the user-metadata for the current user.
      * @param appId App ID
-     * @return ApiResponse<ModelsCurrentUser?>
+     * @return ApiResponse<ApiUserMetadataResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun getCurrentuserMetadataWithHttpInfo(appId: kotlin.String) : ApiResponse<ModelsCurrentUser?> = withContext(Dispatchers.IO) {
+    suspend fun getCurrentuserMetadataWithHttpInfo(appId: kotlin.String) : ApiResponse<ApiUserMetadataResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = getCurrentuserMetadataRequestConfig(appId = appId)
 
-        return@withContext request<Unit, ModelsCurrentUser>(
+        return@withContext request<Unit, ApiUserMetadataResponse>(
             localVariableConfig
         )
     }
@@ -569,7 +570,7 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Update the metadata for the current user. Only valid metadata fields are accepted. Invalid metadata fields that are present will abort the update. User must be authenticated via a bearer token.
      * @param appId App ID
      * @param userMetadata User Metadata
-     * @return ModelsCurrentUser
+     * @return ApiCurrentUserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -578,11 +579,11 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun updateCurrentuserMetadata(appId: kotlin.String, userMetadata: ApiupdateMetadataRequest) : ModelsCurrentUser = withContext(Dispatchers.IO) {
+    suspend fun updateCurrentuserMetadata(appId: kotlin.String, userMetadata: ApiupdateMetadataRequest) : ApiCurrentUserResponse = withContext(Dispatchers.IO) {
         val localVarResponse = updateCurrentuserMetadataWithHttpInfo(appId = appId, userMetadata = userMetadata)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ModelsCurrentUser
+            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiCurrentUserResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -601,16 +602,16 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Update the metadata for the current user. Only valid metadata fields are accepted. Invalid metadata fields that are present will abort the update. User must be authenticated via a bearer token.
      * @param appId App ID
      * @param userMetadata User Metadata
-     * @return ApiResponse<ModelsCurrentUser?>
+     * @return ApiResponse<ApiCurrentUserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun updateCurrentuserMetadataWithHttpInfo(appId: kotlin.String, userMetadata: ApiupdateMetadataRequest) : ApiResponse<ModelsCurrentUser?> = withContext(Dispatchers.IO) {
+    suspend fun updateCurrentuserMetadataWithHttpInfo(appId: kotlin.String, userMetadata: ApiupdateMetadataRequest) : ApiResponse<ApiCurrentUserResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = updateCurrentuserMetadataRequestConfig(appId = appId, userMetadata = userMetadata)
 
-        return@withContext request<ApiupdateMetadataRequest, ModelsCurrentUser>(
+        return@withContext request<ApiupdateMetadataRequest, ApiCurrentUserResponse>(
             localVariableConfig
         )
     }
