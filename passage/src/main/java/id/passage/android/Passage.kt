@@ -57,7 +57,7 @@ class Passage(private val activity: Activity) {
 
     }
 
-    private var passageStore: PassageStore? = null
+    private var passageTokenStore: PassageTokenStore? = null
 
     // region INITIALIZATION
 
@@ -68,7 +68,7 @@ class Passage(private val activity: Activity) {
         // NOTE: Not sure I love this implementation yet
         val usePassageStore = getOptionalResourceFromApp(activity, "use_passage_store")
         if (usePassageStore == "true") {
-            passageStore = PassageStore(activity)
+            passageTokenStore = PassageTokenStore(activity)
         }
     }
 
@@ -437,7 +437,7 @@ class Passage(private val activity: Activity) {
 
     private fun handleAuthResult(authResult: PassageAuthResult?) {
         authResult?.let {
-            passageStore?.setTokens(it)
+            passageTokenStore?.setTokens(it)
         }
     }
 

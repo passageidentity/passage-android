@@ -57,6 +57,12 @@ class PassageAppException(message: String): Exception(message) {
     }
 }
 
+class PassageTokenException(message: String): Exception(message) {
+    companion object {
+        const val REFRESH_FAILED = "Auth token refresh failed."
+    }
+}
+
 @JsonClass(generateAdapter = true)
 class PassageErrorBody(val status: String?, val error: String?) {
     companion object {
