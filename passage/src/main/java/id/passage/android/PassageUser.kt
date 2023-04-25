@@ -7,6 +7,8 @@ import id.passage.android.model.ApiCurrentUserDevice
 import id.passage.android.model.ApiCurrentUserDevices
 import id.passage.android.model.ApiupdateDeviceRequest
 import id.passage.android.model.ModelsCredential
+import id.passage.android.model.ModelsCurrentUser
+import id.passage.android.model.ModelsUser
 import id.passage.android.model.UserUpdateUserEmailRequest
 import id.passage.android.model.UserUpdateUserPhoneRequest
 import java.lang.Exception
@@ -73,25 +75,42 @@ class PassageUser private constructor(
          */
         internal suspend fun getCurrentUser(): PassageUser? {
             val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-            val response = currentUserAPI.getCurrentuser(Passage.appId).user ?: return null
+            val modelsCurrentUser = currentUserAPI.getCurrentuser(Passage.appId).user ?: return null
+            return convertToPassageUser(modelsCurrentUser)
+        }
+
+        private fun convertToPassageUser(modelsCurrentUser: ModelsCurrentUser): PassageUser {
             return PassageUser(
-                createdAt = response.createdAt,
-                email = response.email,
-                emailVerified = response.emailVerified,
-                id = response.id,
-                lastLoginAt = response.lastLoginAt,
-                loginCount = response.loginCount,
-                phone = response.phone,
-                phoneVerified = response.phoneVerified,
-                status = response.status,
-                updatedAt = response.updatedAt,
-                userMetadata= response.userMetadata,
-                webauthn = response.webauthn,
-                webauthnDevices = response.webauthnDevices,
-                webauthnTypes = response.webauthnTypes
+                createdAt = modelsCurrentUser.createdAt,
+                email = modelsCurrentUser.email,
+                emailVerified = modelsCurrentUser.emailVerified,
+                id = modelsCurrentUser.id,
+                lastLoginAt = modelsCurrentUser.lastLoginAt,
+                loginCount = modelsCurrentUser.loginCount,
+                phone = modelsCurrentUser.phone,
+                phoneVerified = modelsCurrentUser.phoneVerified,
+                status = modelsCurrentUser.status,
+                updatedAt = modelsCurrentUser.updatedAt,
+                userMetadata= modelsCurrentUser.userMetadata,
+                webauthn = modelsCurrentUser.webauthn,
+                webauthnDevices = modelsCurrentUser.webauthnDevices,
+                webauthnTypes = modelsCurrentUser.webauthnTypes
             )
         }
 
+        internal fun convertToPassageUser(modelsUser: ModelsUser): PassageUser {
+            return PassageUser(
+                email = modelsUser.email,
+                emailVerified = modelsUser.emailVerified,
+                id = modelsUser.id,
+                phone = modelsUser.phone,
+                phoneVerified = modelsUser.phoneVerified,
+                status = modelsUser.status,
+                userMetadata= modelsUser.userMetadata,
+                webauthn = modelsUser.webauthn,
+                webauthnTypes = modelsUser.webauthnTypes
+            )
+        }
     }
 
     /**

@@ -479,11 +479,26 @@ class Passage(private val activity: Activity) {
         return appInfo.app
     }
 
-    suspend fun identifierExists(identifier: String) {
+    /**
+     * Identifier Exists
+     *
+     * Checks if the identifier provided exists for the application. This method should be used to
+     * determine whether to register or log in a user. This method also checks that the app supports
+     * the identifier types (e.g., it will throw an error if a phone number is supplied to an app
+     * that only supports emails as an identifier).
+     * @return PassageUser?
+     * @throws PassageClientException If the API returns a client error response
+     * @throws PassageServerException If the API returns a server error response
+     * @throws PassageException If the request fails for another reason
+     */
+    suspend fun identifierExists(identifier: String): PassageUser? {
         val usersAPI = UsersAPI()
-        val response = usersAPI.checkUserIdentifier(BASE_PATH, identifier)
-        response.user
-        // TODO: return PassageUser
+        val modelsUser = try {
+            usersAPI.checkUserIdentifier(BASE_PATH, identifier).user
+        } catch (e: Exception) {
+            throw checkException(e)
+        } ?: return null
+        return PassageUser.convertToPassageUser(modelsUser)
     }
 
 }
