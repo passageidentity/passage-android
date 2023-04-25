@@ -1,14 +1,20 @@
 package id.passage.android
 
+import android.app.Activity
 import android.util.Log
 import androidx.credentials.exceptions.CreateCredentialException
+import com.squareup.moshi.Moshi
 import id.passage.android.api.CurrentuserAPI
 import id.passage.android.model.ApiCurrentUserDevice
 import id.passage.android.model.ApiCurrentUserDevices
+import id.passage.android.model.ApiaddDeviceFinishRequest
 import id.passage.android.model.ApiupdateDeviceRequest
 import id.passage.android.model.ModelsCredential
 import id.passage.android.model.ModelsCurrentUser
 import id.passage.android.model.ModelsUser
+import id.passage.android.model.ProtocolCredentialCreationResponseJsonAdapter
+import id.passage.android.model.ProtocolPublicKeyCredentialCreationOptionsJsonAdapter
+import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptionsJsonAdapter
 import id.passage.android.model.UserUpdateUserEmailRequest
 import id.passage.android.model.UserUpdateUserPhoneRequest
 import id.passage.client.infrastructure.ApiClient
@@ -182,19 +188,38 @@ class PassageUser private constructor(
     }
 
     /**
-     * Add a device passkey
+     * Add a Device Passkey
+     *
      * Returns the created device for the user. User must be authenticated via a bearer token.
-     * @return PassageAuthResult?
+     * @param activity Activity to surface the Credentials Manager prompt within
+     * @return ApiCurrentUserDevice
      * @throws CreateCredentialException If the attempt to create a passkey fails
      * @throws PassageClientException If the Passage API returns a client error response
      * @throws PassageServerException If the Passage API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun addDevice(): PassageAuthResult? {
+    suspend fun addDevice(activity: Activity): ApiCurrentUserDevice {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val startResponse = currentUserAPI.postCurrentuserAddDeviceStart(Passage.appId)
-        // TODO: Finish
-        return null
+        val createCredOptions = startResponse.handshake?.challenge?.publicKey
+            ?: throw PassageWebAuthnException(PassageWebAuthnException.CHALLENGE_MISSING)
+        val moshi = Moshi.Builder().build()
+        val createCredOptionsAdapter =
+            ProtocolPublicKeyCredentialCreationOptionsJsonAdapter(moshi)
+        val createCredOptionsJson = createCredOptionsAdapter.toJson(createCredOptions)
+            ?: throw PassageWebAuthnException(PassageWebAuthnException.PARSING_FAILED)
+        val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
+        val handshakeResponseJson =
+            createCredResponse.data.getString(Passage.REGISTRATION_RESPONSE_BUNDLE_KEY).toString()
+        val handshakeResponseAdapter = ProtocolCredentialCreationResponseJsonAdapter(moshi)
+        val handshakeResponse = handshakeResponseAdapter.fromJson(handshakeResponseJson)
+            ?: throw PassageCredentialException(PassageCredentialException.PARSING_FAILED)
+        val finishRequest = ApiaddDeviceFinishRequest(
+            handshakeId = startResponse.handshake.id,
+            handshakeResponse = handshakeResponse,
+            userId = startResponse.user?.id
+        )
+        return currentUserAPI.postCurrentuserAddDeviceFinish(Passage.appId, finishRequest)
     }
 
     /**

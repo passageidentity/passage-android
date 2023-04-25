@@ -1,16 +1,10 @@
 package id.passage.android
 
 import android.app.Activity
-import android.util.Log
-import androidx.credentials.CreateCredentialResponse
-import androidx.credentials.CreatePublicKeyCredentialRequest
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
-import androidx.credentials.GetCredentialResponse
-import androidx.credentials.GetPublicKeyCredentialOption
 import androidx.credentials.exceptions.CreateCredentialException
 import androidx.credentials.exceptions.GetCredentialException
 import com.squareup.moshi.Moshi
+import id.passage.android.PassageException.Companion.checkException
 import id.passage.android.api.AppsAPI
 import id.passage.android.api.LoginAPI
 import id.passage.android.api.MagicLinkAPI
@@ -32,11 +26,6 @@ import id.passage.android.model.ProtocolCredentialCreationResponseJsonAdapter
 import id.passage.android.model.ProtocolPublicKeyCredentialCreationOptionsJsonAdapter
 import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptionsJsonAdapter
 import id.passage.android.model.RegisterOneTimePasscodeRequest
-import id.passage.client.infrastructure.ClientError
-import id.passage.client.infrastructure.ServerError
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 
 @Suppress("UNUSED")
 class Passage(private val activity: Activity) {
@@ -44,7 +33,7 @@ class Passage(private val activity: Activity) {
     internal companion object {
         internal const val TAG = "Passage"
         internal const val BASE_PATH = "https://auth-uat.passage.dev/v1"
-        private const val REGISTRATION_RESPONSE_BUNDLE_KEY = "androidx.credentials.BUNDLE_KEY_REGISTRATION_RESPONSE_JSON"
+        internal const val REGISTRATION_RESPONSE_BUNDLE_KEY = "androidx.credentials.BUNDLE_KEY_REGISTRATION_RESPONSE_JSON"
         private const val AUTH_RESPONSE_BUNDLE_KEY = "androidx.credentials.BUNDLE_KEY_AUTHENTICATION_RESPONSE_JSON"
 
         internal lateinit var appId: String
@@ -66,29 +55,6 @@ class Passage(private val activity: Activity) {
             return stringRes
         }
 
-        private fun checkException(e: Exception): Exception {
-            return when (e) {
-                is PassageClientException -> {
-                    val errorBody = (e.response as? ClientError<*>)?.body?.toString()
-                    errorBody?.let {
-                        val message = PassageErrorBody.getMessageString(it)
-                        return PassageClientException(message, e.statusCode, e.response)
-                    }
-                    e
-                }
-                is PassageServerException -> {
-                    val errorBody = (e.response as? ServerError<*>)?.body?.toString()
-                    errorBody?.let {
-                        val message = PassageErrorBody.getMessageString(it)
-                        return PassageServerException(message, e.statusCode, e.response)
-                    }
-                    e
-                }
-                else -> {
-                    e
-                }
-            }
-        }
     }
 
     private var passageStore: PassageStore? = null
@@ -155,7 +121,7 @@ class Passage(private val activity: Activity) {
                 ProtocolPublicKeyCredentialCreationOptionsJsonAdapter(moshi)
             val createCredOptionsJson = createCredOptionsAdapter.toJson(createCredOptions)
                 ?: throw PassageWebAuthnException(PassageWebAuthnException.PARSING_FAILED)
-            val createCredResponse = createPasskey(createCredOptionsJson)
+            val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
             // Complete registration and authenticate the user
             val handshakeResponseJson =
                 createCredResponse.data.getString(REGISTRATION_RESPONSE_BUNDLE_KEY).toString()
@@ -174,29 +140,6 @@ class Passage(private val activity: Activity) {
         } catch (e: Exception) {
             throw checkException(e)
         }
-    }
-
-    /**
-     * Registers a user passkey credential that can be used to authenticate the user to
-     * the app in the future.
-     *
-     * The execution potentially launches framework UI flows for a user to view their registration
-     * options, grant consent, etc.
-     *
-     * @param requestJson The privileged request in JSON format in the [standard webauthn web json](https://w3c.github.io/webauthn/#dictdef-publickeycredentialcreationoptionsjson).
-     * @throws CreateCredentialException If the request fails
-     */
-    suspend fun createPasskey(requestJson: String): CreateCredentialResponse {
-        val credentialManager = CredentialManager.create(activity)
-        val publicKeyCredRequest = CreatePublicKeyCredentialRequest(requestJson)
-        val publicKeyCredResponse = CoroutineScope(Dispatchers.IO).async {
-            // Show the user Credential Manager with option to create a Passkey
-            return@async credentialManager.createCredential(
-                publicKeyCredRequest,
-                activity
-            )
-        }.await()
-        return publicKeyCredResponse
     }
 
     /**
@@ -223,7 +166,7 @@ class Passage(private val activity: Activity) {
             val credOptionsAdapter = ProtocolPublicKeyCredentialRequestOptionsJsonAdapter(moshi)
             val credOptionsJson = credOptionsAdapter.toJson(credOptions)
                 ?: throw PassageWebAuthnException(PassageWebAuthnException.PARSING_FAILED)
-            val credResponse = getPasskey(credOptionsJson)
+            val credResponse = PasskeyUtils.getPasskey(credOptionsJson, activity)
             // Complete login and authenticate the user
             val handshakeResponseJson = credResponse.credential.data.getString(AUTH_RESPONSE_BUNDLE_KEY).toString()
             val handshakeResponseAdapter = ProtocolCredentialAssertionResponseJsonAdapter(moshi)
@@ -241,29 +184,6 @@ class Passage(private val activity: Activity) {
         } catch(e: Exception) {
             throw checkException(e)
         }
-    }
-
-    /**
-     * Requests a passkey credential from the user.
-     *
-     * The execution potentially launches framework UI flows for a user to view available
-     * credentials, consent to using one of them, etc.
-     *
-     * @param requestJson The privileged request in JSON format in the [standard webauthn web json](https://w3c.github.io/webauthn/#dictdef-publickeycredentialcreationoptionsjson).
-     * @throws GetCredentialException If the request fails
-     */
-    suspend fun getPasskey(requestJson: String): GetCredentialResponse {
-        val credentialManager = CredentialManager.create(activity)
-        val getCredOption = GetPublicKeyCredentialOption(requestJson)
-        val getCredRequest = GetCredentialRequest(listOf(getCredOption))
-        val getCredResponse = CoroutineScope(Dispatchers.IO).async {
-            // Show the user Credential Manager with option to login with a Passkey
-            return@async credentialManager.getCredential(
-                getCredRequest,
-                activity
-            )
-        }
-        return getCredResponse.await()
     }
 
     // endregion
