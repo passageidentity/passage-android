@@ -11,6 +11,7 @@ import id.passage.client.infrastructure.ApiClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 
 @Suppress("UNUSED")
@@ -35,9 +36,30 @@ class PassageTokenStore(activity: Activity) {
         suspend fun refreshAuthToken(refreshToken: String): PassageAuthResult {
             val api = TokensAPI(Passage.BASE_PATH)
             val request = ApirefreshAuthTokenRequest(refreshToken)
-            return api.refreshAuthToken(Passage.appId, request).authResult
-                ?: throw PassageTokenException(PassageTokenException.REFRESH_FAILED)
+            val authResult = try {
+                api.refreshAuthToken(Passage.appId, request).authResult
+                    ?: throw PassageTokenException(PassageTokenException.REFRESH_FAILED)
+            } catch (e: Exception) {
+                throw PassageException.checkException(e)
+            }
+            return authResult
         }
+
+        /**
+         * Revoke Refresh Token
+         *
+         * Creates and returns a new auth and refresh tokens
+         * @param refreshToken Refresh token
+         * @return void
+         * @throws PassageClientException If the Passage API returns a client error response
+         * @throws PassageServerException If the Passage API returns a server error response
+         * @throws PassageException If the request fails for another reason
+         */
+        suspend fun revokeRefreshToken(refreshToken: String) {
+            val api = TokensAPI(Passage.BASE_PATH)
+            api.revokeRefreshToken(Passage.appId, refreshToken)
+        }
+
     }
 
     private val masterKey: MasterKey = MasterKey.Builder(activity)
@@ -91,6 +113,14 @@ class PassageTokenStore(activity: Activity) {
     fun setTokens(authResult: PassageAuthResult) {
         setAuthToken(authResult.authToken)
         setRefreshToken(authResult.refreshToken)
+    }
+
+    suspend fun clearAndRevokeTokens() {
+        refreshToken?.let {
+            revokeRefreshToken(it)
+        }
+        setAuthToken(null)
+        setRefreshToken(null)
     }
 
 }

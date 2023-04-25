@@ -26,6 +26,7 @@ import id.passage.android.model.ProtocolCredentialCreationResponseJsonAdapter
 import id.passage.android.model.ProtocolPublicKeyCredentialCreationOptionsJsonAdapter
 import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptionsJsonAdapter
 import id.passage.android.model.RegisterOneTimePasscodeRequest
+import id.passage.client.infrastructure.ApiClient
 
 @Suppress("UNUSED")
 class Passage(private val activity: Activity) {
@@ -58,6 +59,11 @@ class Passage(private val activity: Activity) {
     }
 
     private var passageTokenStore: PassageTokenStore? = null
+
+    // TODO: Document this method. Its for developer if they don't want to use the PassageStore
+    fun setAuthToken(token: String?) {
+        ApiClient.accessToken = token
+    }
 
     // region INITIALIZATION
 
@@ -393,6 +399,22 @@ class Passage(private val activity: Activity) {
             throw checkException(e)
         }
         return user
+    }
+
+    /**
+     * Sign Out Current User
+     *
+     * If using Passage Token Store, calling this method will revoke the user's refresh token,
+     * clear all tokens from the Passage Token Store, and set the client's access token to null.
+     * If not using Passage Token Store, calling this method will set the client's access token to null.
+     * @return void
+     * @throws PassageClientException If the Passage API returns a client error response
+     * @throws PassageServerException If the Passage API returns a server error response
+     * @throws PassageException If the request fails for another reason
+     */
+    suspend fun signOutCurrentUser() {
+        passageTokenStore?.clearAndRevokeTokens()
+            ?: setAuthToken(null)
     }
 
     /**

@@ -68,11 +68,6 @@ class PassageUser private constructor(
 
     companion object {
 
-        // TODO: Document this. Its for developer if they don't want to use the PassageStore
-        fun setAuthToken(token: String?) {
-            ApiClient.accessToken = token
-        }
-
         /**
          * Get Current User
          * Returns an instance of PassageUser, which represents an authenticated Passage user.
