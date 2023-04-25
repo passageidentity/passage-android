@@ -168,6 +168,7 @@ class Passage(private val activity: Activity) {
                 userId = webauthnStartResponse.user?.id
             )
             val authResponse = registerAPI.registerWebauthnFinish(appId, webauthnFinishRequest)
+            handleAuthResult(authResponse.authResult)
             // Return auth result
             return authResponse.authResult
         } catch (e: Exception) {
@@ -234,6 +235,7 @@ class Passage(private val activity: Activity) {
                 userId = webauthnStartResponse.user?.id
             )
             val authResponse = loginAPI.loginWebauthnFinish(appId, webauthnFinishRequest)
+            handleAuthResult(authResponse.authResult)
             // Return auth result
             return authResponse.authResult
         } catch(e: Exception) {
@@ -339,6 +341,7 @@ class Passage(private val activity: Activity) {
         } catch (e: Exception) {
             throw checkException(e)
         }
+        handleAuthResult(response.authResult)
         return response.authResult
     }
 
@@ -363,6 +366,7 @@ class Passage(private val activity: Activity) {
         } catch (e: Exception) {
             throw checkException(e)
         }
+        handleAuthResult(response.authResult)
         return response.authResult
     }
 
@@ -440,12 +444,14 @@ class Passage(private val activity: Activity) {
         // created a `PassageAuthResult` alias for `IdentityAuthResult`, and return that alias
         // from all of the methods that produce an auth result. This should be temporary, until
         // the Passage API returns just `AuthResult` for all.
-        return PassageAuthResult(
+        val authResult = PassageAuthResult(
             authToken = otpAuthResult.authToken,
             redirectUrl = otpAuthResult.redirectUrl,
             refreshToken = otpAuthResult.refreshToken,
             refreshTokenExpiration = otpAuthResult.refreshTokenExpiration
         )
+        handleAuthResult(authResult)
+        return authResult
     }
 
     // endregion
@@ -507,6 +513,12 @@ class Passage(private val activity: Activity) {
             throw checkException(e)
         } ?: return null
         return PassageUser.convertToPassageUser(modelsUser)
+    }
+
+    private fun handleAuthResult(authResult: PassageAuthResult?) {
+        authResult?.let {
+            passageStore?.setTokens(it)
+        }
     }
 
 }
