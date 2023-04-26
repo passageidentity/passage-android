@@ -21,45 +21,6 @@ public final class PassageTokenStore(activity: Activity) {
         private const val PASSAGE_SHARED_PREFERENCES = "PASSAGE_SHARED_PREFERENCES"
         private const val PASSAGE_AUTH_TOKEN = "PASSAGE_AUTH_TOKEN"
         private const val PASSAGE_REFRESH_TOKEN = "PASSAGE_REFRESH_TOKEN"
-
-        /**
-         * Refresh Auth Token
-         *
-         * Creates and returns a new auth and refresh tokens
-         * @param refreshToken Existing refresh token
-         * @return PassageAuthResult
-         * @throws PassageTokenException If the Passage API returns a null auth result
-         * @throws PassageClientException If the Passage API returns a client error response
-         * @throws PassageServerException If the Passage API returns a server error response
-         * @throws PassageException If the request fails for another reason
-         */
-        private suspend fun refreshAuthToken(refreshToken: String): PassageAuthResult {
-            val api = TokensAPI(Passage.BASE_PATH)
-            val request = ApirefreshAuthTokenRequest(refreshToken)
-            val authResult = try {
-                api.refreshAuthToken(Passage.appId, request).authResult
-                    ?: throw PassageTokenException(PassageTokenException.REFRESH_FAILED)
-            } catch (e: Exception) {
-                throw PassageException.checkException(e)
-            }
-            return authResult
-        }
-
-        /**
-         * Revoke Refresh Token
-         *
-         * Creates and returns a new auth and refresh tokens
-         * @param refreshToken Refresh token
-         * @return void
-         * @throws PassageClientException If the Passage API returns a client error response
-         * @throws PassageServerException If the Passage API returns a server error response
-         * @throws PassageException If the request fails for another reason
-         */
-        private suspend fun revokeRefreshToken(refreshToken: String) {
-            val api = TokensAPI(Passage.BASE_PATH)
-            api.revokeRefreshToken(Passage.appId, refreshToken)
-        }
-
     }
 
     private val masterKey: MasterKey = MasterKey.Builder(activity)
@@ -85,7 +46,7 @@ public final class PassageTokenStore(activity: Activity) {
         refreshToken?.let {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val authResult = refreshAuthToken(it)
+                    val authResult = PassageToken.refreshAuthToken(it)
                     setTokens(authResult)
                 } catch (e: Exception) {
                     Log.e(Passage.TAG, e.message ?: "Exception: $e")
@@ -121,7 +82,7 @@ public final class PassageTokenStore(activity: Activity) {
 
     public suspend fun clearAndRevokeTokens() {
         refreshToken?.let {
-            revokeRefreshToken(it)
+            PassageToken.revokeRefreshToken(it)
         }
         setAuthToken(null)
         setRefreshToken(null)
