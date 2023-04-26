@@ -1,3 +1,5 @@
+@file:Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
+
 package id.passage.android
 
 import com.squareup.moshi.JsonClass
@@ -8,7 +10,7 @@ import id.passage.client.infrastructure.ClientException
 import id.passage.client.infrastructure.ServerError
 import id.passage.client.infrastructure.ServerException
 
-class PassageException(message: String): Exception(message) {
+public open class PassageException(message: String): Exception(message) {
     companion object {
         fun checkException(e: Exception): Exception {
             return when (e) {
@@ -37,34 +39,34 @@ class PassageException(message: String): Exception(message) {
 
 }
 
-class PassageWebAuthnException(message: String): Exception(message) {
+public final class PassageWebAuthnException(message: String): PassageException(message) {
     companion object {
         const val CHALLENGE_MISSING = "WebAuthn credential assertion challenge missing."
         const val PARSING_FAILED = "WebAuthn credential assertion challenge parsing failed."
     }
 }
 
-class PassageCredentialException(message: String): Exception(message) {
+public final class PassageCredentialException(message: String): PassageException(message) {
     companion object {
         const val PARSING_FAILED = "Credential Manager handshake response parsing failed."
     }
 }
 
-class PassageAppException(message: String): Exception(message) {
+public final class PassageAppException(message: String): PassageException(message) {
     companion object {
         const val NO_APP = "Could not get Passage App information."
         const val NO_PUBLIC_SIGNUP = "Public registration disabled for this Passage App."
     }
 }
 
-class PassageTokenException(message: String): Exception(message) {
+public final class PassageTokenException(message: String): PassageException(message) {
     companion object {
         const val REFRESH_FAILED = "Auth token refresh failed."
     }
 }
 
 @JsonClass(generateAdapter = true)
-class PassageErrorBody(val status: String?, val error: String?) {
+internal final class PassageErrorBody(val status: String?, val error: String?) {
     companion object {
         @OptIn(ExperimentalStdlibApi::class)
         fun getMessageString(errorBody: String): String? {
@@ -76,6 +78,6 @@ class PassageErrorBody(val status: String?, val error: String?) {
     }
 }
 
-typealias PassageServerException = ServerException
+public typealias PassageServerException = ServerException
 
-typealias PassageClientException = ClientException
+public typealias PassageClientException = ClientException

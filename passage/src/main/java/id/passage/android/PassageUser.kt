@@ -1,9 +1,7 @@
 package id.passage.android
 
 import android.app.Activity
-import android.util.Log
 import androidx.credentials.exceptions.CreateCredentialException
-import com.squareup.moshi.Moshi
 import id.passage.android.api.CurrentuserAPI
 import id.passage.android.model.ApiCurrentUserDevice
 import id.passage.android.model.ApiCurrentUserDevices
@@ -12,16 +10,11 @@ import id.passage.android.model.ApiupdateDeviceRequest
 import id.passage.android.model.ModelsCredential
 import id.passage.android.model.ModelsCurrentUser
 import id.passage.android.model.ModelsUser
-import id.passage.android.model.ProtocolCredentialCreationResponseJsonAdapter
-import id.passage.android.model.ProtocolPublicKeyCredentialCreationOptionsJsonAdapter
-import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptionsJsonAdapter
 import id.passage.android.model.UserUpdateUserEmailRequest
 import id.passage.android.model.UserUpdateUserPhoneRequest
-import id.passage.client.infrastructure.ApiClient
-import java.lang.Exception
 
-@Suppress("UNUSED")
-class PassageUser private constructor(
+@Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
+final class PassageUser private constructor(
 
     /* When this user was created */
     val createdAt: String? = null,
@@ -66,7 +59,7 @@ class PassageUser private constructor(
 
 ) {
 
-    companion object {
+    internal companion object {
 
         /**
          * Get Current User
@@ -74,8 +67,6 @@ class PassageUser private constructor(
          * Returns an instance of PassageUser, which represents an authenticated Passage user.
          * The PassageUser class has methods that can be used to retrieve data on the current user
          * which require authentication.
-         * @param appId App ID
-         * @param language Language
          * @return PassageUser?
          * @throws PassageClientException If the API returns a client error response
          * @throws PassageServerException If the API returns a server error response
@@ -131,7 +122,7 @@ class PassageUser private constructor(
      * @throws PassageServerException If the API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun changeEmail(newEmail: String): MagicLink? {
+    public suspend fun changeEmail(newEmail: String): MagicLink? {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val request = UserUpdateUserEmailRequest(Passage.language, null, newEmail, null)
         val response = currentUserAPI.updateEmailCurrentuser(Passage.appId, request)
@@ -148,7 +139,7 @@ class PassageUser private constructor(
      * @throws PassageServerException If the API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun changePhone(newPhone: String): MagicLink? {
+    public suspend fun changePhone(newPhone: String): MagicLink? {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val request = UserUpdateUserPhoneRequest(Passage.language, null, newPhone, null)
         val response = currentUserAPI.updatePhoneCurrentuser(Passage.appId, request)
@@ -164,7 +155,7 @@ class PassageUser private constructor(
      * @throws PassageServerException If the API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun listDevices(): ApiCurrentUserDevices {
+    public suspend fun listDevices(): ApiCurrentUserDevices {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         return currentUserAPI.getCurrentuserDevices(Passage.appId)
     }
@@ -181,7 +172,7 @@ class PassageUser private constructor(
      * @throws PassageServerException If the API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun editDevice(deviceId: String, newDeviceName: String): ApiCurrentUserDevice {
+    public suspend fun editDevice(deviceId: String, newDeviceName: String): ApiCurrentUserDevice {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val request = ApiupdateDeviceRequest(friendlyName = newDeviceName)
         return currentUserAPI.updateCurrentuserDevice(Passage.appId, deviceId, request)
@@ -198,26 +189,19 @@ class PassageUser private constructor(
      * @throws PassageServerException If the Passage API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun addDevice(activity: Activity): ApiCurrentUserDevice {
+    public suspend fun addDevice(activity: Activity): ApiCurrentUserDevice {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-        val startResponse = currentUserAPI.postCurrentuserAddDeviceStart(Passage.appId)
-        val createCredOptions = startResponse.handshake?.challenge?.publicKey
-            ?: throw PassageWebAuthnException(PassageWebAuthnException.CHALLENGE_MISSING)
-        val moshi = Moshi.Builder().build()
-        val createCredOptionsAdapter =
-            ProtocolPublicKeyCredentialCreationOptionsJsonAdapter(moshi)
-        val createCredOptionsJson = createCredOptionsAdapter.toJson(createCredOptions)
-            ?: throw PassageWebAuthnException(PassageWebAuthnException.PARSING_FAILED)
+        // Get Create Credential challenge from Passage
+        val webauthnStartResponse = currentUserAPI.postCurrentuserAddDeviceStart(Passage.appId)
+        // Use Create Credential challenge to prompt user to create a passkey
+        val createCredOptionsJson = PasskeyUtils.getCreateCredentialOptionsJson(webauthnStartResponse.handshake)
         val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
-        val handshakeResponseJson =
-            createCredResponse.data.getString(Passage.REGISTRATION_RESPONSE_BUNDLE_KEY).toString()
-        val handshakeResponseAdapter = ProtocolCredentialCreationResponseJsonAdapter(moshi)
-        val handshakeResponse = handshakeResponseAdapter.fromJson(handshakeResponseJson)
-            ?: throw PassageCredentialException(PassageCredentialException.PARSING_FAILED)
+        // Complete registration
+        val handshakeResponse = PasskeyUtils.getCreateCredentialHandshakeResponse(createCredResponse)
         val finishRequest = ApiaddDeviceFinishRequest(
-            handshakeId = startResponse.handshake.id,
+            handshakeId = webauthnStartResponse.handshake?.id,
             handshakeResponse = handshakeResponse,
-            userId = startResponse.user?.id
+            userId = webauthnStartResponse.user?.id
         )
         return currentUserAPI.postCurrentuserAddDeviceFinish(Passage.appId, finishRequest)
     }
@@ -232,7 +216,7 @@ class PassageUser private constructor(
      * @throws PassageServerException If the API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun deleteDevice(deviceId: String) {
+    public suspend fun deleteDevice(deviceId: String) {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         currentUserAPI.deleteCurrentuserDevice(Passage.appId, deviceId)
     }

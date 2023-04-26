@@ -3,8 +3,9 @@ package id.passage.android
 import android.app.Activity
 import androidx.credentials.exceptions.CreateCredentialException
 import androidx.credentials.exceptions.GetCredentialException
-import com.squareup.moshi.Moshi
 import id.passage.android.PassageException.Companion.checkException
+import id.passage.android.ResourceUtils.Companion.getOptionalResourceFromApp
+import id.passage.android.ResourceUtils.Companion.getRequiredResourceFromApp
 import id.passage.android.api.AppsAPI
 import id.passage.android.api.LoginAPI
 import id.passage.android.api.MagicLinkAPI
@@ -21,49 +22,27 @@ import id.passage.android.model.ApiregisterMagicLinkRequest
 import id.passage.android.model.ApiregisterWebAuthnFinishRequest
 import id.passage.android.model.ApiregisterWebAuthnStartRequest
 import id.passage.android.model.LoginOneTimePasscodeRequest
-import id.passage.android.model.ProtocolCredentialAssertionResponseJsonAdapter
-import id.passage.android.model.ProtocolCredentialCreationResponseJsonAdapter
-import id.passage.android.model.ProtocolPublicKeyCredentialCreationOptionsJsonAdapter
-import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptionsJsonAdapter
 import id.passage.android.model.RegisterOneTimePasscodeRequest
 import id.passage.client.infrastructure.ApiClient
 
-@Suppress("UNUSED")
-class Passage(private val activity: Activity) {
+@Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
+public final class Passage(private val activity: Activity) {
 
+    // region CONSTANTS AND SINGLETON VARIABLES
     internal companion object {
         internal const val TAG = "Passage"
         internal const val BASE_PATH = "https://auth-uat.passage.dev/v1"
-        internal const val REGISTRATION_RESPONSE_BUNDLE_KEY = "androidx.credentials.BUNDLE_KEY_REGISTRATION_RESPONSE_JSON"
-        private const val AUTH_RESPONSE_BUNDLE_KEY = "androidx.credentials.BUNDLE_KEY_AUTHENTICATION_RESPONSE_JSON"
 
         internal lateinit var appId: String
         internal var language: String? = null
-
-        private fun getOptionalResourceFromApp(activity: Activity, resName: String): String? {
-            val stringRes = activity.resources.getIdentifier(resName, "string", activity.packageName)
-            if (stringRes == 0) return null
-            return activity.getString(stringRes)
-        }
-        private fun getRequiredResourceFromApp(activity: Activity, resName: String): String {
-            val stringRes = getOptionalResourceFromApp(activity, resName)
-            require(!stringRes.isNullOrBlank()) {
-                String.format(
-                    "The 'R.string.%s' value it's not defined in your project's resources file.",
-                    resName
-                )
-            }
-            return stringRes
-        }
-
     }
+    // endregion
+
+    // region INSTANCE VARIABLES
 
     private var passageTokenStore: PassageTokenStore? = null
 
-    // TODO: Document this method. Its for developer if they don't want to use the PassageStore
-    fun setAuthToken(token: String?) {
-        ApiClient.accessToken = token
-    }
+    // endregion
 
     // region INITIALIZATION
 
@@ -80,10 +59,41 @@ class Passage(private val activity: Activity) {
 
     // endregion
 
+    // region TOKEN METHODS
+    // TODO: Document this method. Its for developer if they don't want to use the PassageStore
+    public fun setAuthToken(token: String?) {
+        ApiClient.accessToken = token
+    }
+
+    // endregion
+
+    // region PASSAGE APP METHODS
+
+    /**
+     * App Info
+     *
+     * Get information about an application.
+     * @return PassageApp?
+     * @throws PassageClientException If the API returns a client error response
+     * @throws PassageServerException If the API returns a server error response
+     * @throws PassageException If the request fails for another reason
+     */
+    public suspend fun appInfo(): PassageApp? {
+        val appsAPI = AppsAPI()
+        val appInfo = try {
+            appsAPI.getApp(appId)
+        } catch (e: Exception) {
+            throw checkException(e)
+        }
+        return appInfo.app
+    }
+
+    // endregion
+
     // region SIMPLE AUTH METHODS
     // TODO: This method should attempt a passkey registration, then try the designated fallback,
     // and throw specific errors if/when any of the steps fail.
-    suspend fun register(identifier: String) {
+    public suspend fun register(identifier: String) {
         // Check if we should use passkeys
         registerWithPasskey(identifier)
         // Handle fallback methods
@@ -91,7 +101,7 @@ class Passage(private val activity: Activity) {
 
     // TODO: This method should attempt a passkey login, then try the designated fallback,
     // and throw specific errors if/when any of the steps fail.
-    suspend fun login(identifier: String) {
+    public suspend fun login(identifier: String) {
         // Check if we should use passkeys
         loginWithPasskey(identifier)
         // Handle fallback methods
@@ -112,36 +122,25 @@ class Passage(private val activity: Activity) {
      * @throws PassageServerException If the Passage API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun registerWithPasskey(identifier: String): PassageAuthResult? {
+    public suspend fun registerWithPasskey(identifier: String): PassageAuthResult? {
         try {
-            // Get Create Credential challenge from Passage
             val registerAPI = RegisterAPI(BASE_PATH)
+            // Get Create Credential challenge from Passage
             val webauthnStartRequest = ApiregisterWebAuthnStartRequest(identifier)
-            val webauthnStartResponse =
-                registerAPI.registerWebauthnStart(appId, webauthnStartRequest)
-            val createCredOptions = webauthnStartResponse.handshake?.challenge?.publicKey
-                ?: throw PassageWebAuthnException(PassageWebAuthnException.CHALLENGE_MISSING)
+            val webauthnStartResponse = registerAPI.registerWebauthnStart(appId, webauthnStartRequest)
             // Use Create Credential challenge to prompt user to create a passkey
-            val moshi = Moshi.Builder().build()
-            val createCredOptionsAdapter =
-                ProtocolPublicKeyCredentialCreationOptionsJsonAdapter(moshi)
-            val createCredOptionsJson = createCredOptionsAdapter.toJson(createCredOptions)
-                ?: throw PassageWebAuthnException(PassageWebAuthnException.PARSING_FAILED)
+            val createCredOptionsJson = PasskeyUtils.getCreateCredentialOptionsJson(webauthnStartResponse.handshake)
             val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
             // Complete registration and authenticate the user
-            val handshakeResponseJson =
-                createCredResponse.data.getString(REGISTRATION_RESPONSE_BUNDLE_KEY).toString()
-            val handshakeResponseAdapter = ProtocolCredentialCreationResponseJsonAdapter(moshi)
-            val handshakeResponse = handshakeResponseAdapter.fromJson(handshakeResponseJson)
-                ?: throw PassageCredentialException(PassageCredentialException.PARSING_FAILED)
+            val handshakeResponse = PasskeyUtils.getCreateCredentialHandshakeResponse(createCredResponse)
             val webauthnFinishRequest = ApiregisterWebAuthnFinishRequest(
-                handshakeId = webauthnStartResponse.handshake.id,
+                handshakeId = webauthnStartResponse.handshake?.id,
                 handshakeResponse = handshakeResponse,
                 userId = webauthnStartResponse.user?.id
             )
             val authResponse = registerAPI.registerWebauthnFinish(appId, webauthnFinishRequest)
+            // Handle and return auth result
             handleAuthResult(authResponse.authResult)
-            // Return auth result
             return authResponse.authResult
         } catch (e: Exception) {
             throw checkException(e)
@@ -159,27 +158,19 @@ class Passage(private val activity: Activity) {
      * @throws PassageServerException If the Passage API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun loginWithPasskey(identifier: String): PassageAuthResult? {
+    public suspend fun loginWithPasskey(identifier: String): PassageAuthResult? {
         try {
-            // Get Credential challenge from Passage
             val loginAPI = LoginAPI(BASE_PATH)
+            // Get Credential challenge from Passage
             val webauthnStartRequest = ApiloginWebAuthnStartRequest(identifier)
             val webauthnStartResponse = loginAPI.loginWebauthnStart(appId, webauthnStartRequest)
-            val credOptions = webauthnStartResponse.handshake?.challenge?.publicKey
-                ?: throw PassageWebAuthnException(PassageWebAuthnException.CHALLENGE_MISSING)
             // Use Credential challenge to prompt user to login with a passkey
-            val moshi = Moshi.Builder().build()
-            val credOptionsAdapter = ProtocolPublicKeyCredentialRequestOptionsJsonAdapter(moshi)
-            val credOptionsJson = credOptionsAdapter.toJson(credOptions)
-                ?: throw PassageWebAuthnException(PassageWebAuthnException.PARSING_FAILED)
+            val credOptionsJson = PasskeyUtils.getCredentialOptionsJson(webauthnStartResponse.handshake)
             val credResponse = PasskeyUtils.getPasskey(credOptionsJson, activity)
             // Complete login and authenticate the user
-            val handshakeResponseJson = credResponse.credential.data.getString(AUTH_RESPONSE_BUNDLE_KEY).toString()
-            val handshakeResponseAdapter = ProtocolCredentialAssertionResponseJsonAdapter(moshi)
-            val handshakeResponse = handshakeResponseAdapter.fromJson(handshakeResponseJson)
-                ?: throw PassageCredentialException(PassageCredentialException.PARSING_FAILED)
+            val handshakeResponse = PasskeyUtils.getCredentialHandshakeResponse(credResponse)
             val webauthnFinishRequest = ApiloginWebAuthnFinishRequest(
-                handshakeId = webauthnStartResponse.handshake.id,
+                handshakeId = webauthnStartResponse.handshake?.id,
                 handshakeResponse = handshakeResponse,
                 userId = webauthnStartResponse.user?.id
             )
@@ -207,7 +198,7 @@ class Passage(private val activity: Activity) {
      * @throws PassageServerException If the API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun newRegisterMagicLink(identifier: String, magicLinkPath: String? = null): MagicLink? {
+    public suspend fun newRegisterMagicLink(identifier: String, magicLinkPath: String? = null): MagicLink? {
         val registerAPI = RegisterAPI(BASE_PATH)
         val request = ApiregisterMagicLinkRequest(
             identifier = identifier,
@@ -233,7 +224,7 @@ class Passage(private val activity: Activity) {
      * @throws PassageServerException If the API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun newLoginMagicLink(identifier: String, magicLinkPath: String? = null): MagicLink? {
+    public suspend fun newLoginMagicLink(identifier: String, magicLinkPath: String? = null): MagicLink? {
         val loginAPI = LoginAPI(BASE_PATH)
         val request = ApiloginMagicLinkRequest(
             identifier = identifier,
@@ -259,7 +250,7 @@ class Passage(private val activity: Activity) {
      * @throws PassageServerException If the API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun magicLinkActivate(userMagicLink: String): PassageAuthResult? {
+    public suspend fun magicLinkActivate(userMagicLink: String): PassageAuthResult? {
         val magicLinkAPI = MagicLinkAPI(BASE_PATH)
         val request = ApiactivateMagicLinkRequest(userMagicLink)
         val response = try {
@@ -284,7 +275,7 @@ class Passage(private val activity: Activity) {
      * @throws PassageServerException If the API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun getMagicLinkStatus(magicLinkId: String): PassageAuthResult? {
+    public suspend fun getMagicLinkStatus(magicLinkId: String): PassageAuthResult? {
         val magicLinkAPI = MagicLinkAPI(BASE_PATH)
         val request = ApigetMagicLinkStatusRequest(magicLinkId)
         val response = try {
@@ -311,7 +302,7 @@ class Passage(private val activity: Activity) {
      * @throws PassageServerException If the API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun newRegisterOneTimePasscode(identifier: String): OneTimePasscode {
+    public suspend fun newRegisterOneTimePasscode(identifier: String): OneTimePasscode {
         val registerAPI = RegisterAPI(BASE_PATH)
         val request = RegisterOneTimePasscodeRequest(identifier, language)
         val response = try {
@@ -333,7 +324,7 @@ class Passage(private val activity: Activity) {
      * @throws PassageServerException If the API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun newLoginOneTimePasscode(identifier: String): OneTimePasscode {
+    public suspend fun newLoginOneTimePasscode(identifier: String): OneTimePasscode {
         val loginAPI = LoginAPI(BASE_PATH)
         val request = LoginOneTimePasscodeRequest(identifier, language)
         val response = try {
@@ -356,7 +347,7 @@ class Passage(private val activity: Activity) {
      * @throws PassageServerException If the API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun oneTimePasscodeActivate(otp: String, otpId: String): PassageAuthResult {
+    public suspend fun oneTimePasscodeActivate(otp: String, otpId: String): PassageAuthResult {
         val otpAPI = OTPAPI(BASE_PATH)
         val request = ActivateOneTimePasscodeRequest(otp, otpId)
         val response = try {
@@ -382,9 +373,11 @@ class Passage(private val activity: Activity) {
 
     // endregion
 
+    // region USER METHODS
+
     /**
      * Get Current User
-     * 
+     *
      * Returns an instance of PassageUser, which represents an authenticated Passage user.
      * The PassageUser class has methods that can be used to retrieve data on the current user
      * which require authentication.
@@ -393,7 +386,7 @@ class Passage(private val activity: Activity) {
      * @throws PassageServerException If the API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun getCurrentUser(): PassageUser? {
+    public suspend fun getCurrentUser(): PassageUser? {
         val user = try {
             PassageUser.getCurrentUser()
         } catch (e: Exception) {
@@ -413,28 +406,9 @@ class Passage(private val activity: Activity) {
      * @throws PassageServerException If the Passage API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun signOutCurrentUser() {
+    public suspend fun signOutCurrentUser() {
         passageTokenStore?.clearAndRevokeTokens()
             ?: setAuthToken(null)
-    }
-
-    /**
-     * App Info
-     *
-     * Get information about an application.
-     * @return PassageApp?
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
-     */
-    suspend fun appInfo(): PassageApp? {
-        val appsAPI = AppsAPI()
-        val appInfo = try {
-            appsAPI.getApp(appId)
-        } catch (e: Exception) {
-            throw checkException(e)
-        }
-        return appInfo.app
     }
 
     /**
@@ -449,7 +423,7 @@ class Passage(private val activity: Activity) {
      * @throws PassageServerException If the API returns a server error response
      * @throws PassageException If the request fails for another reason
      */
-    suspend fun identifierExists(identifier: String): PassageUser? {
+    public suspend fun identifierExists(identifier: String): PassageUser? {
         val usersAPI = UsersAPI()
         val modelsUser = try {
             usersAPI.checkUserIdentifier(BASE_PATH, identifier).user
@@ -459,10 +433,19 @@ class Passage(private val activity: Activity) {
         return PassageUser.convertToPassageUser(modelsUser)
     }
 
+    // endregion
+
+    // region PRIVATE METHODS
+
+    /**
+     * Handle Auth Result
+     *
+     * Anytime a user gets a new Auth Result, update the tokens in Passage Token Store (if applicable).
+     * @param authResult The new Auth Result
+     */
     private fun handleAuthResult(authResult: PassageAuthResult?) {
-        authResult?.let {
-            passageTokenStore?.setTokens(it)
-        }
+        passageTokenStore?.setTokens(authResult)
     }
+    // endregion
 
 }

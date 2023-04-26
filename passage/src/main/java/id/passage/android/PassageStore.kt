@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
 import java.lang.Exception
 
 
-@Suppress("UNUSED")
-class PassageTokenStore(activity: Activity) {
+@Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
+public final class PassageTokenStore(activity: Activity) {
 
     private companion object {
         private const val PASSAGE_SHARED_PREFERENCES = "PASSAGE_SHARED_PREFERENCES"
@@ -33,7 +33,7 @@ class PassageTokenStore(activity: Activity) {
          * @throws PassageServerException If the Passage API returns a server error response
          * @throws PassageException If the request fails for another reason
          */
-        suspend fun refreshAuthToken(refreshToken: String): PassageAuthResult {
+        private suspend fun refreshAuthToken(refreshToken: String): PassageAuthResult {
             val api = TokensAPI(Passage.BASE_PATH)
             val request = ApirefreshAuthTokenRequest(refreshToken)
             val authResult = try {
@@ -55,7 +55,7 @@ class PassageTokenStore(activity: Activity) {
          * @throws PassageServerException If the Passage API returns a server error response
          * @throws PassageException If the request fails for another reason
          */
-        suspend fun revokeRefreshToken(refreshToken: String) {
+        private suspend fun revokeRefreshToken(refreshToken: String) {
             val api = TokensAPI(Passage.BASE_PATH)
             api.revokeRefreshToken(Passage.appId, refreshToken)
         }
@@ -74,10 +74,10 @@ class PassageTokenStore(activity: Activity) {
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
-    val authToken: String?
+    public val authToken: String?
         get() = sharedPreferences.getString(PASSAGE_AUTH_TOKEN, null)
 
-    val refreshToken: String?
+    public val refreshToken: String?
         get() = sharedPreferences.getString(PASSAGE_REFRESH_TOKEN, null)
 
     init {
@@ -87,14 +87,14 @@ class PassageTokenStore(activity: Activity) {
                 try {
                     val authResult = refreshAuthToken(it)
                     setTokens(authResult)
-                } catch (e: java.lang.Exception) {
+                } catch (e: Exception) {
                     Log.e(Passage.TAG, e.message ?: "Exception: $e")
                 }
             }
         }
     }
 
-    fun setAuthToken(token: String?) {
+    public fun setAuthToken(token: String?) {
         with (sharedPreferences.edit()) {
             putString(PASSAGE_AUTH_TOKEN, token)
             apply()
@@ -103,19 +103,23 @@ class PassageTokenStore(activity: Activity) {
         ApiClient.accessToken = token
     }
 
-    fun setRefreshToken(token: String?) {
+    public fun setRefreshToken(token: String?) {
         with (sharedPreferences.edit()) {
             putString(PASSAGE_REFRESH_TOKEN, token)
             apply()
         }
     }
 
-    fun setTokens(authResult: PassageAuthResult) {
-        setAuthToken(authResult.authToken)
-        setRefreshToken(authResult.refreshToken)
+    public fun setTokens(authResult: PassageAuthResult?) {
+        authResult?.let {
+            setAuthToken(it.authToken)
+            setRefreshToken(it.refreshToken)
+        } ?: CoroutineScope(Dispatchers.IO).launch {
+            clearAndRevokeTokens()
+        }
     }
 
-    suspend fun clearAndRevokeTokens() {
+    public suspend fun clearAndRevokeTokens() {
         refreshToken?.let {
             revokeRefreshToken(it)
         }
