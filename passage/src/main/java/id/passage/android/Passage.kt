@@ -91,20 +91,69 @@ public final class Passage(private val activity: Activity) {
     // endregion
 
     // region SIMPLE AUTH METHODS
-    // TODO: This method should attempt a passkey registration, then try the designated fallback,
-    // and throw specific errors if/when any of the steps fail.
-    public suspend fun register(identifier: String) {
-        // Check if we should use passkeys
-        registerWithPasskey(identifier)
-        // Handle fallback methods
+
+    public suspend fun register(identifier: String): Pair<PassageAuthResult?, PassageAuthFallback?> {
+        val passageApp = appInfo()
+            ?: throw PassageException("Invalid Passage app.")
+        if (passageApp.publicSignup == true) {
+            throw PassageException("Public registration disabled for this app.")
+        }
+        val useFallback = passageApp.requireIdentifierVerification == true
+        if (useFallback) {
+            val fallbackMethod = passageApp.authFallbackMethod
+                ?: throw PassageException("Passage app requires identifier verification but has no auth fallback method set.")
+            val fallback: PassageAuthFallback = when (fallbackMethod) {
+                PassageAuthFallbackMethod.magicLink -> {
+                    val magicLinkId = newRegisterMagicLink(identifier)?.id ?: throw Exception("")
+                    PassageAuthFallback(id = magicLinkId, method = fallbackMethod)
+                }
+                PassageAuthFallbackMethod.otp -> {
+                    val otpId = newRegisterOneTimePasscode(identifier).otpId
+                    PassageAuthFallback(id = otpId, method = fallbackMethod)
+                }
+                PassageAuthFallbackMethod.none -> {
+                    throw PassageException("Passage app requires identifier verification but has no auth fallback method set.")
+                }
+            }
+            return Pair(null, fallback)
+        } else {
+            val authResult = registerWithPasskey(identifier)
+            return Pair(authResult, null)
+        }
     }
 
-    // TODO: This method should attempt a passkey login, then try the designated fallback,
-    // and throw specific errors if/when any of the steps fail.
-    public suspend fun login(identifier: String) {
-        // Check if we should use passkeys
-        loginWithPasskey(identifier)
-        // Handle fallback methods
+
+    public suspend fun login(identifier: String): Pair<PassageAuthResult?, PassageAuthFallback?> {
+        val passageApp = appInfo()
+            ?: throw PassageException("Invalid Passage app.")
+
+        val user = identifierExists(identifier)
+            ?: throw PassageException("No user found with provided identifier.")
+        // If app requires id verification and user has not yet logged in with a passkey, use a
+        // fallback method
+        val useFallback = passageApp.requireIdentifierVerification == true && user.webauthn == false
+        if (useFallback) {
+            val fallbackMethod = passageApp.authFallbackMethod
+                ?: throw PassageException("Passage app requires identifier verification but has no auth fallback method set.")
+            var fallback: PassageAuthFallback? =
+                when (fallbackMethod) {
+                    PassageAuthFallbackMethod.magicLink -> {
+                        val magicLinkId = newLoginMagicLink(identifier)?.id ?: throw Exception("")
+                        PassageAuthFallback(id = magicLinkId, method = fallbackMethod)
+                    }
+                    PassageAuthFallbackMethod.otp -> {
+                        val otpId = newLoginOneTimePasscode(identifier).otpId
+                        PassageAuthFallback(id = otpId, method = fallbackMethod)
+                    }
+                    PassageAuthFallbackMethod.none -> {
+                        throw PassageException("Passage app requires identifier verification but has no auth fallback method set.")
+                    }
+                }
+            return Pair(null, fallback)
+        } else {
+            val authResult = loginWithPasskey(identifier)
+            return Pair(authResult, null)
+        }
     }
 
     // endregion

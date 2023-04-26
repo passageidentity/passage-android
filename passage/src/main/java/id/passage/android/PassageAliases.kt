@@ -14,3 +14,5 @@ public typealias PassageAuthResult = IdentityAuthResult
 public typealias OneTimePasscode = OneTimePasscodeResponse
 
 public typealias PassageApp = IdentityApp
+
+public typealias PassageAuthFallbackMethod = IdentityApp.AuthFallbackMethod
