@@ -65,7 +65,7 @@ public final class PasskeyUtils {
         public suspend fun getPasskey(requestJson: String, activity: Activity): GetCredentialResponse {
             val credentialManager = CredentialManager.create(activity)
             val getCredOption = GetPublicKeyCredentialOption(requestJson)
-            val getCredRequest = GetCredentialRequest(listOf(getCredOption))
+            val getCredRequest = GetCredentialRequest(listOf(getCredOption), isAutoSelectAllowed = true)
             val getCredResponse = CoroutineScope(Dispatchers.IO).async {
                 // Show the user Credential Manager with option to login with a Passkey
                 return@async credentialManager.getCredential(

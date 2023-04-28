@@ -67,11 +67,11 @@ dependencies {
     implementation "androidx.security:security-crypto:1.1.0-alpha06"
 
     // For Android Credentials support
-    implementation "androidx.credentials:credentials:1.2.0-alpha03"
+    implementation "androidx.credentials:credentials:1.0.0-alpha03"
 
     // Needed for credentials support from play services, for devices running
     // Android 13 (sdk 33) and below.
-    implementation "androidx.credentials:credentials-play-services-auth:1.2.0-alpha03"
+    implementation "androidx.credentials:credentials-play-services-auth:1.0.0-alpha03"
 }
 
 openApiGenerate {

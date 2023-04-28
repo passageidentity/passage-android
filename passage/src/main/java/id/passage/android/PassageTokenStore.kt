@@ -42,17 +42,7 @@ public final class PassageTokenStore(activity: Activity) {
         get() = sharedPreferences.getString(PASSAGE_REFRESH_TOKEN, null)
 
     init {
-        // If a refresh token exists, go ahead and refresh the auth token on initialization.
-        refreshToken?.let {
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    val authResult = PassageToken.refreshAuthToken(it)
-                    setTokens(authResult)
-                } catch (e: Exception) {
-                    Log.e(Passage.TAG, e.message ?: "Exception: $e")
-                }
-            }
-        }
+        ApiClient.accessToken = authToken
     }
 
     public fun setAuthToken(token: String?) {
@@ -86,6 +76,19 @@ public final class PassageTokenStore(activity: Activity) {
         }
         setAuthToken(null)
         setRefreshToken(null)
+    }
+
+    public suspend fun attemptRefreshTokenStore() {
+        refreshToken?.let {
+            try {
+                val authResult = PassageToken.refreshAuthToken(it)
+                setTokens(authResult)
+            } catch (e: Exception) {
+                Log.e(Passage.TAG, e.message ?: "Exception: $e")
+            }
+        } ?: run {
+            ApiClient.accessToken = authToken
+        }
     }
 
 }
