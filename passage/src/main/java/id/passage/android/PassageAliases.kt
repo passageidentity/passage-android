@@ -1,3 +1,5 @@
+@file:Suppress("RedundantVisibilityModifier")
+
 package id.passage.android
 
 import id.passage.android.model.ApiMagicLink
@@ -5,10 +7,10 @@ import id.passage.android.model.IdentityApp
 import id.passage.android.model.IdentityAuthResult
 import id.passage.android.model.OneTimePasscodeResponse
 
-typealias MagicLink = ApiMagicLink
+public typealias MagicLink = ApiMagicLink
 
-typealias PassageAuthResult = IdentityAuthResult
+public typealias PassageAuthResult = IdentityAuthResult
 
-typealias OneTimePasscode = OneTimePasscodeResponse
+public typealias OneTimePasscode = OneTimePasscodeResponse
 
-typealias AuthFallbackMethod = IdentityApp.AuthFallbackMethod
+public typealias PassageApp = IdentityApp
