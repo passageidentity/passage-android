@@ -170,7 +170,9 @@ public final class Passage(private val activity: Activity) {
             ?: throw PassageException("Invalid Passage app.")
         // If app requires id verification and user has not yet logged in with a passkey, use a
         // fallback method
-        val useFallback = false//passageApp.requireIdentifierVerification == true && user.webauthn == false
+        val user = identifierExists(identifier)
+            ?: throw PassageException("User with this identifier does not exist.")
+        val useFallback = passageApp.requireIdentifierVerification == true && user.webauthn == false
         if (!useFallback) {
             try {
                 val authResult = loginWithPasskey(identifier)
@@ -197,6 +199,23 @@ public final class Passage(private val activity: Activity) {
                 }
             }
         return Pair(null, fallback)
+    }
+
+    /**
+     * Autofill Passkey Login
+     *
+     * If the user has a passkey for this app, prompt the user to select a passkey to login with and
+     * authenticate the user. If the user does not have a passkey or login fails, returns null.
+     *
+     * @return PassageAuthResult?
+     */
+    public suspend fun autofillPasskeyLogin(): PassageAuthResult? {
+        return try {
+            loginWithPasskey("")
+        } catch (e: Exception) {
+            Log.e(TAG, e.message ?: e.toString())
+            null
+        }
     }
 
     // endregion

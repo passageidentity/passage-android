@@ -17,6 +17,7 @@ import id.passage.android.model.ProtocolCredentialAssertionResponseJsonAdapter
 import id.passage.android.model.ProtocolCredentialCreationResponse
 import id.passage.android.model.ProtocolCredentialCreationResponseJsonAdapter
 import id.passage.android.model.ProtocolPublicKeyCredentialCreationOptionsJsonAdapter
+import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptions
 import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptionsJsonAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -125,7 +126,18 @@ public final class PasskeyUtils {
                 ?: throw PassageWebAuthnException(PassageWebAuthnException.CHALLENGE_MISSING)
             val moshi = Moshi.Builder().build()
             val credOptionsAdapter = ProtocolPublicKeyCredentialRequestOptionsJsonAdapter(moshi)
-            return credOptionsAdapter.toJson(credOptions)
+            // Passage API bug: Login API frequently returns challenge with non-url-safe characters
+            // "+" and "/" that cause "Bad Base 64" exception to be thrown by the credential manager.
+            val modifiedChallenge = credOptions.challenge?.replace('+', '-')?.replace('/', '_')
+            val modifiedCredOptions = ProtocolPublicKeyCredentialRequestOptions(
+                allowCredentials = credOptions.allowCredentials,
+                challenge = modifiedChallenge,
+                extensions = credOptions.extensions,
+                rpId = credOptions.rpId,
+                timeout = credOptions.timeout,
+                userVerification = credOptions.userVerification
+            )
+            return credOptionsAdapter.toJson(modifiedCredOptions)
                 ?: throw PassageWebAuthnException(PassageWebAuthnException.PARSING_FAILED)
         }
 
