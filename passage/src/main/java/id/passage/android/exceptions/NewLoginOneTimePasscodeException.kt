@@ -11,10 +11,11 @@ public open class NewLoginOneTimePasscodeException(message: String): PassageExce
     internal companion object {
 
         internal fun convert(e: Exception): NewLoginOneTimePasscodeException {
+            val message = e.message ?: e.toString()
             return when (e) {
                 is ClientException -> convertClientException(e)
-                is ServerException -> convertServerException(e)
-                else -> NewLoginOneTimePasscodeException(e.message ?: e.toString())
+                is ServerException -> NewLoginOneTimePasscodeServerException(message)
+                else -> NewLoginOneTimePasscodeException(message)
             }
         }
 
@@ -25,10 +26,6 @@ public open class NewLoginOneTimePasscodeException(message: String): PassageExce
                 Model400Code.request.toString() -> NewLoginOneTimePasscodeInvalidIdentifierException(message)
                 else -> NewLoginOneTimePasscodeException(message)
             }
-        }
-
-        private fun convertServerException(e: ServerException): NewLoginOneTimePasscodeException {
-            return NewLoginOneTimePasscodeServerException(e.message ?: e.toString())
         }
 
     }

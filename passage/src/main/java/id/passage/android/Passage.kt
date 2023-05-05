@@ -307,9 +307,7 @@ public final class Passage(private val activity: Activity) {
      * @param identifier valid email or E164 phone number
      * @param magicLinkPath path relative to the app's auth origin (optional)
      * @return MagicLink
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws NewRegisterMagicLinkException
      */
     public suspend fun newRegisterMagicLink(identifier: String, magicLinkPath: String? = null): MagicLink? {
         val registerAPI = RegisterAPI(BASE_PATH)
@@ -321,7 +319,7 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             registerAPI.registerMagicLink(appId, request)
         } catch (e: Exception) {
-            throw e
+            throw NewRegisterMagicLinkException.convert(e)
         }
         return response.magicLink
     }
@@ -333,9 +331,7 @@ public final class Passage(private val activity: Activity) {
      * @param identifier valid email or E164 phone number
      * @param magicLinkPath path relative to the app's auth_origin (optional)
      * @return MagicLink?
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws NewLoginMagicLinkException
      */
     public suspend fun newLoginMagicLink(identifier: String, magicLinkPath: String? = null): MagicLink? {
         val loginAPI = LoginAPI(BASE_PATH)
@@ -347,7 +343,7 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             loginAPI.loginMagicLink(appId, request)
         } catch (e: Exception) {
-            throw e
+            throw NewLoginMagicLinkException.convert(e)
         }
         return response.magicLink
     }
@@ -359,9 +355,7 @@ public final class Passage(private val activity: Activity) {
      * then returns an authentication token for the user.
      * @param userMagicLink full magic link that starts with "ml" (sent via email or text to the user)
      * @return PassageAuthResult?
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws MagicLinkActivateException
      */
     public suspend fun magicLinkActivate(userMagicLink: String): PassageAuthResult? {
         val magicLinkAPI = MagicLinkAPI(BASE_PATH)
@@ -369,7 +363,7 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             magicLinkAPI.activateMagicLink(appId, request)
         } catch (e: Exception) {
-            throw e
+            throw MagicLinkActivateException.convert(e)
         }
         // TODO: Once BE issue is fixed, we won't need to transform data model
         val authResult = PassageAuthResult(
@@ -391,9 +385,7 @@ public final class Passage(private val activity: Activity) {
      * device.
      * @param magicLinkId Magic Link ID
      * @return PassageAuthResult?
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws GetMagicLinkStatusException
      */
     public suspend fun getMagicLinkStatus(magicLinkId: String): PassageAuthResult? {
         val magicLinkAPI = MagicLinkAPI(BASE_PATH)
@@ -401,10 +393,9 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             magicLinkAPI.magicLinkStatus(appId, request)
         } catch (e: Exception) {
-            val exception = e
-            // TODO: Use Model404Code.magicLinkNotFound instead
-            if (exception.message == "magic link not activated") {
-                Log.e(TAG, exception.message!!)
+            val exception = GetMagicLinkStatusException.convert(e)
+            if (exception is GetMagicLinkStatusNotFoundException) {
+                Log.w(TAG, "Magic link not activated.")
                 return null
             }
             throw exception

@@ -7,6 +7,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
 import id.passage.client.infrastructure.ClientError
 import id.passage.client.infrastructure.ClientException
+import id.passage.client.infrastructure.ServerException
 
 
 public open class PassageException(message: String): RuntimeException(message) {
@@ -19,6 +20,7 @@ public open class PassageException(message: String): RuntimeException(message) {
             val jsonAdapter = moshi.adapter<PassageClientError?>().lenient()
             return jsonAdapter.fromJson(errorBody)
         }
+
     }
 
 }

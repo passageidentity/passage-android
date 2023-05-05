@@ -20,10 +20,11 @@ public open class OneTimePasscodeActivateException(message: String): PassageExce
     internal companion object {
 
         internal fun convert(e: Exception): OneTimePasscodeActivateException {
+            val message = e.message ?: e.toString()
             return when (e) {
                 is ClientException -> convertClientException(e)
-                is ServerException -> convertServerException(e)
-                else -> OneTimePasscodeActivateException(e.message ?: e.toString())
+                is ServerException -> OneTimePasscodeActivateServerException(message)
+                else -> OneTimePasscodeActivateException(message)
             }
         }
 
@@ -41,10 +42,6 @@ public open class OneTimePasscodeActivateException(message: String): PassageExce
                     OneTimePasscodeActivateException(message)
                 }
             }
-        }
-
-        private fun convertServerException(e: ServerException): OneTimePasscodeActivateException {
-            return OneTimePasscodeActivateServerException(e.message ?: e.toString())
         }
 
     }
