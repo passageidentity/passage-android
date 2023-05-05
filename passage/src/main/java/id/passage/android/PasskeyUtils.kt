@@ -11,12 +11,12 @@ import androidx.credentials.exceptions.CreateCredentialException
 import androidx.credentials.exceptions.GetCredentialException
 import com.squareup.moshi.Moshi
 import id.passage.android.model.ApiCredentialAssertionChallenge
-import id.passage.android.model.ApiCredentialCreationChallenge
+import id.passage.android.model.CredentialCreationChallenge
 import id.passage.android.model.ProtocolCredentialAssertionResponse
 import id.passage.android.model.ProtocolCredentialAssertionResponseJsonAdapter
-import id.passage.android.model.ProtocolCredentialCreationResponse
-import id.passage.android.model.ProtocolCredentialCreationResponseJsonAdapter
-import id.passage.android.model.ProtocolPublicKeyCredentialCreationOptionsJsonAdapter
+import id.passage.android.model.ProtocolCredentialCreationPublicKeyJsonAdapter
+import id.passage.android.model.ProtocolCredentialCreationResponse1
+import id.passage.android.model.ProtocolCredentialCreationResponse1JsonAdapter
 import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptions
 import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptionsJsonAdapter
 import kotlinx.coroutines.CoroutineScope
@@ -85,13 +85,12 @@ public final class PasskeyUtils {
          * @return String
          * @throws PassageWebAuthnException
          */
-        internal fun getCreateCredentialOptionsJson(challenge: ApiCredentialCreationChallenge?): String {
-            val createCredOptions = challenge?.challenge?.publicKey
+        internal fun getCreateCredentialOptionsJson(challenge: CredentialCreationChallenge?): String {
+            val publicKey = challenge?.challenge?.publicKey
                 ?: throw PassageWebAuthnException(PassageWebAuthnException.CHALLENGE_MISSING)
             val moshi = Moshi.Builder().build()
-            val createCredOptionsAdapter =
-                ProtocolPublicKeyCredentialCreationOptionsJsonAdapter(moshi)
-            return createCredOptionsAdapter.toJson(createCredOptions)
+            val adapter = ProtocolCredentialCreationPublicKeyJsonAdapter(moshi)
+            return adapter.toJson(publicKey)
                 ?: throw PassageWebAuthnException(PassageWebAuthnException.PARSING_FAILED)
         }
 
@@ -104,11 +103,11 @@ public final class PasskeyUtils {
          * @return ProtocolCredentialCreationResponse
          * @throws PassageCredentialException
          */
-        internal fun getCreateCredentialHandshakeResponse(createCredentialResponse: CreateCredentialResponse): ProtocolCredentialCreationResponse {
+        internal fun getCreateCredentialHandshakeResponse(createCredentialResponse: CreateCredentialResponse): ProtocolCredentialCreationResponse1 {
             val handshakeResponseJson =
                 createCredentialResponse.data.getString(REGISTRATION_RESPONSE_BUNDLE_KEY).toString()
             val moshi = Moshi.Builder().build()
-            val handshakeResponseAdapter = ProtocolCredentialCreationResponseJsonAdapter(moshi)
+            val handshakeResponseAdapter = ProtocolCredentialCreationResponse1JsonAdapter(moshi)
             return handshakeResponseAdapter.fromJson(handshakeResponseJson)
                 ?: throw PassageCredentialException(PassageCredentialException.PARSING_FAILED)
         }

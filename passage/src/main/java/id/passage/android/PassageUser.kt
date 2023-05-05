@@ -190,20 +190,22 @@ final class PassageUser private constructor(
      * @throws PassageException If the request fails for another reason
      */
     public suspend fun addDevice(activity: Activity): ApiCurrentUserDevice {
-        val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-        // Get Create Credential challenge from Passage
-        val webauthnStartResponse = currentUserAPI.postCurrentuserAddDeviceStart(Passage.appId)
-        // Use Create Credential challenge to prompt user to create a passkey
-        val createCredOptionsJson = PasskeyUtils.getCreateCredentialOptionsJson(webauthnStartResponse.handshake)
-        val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
-        // Complete registration
-        val handshakeResponse = PasskeyUtils.getCreateCredentialHandshakeResponse(createCredResponse)
-        val finishRequest = ApiaddDeviceFinishRequest(
-            handshakeId = webauthnStartResponse.handshake?.id,
-            handshakeResponse = handshakeResponse,
-            userId = webauthnStartResponse.user?.id
-        )
-        return currentUserAPI.postCurrentuserAddDeviceFinish(Passage.appId, finishRequest)
+        // TODO: Update this once code gen types are consistent
+        throw Exception("Not supported yet.")
+//        val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
+//        // Get Create Credential challenge from Passage
+//        val webauthnStartResponse = currentUserAPI.postCurrentuserAddDeviceStart(Passage.appId)
+//        // Use Create Credential challenge to prompt user to create a passkey
+//        val createCredOptionsJson = PasskeyUtils.getCreateCredentialOptionsJson(webauthnStartResponse.handshake)
+//        val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
+//        // Complete registration
+//        val handshakeResponse = PasskeyUtils.getCreateCredentialHandshakeResponse(createCredResponse)
+//        val finishRequest = ApiaddDeviceFinishRequest(
+//            handshakeId = webauthnStartResponse.handshake?.id,
+//            handshakeResponse = handshakeResponse,
+//            userId = webauthnStartResponse.user?.id
+//        )
+//        return currentUserAPI.postCurrentuserAddDeviceFinish(Passage.appId, finishRequest)
     }
 
     /**

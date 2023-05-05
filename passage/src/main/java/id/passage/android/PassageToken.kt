@@ -23,12 +23,19 @@ public final class PassageToken {
         public suspend fun refreshAuthToken(refreshToken: String): PassageAuthResult {
             val api = TokensAPI(Passage.BASE_PATH)
             val request = ApirefreshAuthTokenRequest(refreshToken)
-            val authResult = try {
+            val apiAuthResult = try {
                 api.refreshAuthToken(Passage.appId, request).authResult
                     ?: throw PassageTokenException(PassageTokenException.REFRESH_FAILED)
             } catch (e: Exception) {
                 throw PassageException.checkException(e)
             }
+            // TODO: Once BE issue is fixed, we won't need to transform data model
+            val authResult = PassageAuthResult(
+                authToken = apiAuthResult.authToken,
+                redirectUrl = apiAuthResult.redirectUrl,
+                refreshToken = apiAuthResult.refreshToken,
+                refreshTokenExpiration = apiAuthResult.refreshTokenExpiration
+            )
             return authResult
         }
 

@@ -17,14 +17,17 @@ import id.passage.android.model.ActivateOneTimePasscodeRequest
 import id.passage.android.model.ApiactivateMagicLinkRequest
 import id.passage.android.model.ApigetMagicLinkStatusRequest
 import id.passage.android.model.ApiloginMagicLinkRequest
-import id.passage.android.model.ApiloginWebAuthnFinishRequest
 import id.passage.android.model.ApiloginWebAuthnStartRequest
 import id.passage.android.model.ApiregisterMagicLinkRequest
-import id.passage.android.model.ApiregisterWebAuthnFinishRequest
-import id.passage.android.model.ApiregisterWebAuthnStartRequest
 import id.passage.android.model.LoginOneTimePasscodeRequest
+import id.passage.android.model.LoginWebAuthnFinishRequest
+import id.passage.android.model.Model404Code
 import id.passage.android.model.RegisterOneTimePasscodeRequest
+import id.passage.android.model.RegisterWebAuthnFinishRequest
+import id.passage.android.model.RegisterWebAuthnStartRequest
 import id.passage.client.infrastructure.ApiClient
+import id.passage.client.infrastructure.ClientException
+import id.passage.client.infrastructure.ServerException
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class Passage(private val activity: Activity) {
@@ -90,6 +93,8 @@ public final class Passage(private val activity: Activity) {
         } catch (e: Exception) {
             throw checkException(e)
         }
+        Log.e(TAG, "app id ${appInfo.app?.id ?: ""}")
+        Log.e(TAG, "app ${appInfo.app?.authFallbackMethod?.toString() ?: "No fallback method"}")
         return appInfo.app
     }
 
@@ -120,7 +125,7 @@ public final class Passage(private val activity: Activity) {
         if (passageApp.publicSignup == false) {
             throw PassageException("Public registration disabled for this app.")
         }
-        val useFallback = passageApp.requireIdentifierVerification == true
+        val useFallback = true// passageApp.requireIdentifierVerification == true
         if (!useFallback) {
             try {
                 val authResult = registerWithPasskey(identifier)
@@ -237,17 +242,17 @@ public final class Passage(private val activity: Activity) {
         try {
             val registerAPI = RegisterAPI(BASE_PATH)
             // Get Create Credential challenge from Passage
-            val webauthnStartRequest = ApiregisterWebAuthnStartRequest(identifier)
+            val webauthnStartRequest = RegisterWebAuthnStartRequest(identifier)
             val webauthnStartResponse = registerAPI.registerWebauthnStart(appId, webauthnStartRequest)
             // Use Create Credential challenge to prompt user to create a passkey
             val createCredOptionsJson = PasskeyUtils.getCreateCredentialOptionsJson(webauthnStartResponse.handshake)
             val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
             // Complete registration and authenticate the user
             val handshakeResponse = PasskeyUtils.getCreateCredentialHandshakeResponse(createCredResponse)
-            val webauthnFinishRequest = ApiregisterWebAuthnFinishRequest(
-                handshakeId = webauthnStartResponse.handshake?.id,
+            val webauthnFinishRequest = RegisterWebAuthnFinishRequest(
+                handshakeId = webauthnStartResponse.handshake.id,
                 handshakeResponse = handshakeResponse,
-                userId = webauthnStartResponse.user?.id
+                userId = webauthnStartResponse.user?.id ?: ""
             )
             val authResponse = registerAPI.registerWebauthnFinish(appId, webauthnFinishRequest)
             // Handle and return auth result
@@ -280,8 +285,8 @@ public final class Passage(private val activity: Activity) {
             val credResponse = PasskeyUtils.getPasskey(credOptionsJson, activity)
             // Complete login and authenticate the user
             val handshakeResponse = PasskeyUtils.getCredentialHandshakeResponse(credResponse)
-            val webauthnFinishRequest = ApiloginWebAuthnFinishRequest(
-                handshakeId = webauthnStartResponse.handshake?.id,
+            val webauthnFinishRequest = LoginWebAuthnFinishRequest(
+                handshakeId = webauthnStartResponse.handshake?.id ?: "",
                 handshakeResponse = handshakeResponse,
                 userId = webauthnStartResponse.user?.id
             )
@@ -369,8 +374,15 @@ public final class Passage(private val activity: Activity) {
         } catch (e: Exception) {
             throw checkException(e)
         }
-        handleAuthResult(response.authResult)
-        return response.authResult
+        // TODO: Once BE issue is fixed, we won't need to transform data model
+        val authResult = PassageAuthResult(
+            authToken = response.authResult?.authToken ?: "",
+            redirectUrl = response.authResult?.redirectUrl ?: "",
+            refreshToken = response.authResult?.refreshToken,
+            refreshTokenExpiration = response.authResult?.refreshTokenExpiration
+        )
+        handleAuthResult(authResult)
+        return authResult
     }
 
     /**
@@ -392,10 +404,23 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             magicLinkAPI.magicLinkStatus(appId, request)
         } catch (e: Exception) {
-            throw checkException(e)
+            val exception = checkException(e)
+            // TODO: Use Model404Code.magicLinkNotFound instead
+            if (exception.message == "magic link not activated") {
+                Log.e(TAG, exception.message!!)
+                return null
+            }
+            throw exception
         }
-        handleAuthResult(response.authResult)
-        return response.authResult
+        // TODO: Once BE issue is fixed, we won't need to transform data model
+        val authResult = PassageAuthResult(
+            authToken = response.authResult?.authToken ?: "",
+            redirectUrl = response.authResult?.redirectUrl ?: "",
+            refreshToken = response.authResult?.refreshToken,
+            refreshTokenExpiration = response.authResult?.refreshTokenExpiration
+        )
+        handleAuthResult(authResult)
+        return authResult
     }
 
     // endregion
@@ -409,17 +434,17 @@ public final class Passage(private val activity: Activity) {
      * email or text with a one time passcode to complete their registration.
      * @param identifier valid email or E164 phone number
      * @return OneTimePasscode
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws NewRegisterOneTimePasscodeException
      */
     public suspend fun newRegisterOneTimePasscode(identifier: String): OneTimePasscode {
         val registerAPI = RegisterAPI(BASE_PATH)
         val request = RegisterOneTimePasscodeRequest(identifier, language)
         val response = try {
             registerAPI.registerOneTimePasscode(appId, request)
-        } catch (e: Exception) {
-            throw checkException(e)
+        } catch (e: ClientException) {
+            throw NewRegisterOneTimePasscodeException.from(e)
+        } catch (e: ServerException) {
+            throw NewRegisterOneTimePasscodeException.from(e)
         }
         return response
     }
