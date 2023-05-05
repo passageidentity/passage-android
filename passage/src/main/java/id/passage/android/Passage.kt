@@ -230,10 +230,7 @@ public final class Passage(private val activity: Activity) {
      * Create a user, prompt the user to create a passkey, and register the user.
      * @param identifier valid email or E164 phone number
      * @return PassageAuthResult?
-     * @throws CreateCredentialException If the attempt to create a passkey fails
-     * @throws PassageClientException If the Passage API returns a client error response
-     * @throws PassageServerException If the Passage API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws RegisterWithPasskeyException
      */
     public suspend fun registerWithPasskey(identifier: String): PassageAuthResult? {
         try {
@@ -256,7 +253,7 @@ public final class Passage(private val activity: Activity) {
             handleAuthResult(authResponse.authResult)
             return authResponse.authResult
         } catch (e: Exception) {
-            throw e
+            throw RegisterWithPasskeyException.convert(e)
         }
     }
 
