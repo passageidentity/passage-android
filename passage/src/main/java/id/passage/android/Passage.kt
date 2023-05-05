@@ -4,7 +4,6 @@ import android.app.Activity
 import android.util.Log
 import androidx.credentials.exceptions.CreateCredentialException
 import androidx.credentials.exceptions.GetCredentialException
-import id.passage.android.PassageException.Companion.checkException
 import id.passage.android.ResourceUtils.Companion.getOptionalResourceFromApp
 import id.passage.android.ResourceUtils.Companion.getRequiredResourceFromApp
 import id.passage.android.api.AppsAPI
@@ -21,13 +20,11 @@ import id.passage.android.model.ApiloginWebAuthnStartRequest
 import id.passage.android.model.ApiregisterMagicLinkRequest
 import id.passage.android.model.LoginOneTimePasscodeRequest
 import id.passage.android.model.LoginWebAuthnFinishRequest
-import id.passage.android.model.Model404Code
 import id.passage.android.model.RegisterOneTimePasscodeRequest
 import id.passage.android.model.RegisterWebAuthnFinishRequest
 import id.passage.android.model.RegisterWebAuthnStartRequest
 import id.passage.client.infrastructure.ApiClient
-import id.passage.client.infrastructure.ClientException
-import id.passage.client.infrastructure.ServerException
+import id.passage.android.exceptions.*
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class Passage(private val activity: Activity) {
@@ -91,7 +88,7 @@ public final class Passage(private val activity: Activity) {
         val appInfo = try {
             appsAPI.getApp(appId)
         } catch (e: Exception) {
-            throw checkException(e)
+            throw e
         }
         Log.e(TAG, "app id ${appInfo.app?.id ?: ""}")
         Log.e(TAG, "app ${appInfo.app?.authFallbackMethod?.toString() ?: "No fallback method"}")
@@ -259,7 +256,7 @@ public final class Passage(private val activity: Activity) {
             handleAuthResult(authResponse.authResult)
             return authResponse.authResult
         } catch (e: Exception) {
-            throw checkException(e)
+            throw e
         }
     }
 
@@ -295,7 +292,7 @@ public final class Passage(private val activity: Activity) {
             // Return auth result
             return authResponse.authResult
         } catch(e: Exception) {
-            throw checkException(e)
+            throw e
         }
     }
 
@@ -324,7 +321,7 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             registerAPI.registerMagicLink(appId, request)
         } catch (e: Exception) {
-            throw checkException(e)
+            throw e
         }
         return response.magicLink
     }
@@ -350,7 +347,7 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             loginAPI.loginMagicLink(appId, request)
         } catch (e: Exception) {
-            throw checkException(e)
+            throw e
         }
         return response.magicLink
     }
@@ -372,7 +369,7 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             magicLinkAPI.activateMagicLink(appId, request)
         } catch (e: Exception) {
-            throw checkException(e)
+            throw e
         }
         // TODO: Once BE issue is fixed, we won't need to transform data model
         val authResult = PassageAuthResult(
@@ -404,7 +401,7 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             magicLinkAPI.magicLinkStatus(appId, request)
         } catch (e: Exception) {
-            val exception = checkException(e)
+            val exception = e
             // TODO: Use Model404Code.magicLinkNotFound instead
             if (exception.message == "magic link not activated") {
                 Log.e(TAG, exception.message!!)
@@ -441,10 +438,8 @@ public final class Passage(private val activity: Activity) {
         val request = RegisterOneTimePasscodeRequest(identifier, language)
         val response = try {
             registerAPI.registerOneTimePasscode(appId, request)
-        } catch (e: ClientException) {
-            throw NewRegisterOneTimePasscodeException.from(e)
-        } catch (e: ServerException) {
-            throw NewRegisterOneTimePasscodeException.from(e)
+        } catch (e: Exception) {
+            throw NewRegisterOneTimePasscodeException.convert(e)
         }
         return response
     }
@@ -456,9 +451,7 @@ public final class Passage(private val activity: Activity) {
      * passcode to complete their login.
      * @param identifier valid email or E164 phone number
      * @return OneTimePasscode
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws NewLoginOneTimePasscodeException
      */
     public suspend fun newLoginOneTimePasscode(identifier: String): OneTimePasscode {
         val loginAPI = LoginAPI(BASE_PATH)
@@ -466,7 +459,7 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             loginAPI.loginOneTimePasscode(appId, request)
         } catch (e: Exception) {
-            throw checkException(e)
+            throw NewLoginOneTimePasscodeException.convert(e)
         }
         return response
     }
@@ -479,9 +472,7 @@ public final class Passage(private val activity: Activity) {
      * @param otp The one time passcode
      * @param otpId The OTP id
      * @return PassageAuthResult
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws OneTimePasscodeActivateException
      */
     public suspend fun oneTimePasscodeActivate(otp: String, otpId: String): PassageAuthResult {
         val otpAPI = OTPAPI(BASE_PATH)
@@ -489,7 +480,7 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             otpAPI.activateOneTimePasscode(appId, request)
         } catch (e: Exception) {
-            throw checkException(e)
+            throw OneTimePasscodeActivateException.convert(e)
         }
         val otpAuthResult = response.authResult
         // NOTE: The OpenAPI codegen produces an `IdentityAuthResult` for passkey and magic link
@@ -526,7 +517,7 @@ public final class Passage(private val activity: Activity) {
         val user = try {
             PassageUser.getCurrentUser()
         } catch (e: Exception) {
-            val exception = checkException(e)
+            val exception = e
             Log.e(TAG, "Getting current user failed. ${exception.message ?: e.toString()}")
             null
         }
@@ -566,7 +557,7 @@ public final class Passage(private val activity: Activity) {
         val modelsUser = try {
             usersAPI.checkUserIdentifier(BASE_PATH, identifier).user
         } catch (e: Exception) {
-            throw checkException(e)
+            throw e
         } ?: return null
         return PassageUser.convertToPassageUser(modelsUser)
     }

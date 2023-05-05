@@ -22,6 +22,7 @@ import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptionsJsonAda
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import id.passage.android.exceptions.*
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class PasskeyUtils {

@@ -2,6 +2,7 @@ package id.passage.android
 
 import id.passage.android.api.TokensAPI
 import id.passage.android.model.ApirefreshAuthTokenRequest
+import id.passage.android.exceptions.*
 import java.lang.Exception
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
@@ -27,7 +28,7 @@ public final class PassageToken {
                 api.refreshAuthToken(Passage.appId, request).authResult
                     ?: throw PassageTokenException(PassageTokenException.REFRESH_FAILED)
             } catch (e: Exception) {
-                throw PassageException.checkException(e)
+                throw e
             }
             // TODO: Once BE issue is fixed, we won't need to transform data model
             val authResult = PassageAuthResult(
