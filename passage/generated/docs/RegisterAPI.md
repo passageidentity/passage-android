@@ -6,8 +6,8 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**registerMagicLink**](RegisterAPI.md#registerMagicLink) | **POST** /apps/{app_id}/register/magic-link/ | Register with Magic Link
 [**registerOneTimePasscode**](RegisterAPI.md#registerOneTimePasscode) | **POST** /apps/{app_id}/register/otp | Register with OTP
-[**registerWebauthnFinish**](RegisterAPI.md#registerWebauthnFinish) | **POST** /apps/{app_id}/register/webauthn/finish/ | Finish WebAuthn Registration
-[**registerWebauthnStart**](RegisterAPI.md#registerWebauthnStart) | **POST** /apps/{app_id}/register/webauthn/start/ | Start WebAuthn Register
+[**registerWebauthnFinish**](RegisterAPI.md#registerWebauthnFinish) | **POST** /apps/{app_id}/register/webauthn/finish | Finish WebAuthn Registration
+[**registerWebauthnStart**](RegisterAPI.md#registerWebauthnStart) | **POST** /apps/{app_id}/register/webauthn/start | Start WebAuthn Register
 
 
 <a name="registerMagicLink"></a>
@@ -110,7 +110,7 @@ No authorization required
 
 <a name="registerWebauthnFinish"></a>
 # **registerWebauthnFinish**
-> ApiAuthResponse registerWebauthnFinish(appId, user)
+> AuthResponse1 registerWebauthnFinish(appId, registerWebAuthnFinishRequest)
 
 Finish WebAuthn Registration
 
@@ -124,9 +124,9 @@ Complete a WebAuthn registration and authenticate the user. This endpoint accept
 
 val apiInstance = RegisterAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val user : ApiregisterWebAuthnFinishRequest =  // ApiregisterWebAuthnFinishRequest | WebAuthn Response Data
+val registerWebAuthnFinishRequest : RegisterWebAuthnFinishRequest =  // RegisterWebAuthnFinishRequest | WebAuthn Response Data
 try {
-    val result : ApiAuthResponse = apiInstance.registerWebauthnFinish(appId, user)
+    val result : AuthResponse1 = apiInstance.registerWebauthnFinish(appId, registerWebAuthnFinishRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling RegisterAPI#registerWebauthnFinish")
@@ -142,11 +142,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **user** | [**ApiregisterWebAuthnFinishRequest**](ApiregisterWebAuthnFinishRequest.md)| WebAuthn Response Data |
+ **registerWebAuthnFinishRequest** | [**RegisterWebAuthnFinishRequest**](RegisterWebAuthnFinishRequest.md)| WebAuthn Response Data |
 
 ### Return type
 
-[**ApiAuthResponse**](ApiAuthResponse.md)
+[**AuthResponse1**](AuthResponse1.md)
 
 ### Authorization
 
@@ -159,7 +159,7 @@ No authorization required
 
 <a name="registerWebauthnStart"></a>
 # **registerWebauthnStart**
-> ApiregisterWebAuthnStartResponse registerWebauthnStart(appId, user)
+> RegisterWebAuthnStartResponse registerWebauthnStart(appId, registerWebAuthnStartRequest)
 
 Start WebAuthn Register
 
@@ -173,9 +173,9 @@ Initiate a WebAuthn registration and create the user. This endpoint creates a We
 
 val apiInstance = RegisterAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val user : ApiregisterWebAuthnStartRequest =  // ApiregisterWebAuthnStartRequest | User Data
+val registerWebAuthnStartRequest : RegisterWebAuthnStartRequest =  // RegisterWebAuthnStartRequest | User Data
 try {
-    val result : ApiregisterWebAuthnStartResponse = apiInstance.registerWebauthnStart(appId, user)
+    val result : RegisterWebAuthnStartResponse = apiInstance.registerWebauthnStart(appId, registerWebAuthnStartRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling RegisterAPI#registerWebauthnStart")
@@ -191,11 +191,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **user** | [**ApiregisterWebAuthnStartRequest**](ApiregisterWebAuthnStartRequest.md)| User Data |
+ **registerWebAuthnStartRequest** | [**RegisterWebAuthnStartRequest**](RegisterWebAuthnStartRequest.md)| User Data |
 
 ### Return type
 
-[**ApiregisterWebAuthnStartResponse**](ApiregisterWebAuthnStartResponse.md)
+[**RegisterWebAuthnStartResponse**](RegisterWebAuthnStartResponse.md)
 
 ### Authorization
 

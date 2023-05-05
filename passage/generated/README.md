@@ -58,20 +58,20 @@ Class | Method | HTTP request | Description
 *JWKSAPI* | [**getJwks**](docs/JWKSAPI.md#getjwks) | **GET** /apps/{app_id}/.well-known/jwks.json | Get JWKS
 *LoginAPI* | [**loginMagicLink**](docs/LoginAPI.md#loginmagiclink) | **POST** /apps/{app_id}/login/magic-link/ | Login with Magic Link
 *LoginAPI* | [**loginOneTimePasscode**](docs/LoginAPI.md#loginonetimepasscode) | **POST** /apps/{app_id}/login/otp | Login with OTP
-*LoginAPI* | [**loginWebauthnFinish**](docs/LoginAPI.md#loginwebauthnfinish) | **POST** /apps/{app_id}/login/webauthn/finish/ | Finish WebAuthn Login
+*LoginAPI* | [**loginWebauthnFinish**](docs/LoginAPI.md#loginwebauthnfinish) | **POST** /apps/{app_id}/login/webauthn/finish | Finish WebAuthn Login
 *LoginAPI* | [**loginWebauthnStart**](docs/LoginAPI.md#loginwebauthnstart) | **POST** /apps/{app_id}/login/webauthn/start/ | Start WebAuthn Login
 *MagicLinkAPI* | [**activateMagicLink**](docs/MagicLinkAPI.md#activatemagiclink) | **PATCH** /apps/{app_id}/magic-link/activate/ | Authenticate Magic Link
-*MagicLinkAPI* | [**activateMagicLinkWebauthnLoginFinish**](docs/MagicLinkAPI.md#activatemagiclinkwebauthnloginfinish) | **POST** /apps/{app_id}/magic-link/webauthn/login/finish/ | Finish a WebAuthn registration, initiated by a magic link.
+*MagicLinkAPI* | [**activateMagicLinkWebauthnLoginFinish**](docs/MagicLinkAPI.md#activatemagiclinkwebauthnloginfinish) | **POST** /apps/{app_id}/magic-link/webauthn/login/finish | Finish a WebAuthn registration, initiated by a magic link.
 *MagicLinkAPI* | [**activateMagicLinkWebauthnLoginStart**](docs/MagicLinkAPI.md#activatemagiclinkwebauthnloginstart) | **POST** /apps/{app_id}/magic-link/webauthn/login/start/ | Authenticate the user via magic link, then initiate a WebAuthn login.
-*MagicLinkAPI* | [**activateMagicLinkWebauthnNewDeviceFinish**](docs/MagicLinkAPI.md#activatemagiclinkwebauthnnewdevicefinish) | **POST** /apps/{app_id}/magic-link/webauthn/new/finish/ | Finish WebAuthn registration that was initiated from a magic link.
-*MagicLinkAPI* | [**activateMagicLinkWebauthnNewDeviceStart**](docs/MagicLinkAPI.md#activatemagiclinkwebauthnnewdevicestart) | **POST** /apps/{app_id}/magic-link/webauthn/new/start/ | Authenticate the user via magic link, then initiate a WebAuthn registration.
+*MagicLinkAPI* | [**activateMagicLinkWebauthnNewDeviceFinish**](docs/MagicLinkAPI.md#activatemagiclinkwebauthnnewdevicefinish) | **POST** /apps/{app_id}/magic-link/webauthn/new/finish | Finish WebAuthn registration that was initiated from a magic link.
+*MagicLinkAPI* | [**activateMagicLinkWebauthnNewDeviceStart**](docs/MagicLinkAPI.md#activatemagiclinkwebauthnnewdevicestart) | **POST** /apps/{app_id}/magic-link/webauthn/new/start | Authenticate the user via magic link, then initiate a WebAuthn registration.
 *MagicLinkAPI* | [**magicLinkStatus**](docs/MagicLinkAPI.md#magiclinkstatus) | **POST** /apps/{app_id}/magic-link/status/ | Magic Link Status
 *OTPAPI* | [**activateOneTimePasscode**](docs/OTPAPI.md#activateonetimepasscode) | **POST** /apps/{app_id}/otp/activate | Authenticate OTP
 *OpenIDAPI* | [**getOpenIdConfiguration**](docs/OpenIDAPI.md#getopenidconfiguration) | **GET** /apps/{app_id}/.well-known/openid-configuration | Get OpenID Configuration
 *RegisterAPI* | [**registerMagicLink**](docs/RegisterAPI.md#registermagiclink) | **POST** /apps/{app_id}/register/magic-link/ | Register with Magic Link
 *RegisterAPI* | [**registerOneTimePasscode**](docs/RegisterAPI.md#registeronetimepasscode) | **POST** /apps/{app_id}/register/otp | Register with OTP
-*RegisterAPI* | [**registerWebauthnFinish**](docs/RegisterAPI.md#registerwebauthnfinish) | **POST** /apps/{app_id}/register/webauthn/finish/ | Finish WebAuthn Registration
-*RegisterAPI* | [**registerWebauthnStart**](docs/RegisterAPI.md#registerwebauthnstart) | **POST** /apps/{app_id}/register/webauthn/start/ | Start WebAuthn Register
+*RegisterAPI* | [**registerWebauthnFinish**](docs/RegisterAPI.md#registerwebauthnfinish) | **POST** /apps/{app_id}/register/webauthn/finish | Finish WebAuthn Registration
+*RegisterAPI* | [**registerWebauthnStart**](docs/RegisterAPI.md#registerwebauthnstart) | **POST** /apps/{app_id}/register/webauthn/start | Start WebAuthn Register
 *TokensAPI* | [**refreshAuthToken**](docs/TokensAPI.md#refreshauthtoken) | **POST** /apps/{app_id}/tokens/ | Creates new auth and refresh token
 *TokensAPI* | [**revokeRefreshToken**](docs/TokensAPI.md#revokerefreshtoken) | **DELETE** /apps/{app_id}/tokens/ | Revokes refresh token
 *UsersAPI* | [**checkUserIdentifier**](docs/UsersAPI.md#checkuseridentifier) | **GET** /apps/{app_id}/users/ | Get User
@@ -82,8 +82,10 @@ Class | Method | HTTP request | Description
 ## Documentation for Models
 
  - [id.passage.android.model.APIError](docs/APIError.md)
+ - [id.passage.android.model.ActivateMagicLinkRequest](docs/ActivateMagicLinkRequest.md)
  - [id.passage.android.model.ActivateOneTimePasscodeRequest](docs/ActivateOneTimePasscodeRequest.md)
  - [id.passage.android.model.ApiAuthResponse](docs/ApiAuthResponse.md)
+ - [id.passage.android.model.ApiAuthResult](docs/ApiAuthResult.md)
  - [id.passage.android.model.ApiCredentialAssertionChallenge](docs/ApiCredentialAssertionChallenge.md)
  - [id.passage.android.model.ApiCredentialCreationChallenge](docs/ApiCredentialCreationChallenge.md)
  - [id.passage.android.model.ApiCurrentUserDevice](docs/ApiCurrentUserDevice.md)
@@ -94,6 +96,7 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.ApiMagicLink](docs/ApiMagicLink.md)
  - [id.passage.android.model.ApiMagicLinkResponse](docs/ApiMagicLinkResponse.md)
  - [id.passage.android.model.ApiOpenIdConfiguration](docs/ApiOpenIdConfiguration.md)
+ - [id.passage.android.model.ApiProtocolCredentialCreation](docs/ApiProtocolCredentialCreation.md)
  - [id.passage.android.model.ApiUserMetadataResponse](docs/ApiUserMetadataResponse.md)
  - [id.passage.android.model.ApiUserResponse](docs/ApiUserResponse.md)
  - [id.passage.android.model.ApiactivateMagicLinkRequest](docs/ApiactivateMagicLinkRequest.md)
@@ -103,42 +106,60 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.ApigetMagicLinkStatusRequest](docs/ApigetMagicLinkStatusRequest.md)
  - [id.passage.android.model.ApiloginMagicLinkRequest](docs/ApiloginMagicLinkRequest.md)
  - [id.passage.android.model.ApiloginMagicLinkResponse](docs/ApiloginMagicLinkResponse.md)
- - [id.passage.android.model.ApiloginWebAuthnFinishRequest](docs/ApiloginWebAuthnFinishRequest.md)
  - [id.passage.android.model.ApiloginWebAuthnStartRequest](docs/ApiloginWebAuthnStartRequest.md)
  - [id.passage.android.model.ApiloginWebAuthnStartResponse](docs/ApiloginWebAuthnStartResponse.md)
- - [id.passage.android.model.ApimagicLinkLoginWebAuthnFinishRequest](docs/ApimagicLinkLoginWebAuthnFinishRequest.md)
  - [id.passage.android.model.ApimagicLinkLoginWebAuthnStartResponse](docs/ApimagicLinkLoginWebAuthnStartResponse.md)
- - [id.passage.android.model.ApimagicLinkNewDeviceWebAuthnFinishRequest](docs/ApimagicLinkNewDeviceWebAuthnFinishRequest.md)
- - [id.passage.android.model.ApimagicLinkNewDeviceWebAuthnStartResponse](docs/ApimagicLinkNewDeviceWebAuthnStartResponse.md)
  - [id.passage.android.model.ApirefreshAuthTokenRequest](docs/ApirefreshAuthTokenRequest.md)
  - [id.passage.android.model.ApiregisterMagicLinkRequest](docs/ApiregisterMagicLinkRequest.md)
  - [id.passage.android.model.ApiregisterMagicLinkResponse](docs/ApiregisterMagicLinkResponse.md)
- - [id.passage.android.model.ApiregisterWebAuthnFinishRequest](docs/ApiregisterWebAuthnFinishRequest.md)
- - [id.passage.android.model.ApiregisterWebAuthnStartRequest](docs/ApiregisterWebAuthnStartRequest.md)
- - [id.passage.android.model.ApiregisterWebAuthnStartResponse](docs/ApiregisterWebAuthnStartResponse.md)
  - [id.passage.android.model.ApiupdateDeviceRequest](docs/ApiupdateDeviceRequest.md)
  - [id.passage.android.model.ApiupdateMetadataRequest](docs/ApiupdateMetadataRequest.md)
  - [id.passage.android.model.AuthResponse](docs/AuthResponse.md)
+ - [id.passage.android.model.AuthResponse1](docs/AuthResponse1.md)
  - [id.passage.android.model.AuthResult](docs/AuthResult.md)
+ - [id.passage.android.model.AuthResult1](docs/AuthResult1.md)
+ - [id.passage.android.model.CredentialCreationChallenge](docs/CredentialCreationChallenge.md)
  - [id.passage.android.model.HttpErrorsHTTPError](docs/HttpErrorsHTTPError.md)
  - [id.passage.android.model.IdentityApp](docs/IdentityApp.md)
- - [id.passage.android.model.IdentityAuthResult](docs/IdentityAuthResult.md)
  - [id.passage.android.model.IdentityUserMetadataField](docs/IdentityUserMetadataField.md)
  - [id.passage.android.model.LoginOneTimePasscodeRequest](docs/LoginOneTimePasscodeRequest.md)
+ - [id.passage.android.model.LoginWebAuthnFinishRequest](docs/LoginWebAuthnFinishRequest.md)
+ - [id.passage.android.model.MagicLinkLoginWebAuthnFinishRequest](docs/MagicLinkLoginWebAuthnFinishRequest.md)
+ - [id.passage.android.model.MagicLinkNewDeviceWebAuthnFinishRequest](docs/MagicLinkNewDeviceWebAuthnFinishRequest.md)
+ - [id.passage.android.model.MagicLinkNewDeviceWebAuthnStartResponse](docs/MagicLinkNewDeviceWebAuthnStartResponse.md)
+ - [id.passage.android.model.Model400Code](docs/Model400Code.md)
+ - [id.passage.android.model.Model400Error](docs/Model400Error.md)
+ - [id.passage.android.model.Model401Code](docs/Model401Code.md)
+ - [id.passage.android.model.Model401Error](docs/Model401Error.md)
+ - [id.passage.android.model.Model403Code](docs/Model403Code.md)
+ - [id.passage.android.model.Model403Error](docs/Model403Error.md)
+ - [id.passage.android.model.Model404Code](docs/Model404Code.md)
+ - [id.passage.android.model.Model404Error](docs/Model404Error.md)
+ - [id.passage.android.model.Model500Code](docs/Model500Code.md)
+ - [id.passage.android.model.Model500Error](docs/Model500Error.md)
  - [id.passage.android.model.ModelsCreateUserParams](docs/ModelsCreateUserParams.md)
  - [id.passage.android.model.ModelsCredential](docs/ModelsCredential.md)
  - [id.passage.android.model.ModelsCurrentUser](docs/ModelsCurrentUser.md)
  - [id.passage.android.model.ModelsLayoutConfig](docs/ModelsLayoutConfig.md)
  - [id.passage.android.model.ModelsLayouts](docs/ModelsLayouts.md)
  - [id.passage.android.model.ModelsUser](docs/ModelsUser.md)
+ - [id.passage.android.model.ModelsUser1](docs/ModelsUser1.md)
  - [id.passage.android.model.OneTimePasscodeResponse](docs/OneTimePasscodeResponse.md)
- - [id.passage.android.model.ProtocolAuthenticatorAssertionResponse](docs/ProtocolAuthenticatorAssertionResponse.md)
  - [id.passage.android.model.ProtocolAuthenticatorAttestationResponse](docs/ProtocolAuthenticatorAttestationResponse.md)
  - [id.passage.android.model.ProtocolAuthenticatorSelection](docs/ProtocolAuthenticatorSelection.md)
  - [id.passage.android.model.ProtocolCredentialAssertion](docs/ProtocolCredentialAssertion.md)
  - [id.passage.android.model.ProtocolCredentialAssertionResponse](docs/ProtocolCredentialAssertionResponse.md)
+ - [id.passage.android.model.ProtocolCredentialAssertionResponseResponse](docs/ProtocolCredentialAssertionResponseResponse.md)
  - [id.passage.android.model.ProtocolCredentialCreation](docs/ProtocolCredentialCreation.md)
+ - [id.passage.android.model.ProtocolCredentialCreationPublicKey](docs/ProtocolCredentialCreationPublicKey.md)
+ - [id.passage.android.model.ProtocolCredentialCreationPublicKeyAuthenticatorSelection](docs/ProtocolCredentialCreationPublicKeyAuthenticatorSelection.md)
+ - [id.passage.android.model.ProtocolCredentialCreationPublicKeyExcludeCredentialsInner](docs/ProtocolCredentialCreationPublicKeyExcludeCredentialsInner.md)
+ - [id.passage.android.model.ProtocolCredentialCreationPublicKeyPubKeyCredParamsInner](docs/ProtocolCredentialCreationPublicKeyPubKeyCredParamsInner.md)
+ - [id.passage.android.model.ProtocolCredentialCreationPublicKeyRp](docs/ProtocolCredentialCreationPublicKeyRp.md)
+ - [id.passage.android.model.ProtocolCredentialCreationPublicKeyUser](docs/ProtocolCredentialCreationPublicKeyUser.md)
  - [id.passage.android.model.ProtocolCredentialCreationResponse](docs/ProtocolCredentialCreationResponse.md)
+ - [id.passage.android.model.ProtocolCredentialCreationResponse1](docs/ProtocolCredentialCreationResponse1.md)
+ - [id.passage.android.model.ProtocolCredentialCreationResponse1Response](docs/ProtocolCredentialCreationResponse1Response.md)
  - [id.passage.android.model.ProtocolCredentialDescriptor](docs/ProtocolCredentialDescriptor.md)
  - [id.passage.android.model.ProtocolCredentialParameter](docs/ProtocolCredentialParameter.md)
  - [id.passage.android.model.ProtocolPublicKeyCredentialCreationOptions](docs/ProtocolPublicKeyCredentialCreationOptions.md)
@@ -146,6 +167,9 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.ProtocolRelyingPartyEntity](docs/ProtocolRelyingPartyEntity.md)
  - [id.passage.android.model.ProtocolUserEntity](docs/ProtocolUserEntity.md)
  - [id.passage.android.model.RegisterOneTimePasscodeRequest](docs/RegisterOneTimePasscodeRequest.md)
+ - [id.passage.android.model.RegisterWebAuthnFinishRequest](docs/RegisterWebAuthnFinishRequest.md)
+ - [id.passage.android.model.RegisterWebAuthnStartRequest](docs/RegisterWebAuthnStartRequest.md)
+ - [id.passage.android.model.RegisterWebAuthnStartResponse](docs/RegisterWebAuthnStartResponse.md)
  - [id.passage.android.model.UserUpdateUserEmailRequest](docs/UserUpdateUserEmailRequest.md)
  - [id.passage.android.model.UserUpdateUserPhoneRequest](docs/UserUpdateUserPhoneRequest.md)
 

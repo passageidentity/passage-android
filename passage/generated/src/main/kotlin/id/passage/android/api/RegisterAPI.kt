@@ -20,15 +20,20 @@ import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
 import id.passage.android.model.APIError
-import id.passage.android.model.ApiAuthResponse
 import id.passage.android.model.ApiregisterMagicLinkRequest
 import id.passage.android.model.ApiregisterMagicLinkResponse
-import id.passage.android.model.ApiregisterWebAuthnFinishRequest
-import id.passage.android.model.ApiregisterWebAuthnStartRequest
-import id.passage.android.model.ApiregisterWebAuthnStartResponse
+import id.passage.android.model.AuthResponse1
 import id.passage.android.model.HttpErrorsHTTPError
+import id.passage.android.model.Model400Error
+import id.passage.android.model.Model401Error
+import id.passage.android.model.Model403Error
+import id.passage.android.model.Model404Error
+import id.passage.android.model.Model500Error
 import id.passage.android.model.OneTimePasscodeResponse
 import id.passage.android.model.RegisterOneTimePasscodeRequest
+import id.passage.android.model.RegisterWebAuthnFinishRequest
+import id.passage.android.model.RegisterWebAuthnStartRequest
+import id.passage.android.model.RegisterWebAuthnStartResponse
 
 import com.squareup.moshi.Json
 
@@ -210,8 +215,8 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      * Finish WebAuthn Registration
      * Complete a WebAuthn registration and authenticate the user. This endpoint accepts and verifies the response from &#x60;navigator.credential.create()&#x60; and returns an authentication token for the user.
      * @param appId App ID
-     * @param user WebAuthn Response Data
-     * @return ApiAuthResponse
+     * @param registerWebAuthnFinishRequest WebAuthn Response Data
+     * @return AuthResponse1
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -220,11 +225,11 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun registerWebauthnFinish(appId: kotlin.String, user: ApiregisterWebAuthnFinishRequest) : ApiAuthResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = registerWebauthnFinishWithHttpInfo(appId = appId, user = user)
+    suspend fun registerWebauthnFinish(appId: kotlin.String, registerWebAuthnFinishRequest: RegisterWebAuthnFinishRequest) : AuthResponse1 = withContext(Dispatchers.IO) {
+        val localVarResponse = registerWebauthnFinishWithHttpInfo(appId = appId, registerWebAuthnFinishRequest = registerWebAuthnFinishRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiAuthResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as AuthResponse1
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -242,17 +247,17 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      * Finish WebAuthn Registration
      * Complete a WebAuthn registration and authenticate the user. This endpoint accepts and verifies the response from &#x60;navigator.credential.create()&#x60; and returns an authentication token for the user.
      * @param appId App ID
-     * @param user WebAuthn Response Data
-     * @return ApiResponse<ApiAuthResponse?>
+     * @param registerWebAuthnFinishRequest WebAuthn Response Data
+     * @return ApiResponse<AuthResponse1?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun registerWebauthnFinishWithHttpInfo(appId: kotlin.String, user: ApiregisterWebAuthnFinishRequest) : ApiResponse<ApiAuthResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = registerWebauthnFinishRequestConfig(appId = appId, user = user)
+    suspend fun registerWebauthnFinishWithHttpInfo(appId: kotlin.String, registerWebAuthnFinishRequest: RegisterWebAuthnFinishRequest) : ApiResponse<AuthResponse1?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = registerWebauthnFinishRequestConfig(appId = appId, registerWebAuthnFinishRequest = registerWebAuthnFinishRequest)
 
-        return@withContext request<ApiregisterWebAuthnFinishRequest, ApiAuthResponse>(
+        return@withContext request<RegisterWebAuthnFinishRequest, AuthResponse1>(
             localVariableConfig
         )
     }
@@ -261,11 +266,11 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      * To obtain the request config of the operation registerWebauthnFinish
      *
      * @param appId App ID
-     * @param user WebAuthn Response Data
+     * @param registerWebAuthnFinishRequest WebAuthn Response Data
      * @return RequestConfig
      */
-    fun registerWebauthnFinishRequestConfig(appId: kotlin.String, user: ApiregisterWebAuthnFinishRequest) : RequestConfig<ApiregisterWebAuthnFinishRequest> {
-        val localVariableBody = user
+    fun registerWebauthnFinishRequestConfig(appId: kotlin.String, registerWebAuthnFinishRequest: RegisterWebAuthnFinishRequest) : RequestConfig<RegisterWebAuthnFinishRequest> {
+        val localVariableBody = registerWebAuthnFinishRequest
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
         localVariableHeaders["Content-Type"] = "application/json"
@@ -273,7 +278,7 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
 
         return RequestConfig(
             method = RequestMethod.POST,
-            path = "/apps/{app_id}/register/webauthn/finish/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/register/webauthn/finish".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -285,8 +290,8 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      * Start WebAuthn Register
      * Initiate a WebAuthn registration and create the user. This endpoint creates a WebAuthn credential creation challenge that is used to perform the registration ceremony from the browser.
      * @param appId App ID
-     * @param user User Data
-     * @return ApiregisterWebAuthnStartResponse
+     * @param registerWebAuthnStartRequest User Data
+     * @return RegisterWebAuthnStartResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -295,11 +300,11 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun registerWebauthnStart(appId: kotlin.String, user: ApiregisterWebAuthnStartRequest) : ApiregisterWebAuthnStartResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = registerWebauthnStartWithHttpInfo(appId = appId, user = user)
+    suspend fun registerWebauthnStart(appId: kotlin.String, registerWebAuthnStartRequest: RegisterWebAuthnStartRequest) : RegisterWebAuthnStartResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = registerWebauthnStartWithHttpInfo(appId = appId, registerWebAuthnStartRequest = registerWebAuthnStartRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiregisterWebAuthnStartResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as RegisterWebAuthnStartResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -317,17 +322,17 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      * Start WebAuthn Register
      * Initiate a WebAuthn registration and create the user. This endpoint creates a WebAuthn credential creation challenge that is used to perform the registration ceremony from the browser.
      * @param appId App ID
-     * @param user User Data
-     * @return ApiResponse<ApiregisterWebAuthnStartResponse?>
+     * @param registerWebAuthnStartRequest User Data
+     * @return ApiResponse<RegisterWebAuthnStartResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun registerWebauthnStartWithHttpInfo(appId: kotlin.String, user: ApiregisterWebAuthnStartRequest) : ApiResponse<ApiregisterWebAuthnStartResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = registerWebauthnStartRequestConfig(appId = appId, user = user)
+    suspend fun registerWebauthnStartWithHttpInfo(appId: kotlin.String, registerWebAuthnStartRequest: RegisterWebAuthnStartRequest) : ApiResponse<RegisterWebAuthnStartResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = registerWebauthnStartRequestConfig(appId = appId, registerWebAuthnStartRequest = registerWebAuthnStartRequest)
 
-        return@withContext request<ApiregisterWebAuthnStartRequest, ApiregisterWebAuthnStartResponse>(
+        return@withContext request<RegisterWebAuthnStartRequest, RegisterWebAuthnStartResponse>(
             localVariableConfig
         )
     }
@@ -336,11 +341,11 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      * To obtain the request config of the operation registerWebauthnStart
      *
      * @param appId App ID
-     * @param user User Data
+     * @param registerWebAuthnStartRequest User Data
      * @return RequestConfig
      */
-    fun registerWebauthnStartRequestConfig(appId: kotlin.String, user: ApiregisterWebAuthnStartRequest) : RequestConfig<ApiregisterWebAuthnStartRequest> {
-        val localVariableBody = user
+    fun registerWebauthnStartRequestConfig(appId: kotlin.String, registerWebAuthnStartRequest: RegisterWebAuthnStartRequest) : RequestConfig<RegisterWebAuthnStartRequest> {
+        val localVariableBody = registerWebAuthnStartRequest
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
         localVariableHeaders["Content-Type"] = "application/json"
@@ -348,7 +353,7 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
 
         return RequestConfig(
             method = RequestMethod.POST,
-            path = "/apps/{app_id}/register/webauthn/start/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/register/webauthn/start".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
