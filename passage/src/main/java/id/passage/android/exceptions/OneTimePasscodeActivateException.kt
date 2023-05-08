@@ -12,7 +12,7 @@ import id.passage.client.infrastructure.ServerException
  * invalid one time passcode.
  *
  * @see OneTimePasscodeActivateInvalidRequestException
- * @see OneTimePasscodeActivateUserNotActiveException
+ * @see OneTimePasscodeActivateInactiveUserException
  * @see OneTimePasscodeActivateServerException
  */
 public open class OneTimePasscodeActivateException(message: String): PassageException(message) {
@@ -36,7 +36,7 @@ public open class OneTimePasscodeActivateException(message: String): PassageExce
                     OneTimePasscodeActivateInvalidRequestException(message)
                 }
                 Model401Code.userNotActive.toString() -> {
-                    OneTimePasscodeActivateUserNotActiveException(message)
+                    OneTimePasscodeActivateInactiveUserException(message)
                 }
                 else -> {
                     OneTimePasscodeActivateException(message)
@@ -56,7 +56,7 @@ public class OneTimePasscodeActivateInvalidRequestException(message: String): On
 /**
  * Thrown when the user is not active.
  */
-public class OneTimePasscodeActivateUserNotActiveException(message: String): OneTimePasscodeActivateException(message)
+public class OneTimePasscodeActivateInactiveUserException(message: String): OneTimePasscodeActivateException(message)
 
 /**
  * Thrown when Passage internal server error occurs.

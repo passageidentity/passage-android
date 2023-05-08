@@ -111,18 +111,17 @@ public final class Passage(private val activity: Activity) {
      * and if neither are returned, then the user was not registered and no fallback method was used.
      * @param identifier valid email or E164 phone number
      * @return Pair<PassageAuthResult?, PassageAuthFallbackResult?>
-     * @throws CreateCredentialException If the attempt to create a passkey fails
-     * @throws PassageClientException If the Passage API returns a client error response
-     * @throws PassageServerException If the Passage API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws RegisterException when there's a registration issue with the Passage app setup
+     * @throws NewRegisterMagicLinkException when passkey registration AND magic link creation fails
+     * @throws NewRegisterOneTimePasscodeException when passkey registration AND otp generation fails
      */
     public suspend fun register(identifier: String): Pair<PassageAuthResult?, PassageAuthFallbackResult?> {
         val passageApp = appInfo()
-            ?: throw PassageException("Invalid Passage app.")
+            ?: throw RegisterInvalidAppException()
         if (passageApp.publicSignup == false) {
-            throw PassageException("Public registration disabled for this app.")
+            throw RegisterPublicDisabledException()
         }
-        val useFallback = true// passageApp.requireIdentifierVerification == true
+        val useFallback = passageApp.requireIdentifierVerification == true
         if (!useFallback) {
             try {
                 val authResult = registerWithPasskey(identifier)
@@ -132,10 +131,10 @@ public final class Passage(private val activity: Activity) {
             }
         }
         val fallbackMethod = passageApp.authFallbackMethod
-            ?: throw PassageException("Passage app requires identifier verification but has no auth fallback method set.")
+            ?: throw RegisterNoFallbackException()
         val fallback: PassageAuthFallbackResult = when (fallbackMethod) {
             PassageAuthFallbackMethod.magicLink -> {
-                val magicLinkId = newRegisterMagicLink(identifier)?.id ?: throw Exception("")
+                val magicLinkId = newRegisterMagicLink(identifier)?.id ?: ""
                 PassageAuthFallbackResult(id = magicLinkId, method = fallbackMethod)
             }
             PassageAuthFallbackMethod.otp -> {
@@ -143,7 +142,7 @@ public final class Passage(private val activity: Activity) {
                 PassageAuthFallbackResult(id = otpId, method = fallbackMethod)
             }
             PassageAuthFallbackMethod.none -> {
-                throw PassageException("Passage app requires identifier verification but has no auth fallback method set.")
+                throw RegisterNoFallbackException()
             }
         }
         return Pair(null, fallback)
@@ -162,18 +161,17 @@ public final class Passage(private val activity: Activity) {
      *
      * @param identifier valid email or E164 phone number
      * @return PassageAuthResult?
-     * @throws GetCredentialException If the attempt to create a passkey fails
-     * @throws PassageClientException If the Passage API returns a client error response
-     * @throws PassageServerException If the Passage API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws LoginException when there's a login issue with the Passage app setup
+     * @throws NewLoginMagicLinkException when passkey login AND magic link creation fails
+     * @throws NewLoginOneTimePasscodeException when passkey login AND otp generation fails
      */
     public suspend fun login(identifier: String): Pair<PassageAuthResult?, PassageAuthFallbackResult?> {
         val passageApp = appInfo()
-            ?: throw PassageException("Invalid Passage app.")
+            ?: throw LoginInvalidAppException()
         // If app requires id verification and user has not yet logged in with a passkey, use a
         // fallback method
         val user = identifierExists(identifier)
-            ?: throw PassageException("User with this identifier does not exist.")
+            ?: throw LoginInvalidIdentifierException()
         val useFallback = passageApp.requireIdentifierVerification == true && user.webauthn == false
         if (!useFallback) {
             try {
@@ -185,11 +183,11 @@ public final class Passage(private val activity: Activity) {
         }
         // If useFallback or if passkey login fails, attempt new fallback login.
         val fallbackMethod = passageApp.authFallbackMethod
-            ?: throw PassageException("Passage app requires identifier verification but has no auth fallback method set.")
+            ?: throw LoginNoFallbackException()
         val fallback: PassageAuthFallbackResult =
             when (fallbackMethod) {
                 PassageAuthFallbackMethod.magicLink -> {
-                    val magicLinkId = newLoginMagicLink(identifier)?.id ?: throw Exception("")
+                    val magicLinkId = newLoginMagicLink(identifier)?.id ?: ""
                     PassageAuthFallbackResult(id = magicLinkId, method = fallbackMethod)
                 }
                 PassageAuthFallbackMethod.otp -> {
@@ -197,7 +195,7 @@ public final class Passage(private val activity: Activity) {
                     PassageAuthFallbackResult(id = otpId, method = fallbackMethod)
                 }
                 PassageAuthFallbackMethod.none -> {
-                    throw PassageException("Passage app requires identifier verification but has no auth fallback method set.")
+                    throw LoginNoFallbackException()
                 }
             }
         return Pair(null, fallback)
@@ -263,12 +261,9 @@ public final class Passage(private val activity: Activity) {
      * Prompt the user to select a passkey to login with and authenticate the user.
      * @param identifier valid email or E164 phone number
      * @return PassageAuthResult?
-     * @throws GetCredentialException If the attempt to create a passkey fails
-     * @throws PassageClientException If the Passage API returns a client error response
-     * @throws PassageServerException If the Passage API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws LoginWithPasskeyException
      */
-    public suspend fun loginWithPasskey(identifier: String): PassageAuthResult? {
+    public suspend fun loginWithPasskey(identifier: String): PassageAuthResult {
         try {
             val loginAPI = LoginAPI(BASE_PATH)
             // Get Credential challenge from Passage
@@ -289,7 +284,7 @@ public final class Passage(private val activity: Activity) {
             // Return auth result
             return authResponse.authResult
         } catch(e: Exception) {
-            throw e
+            throw LoginWithPasskeyException.convert(e)
         }
     }
 
