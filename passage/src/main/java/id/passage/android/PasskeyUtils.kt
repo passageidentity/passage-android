@@ -23,6 +23,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import id.passage.android.exceptions.*
+import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_MISSING
+import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_PARSING_FAILED
+import id.passage.android.exceptions.CredentialParsingException.Companion.CREDENTIAL_PARSING_FAILED
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class PasskeyUtils {
@@ -84,15 +87,15 @@ public final class PasskeyUtils {
          * Extract the public key from Passage webauthnStart challenge and transform into a JSON string
          * @param challenge The webauthn start challenge sent from Passage
          * @return String
-         * @throws PassageWebAuthnException
+         * @throws CredentialParsingException
          */
         internal fun getCreateCredentialOptionsJson(challenge: CredentialCreationChallenge?): String {
             val publicKey = challenge?.challenge?.publicKey
-                ?: throw PassageWebAuthnException(PassageWebAuthnException.CHALLENGE_MISSING)
+                ?: throw CredentialParsingException(CHALLENGE_MISSING)
             val moshi = Moshi.Builder().build()
             val adapter = ProtocolCredentialCreationPublicKeyJsonAdapter(moshi)
             return adapter.toJson(publicKey)
-                ?: throw PassageWebAuthnException(PassageWebAuthnException.PARSING_FAILED)
+                ?: throw CredentialParsingException(CHALLENGE_PARSING_FAILED)
         }
 
         /**
@@ -102,7 +105,7 @@ public final class PasskeyUtils {
          * into the Passage handshake response class used to finish webauthn registration.
          * @param createCredentialResponse The response from Android's Credential Manager
          * @return ProtocolCredentialCreationResponse
-         * @throws PassageCredentialException
+         * @throws CredentialParsingException
          */
         internal fun getCreateCredentialHandshakeResponse(createCredentialResponse: CreateCredentialResponse): ProtocolCredentialCreationResponse1 {
             val handshakeResponseJson =
@@ -110,7 +113,7 @@ public final class PasskeyUtils {
             val moshi = Moshi.Builder().build()
             val handshakeResponseAdapter = ProtocolCredentialCreationResponse1JsonAdapter(moshi)
             return handshakeResponseAdapter.fromJson(handshakeResponseJson)
-                ?: throw PassageCredentialException(PassageCredentialException.PARSING_FAILED)
+                ?: throw CredentialParsingException(CREDENTIAL_PARSING_FAILED)
         }
 
         /**
@@ -119,11 +122,11 @@ public final class PasskeyUtils {
          * Extract the public key from Passage webauthnStart challenge and convert into a JSON string
          * @param challenge The webauthn start challenge sent from Passage
          * @return String
-         * @throws PassageWebAuthnException
+         * @throws CredentialParsingException
          */
         internal fun getCredentialOptionsJson(challenge: ApiCredentialAssertionChallenge?): String {
             val credOptions = challenge?.challenge?.publicKey
-                ?: throw PassageWebAuthnException(PassageWebAuthnException.CHALLENGE_MISSING)
+                ?: throw CredentialParsingException(CHALLENGE_MISSING)
             val moshi = Moshi.Builder().build()
             val credOptionsAdapter = ProtocolPublicKeyCredentialRequestOptionsJsonAdapter(moshi)
             // Passage API bug: Login API frequently returns challenge with non-url-safe characters
@@ -138,7 +141,7 @@ public final class PasskeyUtils {
                 userVerification = credOptions.userVerification
             )
             return credOptionsAdapter.toJson(modifiedCredOptions)
-                ?: throw PassageWebAuthnException(PassageWebAuthnException.PARSING_FAILED)
+                ?: throw CredentialParsingException(CHALLENGE_PARSING_FAILED)
         }
 
         /**
@@ -148,7 +151,7 @@ public final class PasskeyUtils {
          * the Passage handshake response class used to finish webauthn login.
          * @param credentialResponse The response from Android's Credential Manager
          * @return ProtocolCredentialAssertionResponse
-         * @throws PassageCredentialException
+         * @throws CredentialParsingException
          */
         internal fun getCredentialHandshakeResponse(credentialResponse: GetCredentialResponse): ProtocolCredentialAssertionResponse {
             val handshakeResponseJson =
@@ -156,7 +159,7 @@ public final class PasskeyUtils {
             val moshi = Moshi.Builder().build()
             val handshakeResponseAdapter = ProtocolCredentialAssertionResponseJsonAdapter(moshi)
             return handshakeResponseAdapter.fromJson(handshakeResponseJson)
-                ?: throw PassageCredentialException(PassageCredentialException.PARSING_FAILED)
+                ?: throw CredentialParsingException(CREDENTIAL_PARSING_FAILED)
         }
 
     }
