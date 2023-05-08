@@ -3,6 +3,7 @@ package id.passage.android
 import android.app.Activity
 import androidx.credentials.exceptions.CreateCredentialException
 import id.passage.android.api.CurrentuserAPI
+import id.passage.android.exceptions.PassageUserException
 import id.passage.android.model.ApiCurrentUserDevice
 import id.passage.android.model.ApiCurrentUserDevices
 import id.passage.android.model.ApiaddDeviceFinishRequest
@@ -68,13 +69,15 @@ final class PassageUser private constructor(
          * The PassageUser class has methods that can be used to retrieve data on the current user
          * which require authentication.
          * @return PassageUser?
-         * @throws PassageClientException If the API returns a client error response
-         * @throws PassageServerException If the API returns a server error response
-         * @throws PassageException If the request fails for another reason
+         * @throws PassageUserException
          */
         internal suspend fun getCurrentUser(): PassageUser? {
             val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-            val modelsCurrentUser = currentUserAPI.getCurrentuser(Passage.appId).user ?: return null
+            val modelsCurrentUser = try {
+                currentUserAPI.getCurrentuser(Passage.appId).user ?: return null
+            } catch (e: Exception) {
+                throw PassageUserException.convert(e)
+            }
             return convertToPassageUser(modelsCurrentUser)
         }
 
@@ -118,14 +121,16 @@ final class PassageUser private constructor(
      * Initiate an email change for the authenticated user. An email change requires verification, so an email will be sent to the user which they must verify before the email change takes effect.
      * @param newEmail valid email
      * @return MagicLink?
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws PassageUserException
      */
     public suspend fun changeEmail(newEmail: String): MagicLink? {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val request = UserUpdateUserEmailRequest(Passage.language, null, newEmail, null)
-        val response = currentUserAPI.updateEmailCurrentuser(Passage.appId, request)
+        val response = try {
+            currentUserAPI.updateEmailCurrentuser(Passage.appId, request)
+        } catch (e: Exception) {
+            throw PassageUserException.convert(e)
+        }
         return response.magicLink
     }
 
@@ -135,14 +140,16 @@ final class PassageUser private constructor(
      * Initiate a phone number change for the authenticated user. An phone number change requires verification, so an SMS with a link will be sent to the user which they must verify before the phone number change takes effect.
      * @param newPhone valid E164 phone number
      * @return MagicLink?
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws PassageUserException
      */
     public suspend fun changePhone(newPhone: String): MagicLink? {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val request = UserUpdateUserPhoneRequest(Passage.language, null, newPhone, null)
-        val response = currentUserAPI.updatePhoneCurrentuser(Passage.appId, request)
+        val response = try {
+            currentUserAPI.updatePhoneCurrentuser(Passage.appId, request)
+        } catch (e: Exception) {
+            throw PassageUserException.convert(e)
+        }
         return response.magicLink
     }
 
@@ -151,13 +158,15 @@ final class PassageUser private constructor(
      *
      * List all WebAuthn devices for the authenticated user. User must be authenticated via bearer token.
      * @return ApiCurrentUserDevices
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws PassageUserException
      */
     public suspend fun listDevices(): ApiCurrentUserDevices {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-        return currentUserAPI.getCurrentuserDevices(Passage.appId)
+        return try {
+            currentUserAPI.getCurrentuserDevices(Passage.appId)
+        } catch (e: Exception) {
+            throw PassageUserException.convert(e)
+        }
     }
 
     /**
@@ -168,14 +177,16 @@ final class PassageUser private constructor(
      * @param deviceId Device ID
      * @param newDeviceName Friendly Name
      * @return ApiCurrentUserDevice
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws PassageUserException
      */
     public suspend fun editDevice(deviceId: String, newDeviceName: String): ApiCurrentUserDevice {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val request = ApiupdateDeviceRequest(friendlyName = newDeviceName)
-        return currentUserAPI.updateCurrentuserDevice(Passage.appId, deviceId, request)
+        return try {
+            currentUserAPI.updateCurrentuserDevice(Passage.appId, deviceId, request)
+        } catch (e: Exception) {
+            throw PassageUserException.convert(e)
+        }
     }
 
     /**
@@ -184,10 +195,8 @@ final class PassageUser private constructor(
      * Returns the created device for the user. User must be authenticated via a bearer token.
      * @param activity Activity to surface the Credentials Manager prompt within
      * @return ApiCurrentUserDevice
-     * @throws CreateCredentialException If the attempt to create a passkey fails
-     * @throws PassageClientException If the Passage API returns a client error response
-     * @throws PassageServerException If the Passage API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws CreateCredentialException when the attempt to create a passkey fails
+     * @throws PassageUserException when the request fails for any other reason
      */
     public suspend fun addDevice(activity: Activity): ApiCurrentUserDevice {
         // TODO: Update this once code gen types are consistent
@@ -214,13 +223,15 @@ final class PassageUser private constructor(
      * Revoke a device by ID for the current user. User must be authenticated via a bearer token.
      * @param deviceId Device ID
      * @return void
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws PassageUserException
      */
     public suspend fun deleteDevice(deviceId: String) {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-        currentUserAPI.deleteCurrentuserDevice(Passage.appId, deviceId)
+        try {
+            currentUserAPI.deleteCurrentuserDevice(Passage.appId, deviceId)
+        } catch (e: Exception) {
+            PassageUserException.convert(e)
+        }
     }
 
 }
