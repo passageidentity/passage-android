@@ -5,8 +5,6 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import id.passage.android.api.TokensAPI
-import id.passage.android.model.ApirefreshAuthTokenRequest
 import id.passage.client.infrastructure.ApiClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,17 +33,17 @@ public final class PassageTokenStore(activity: Activity) {
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
-    public val authToken: String?
+    internal val authToken: String?
         get() = sharedPreferences.getString(PASSAGE_AUTH_TOKEN, null)
 
-    public val refreshToken: String?
+    internal val refreshToken: String?
         get() = sharedPreferences.getString(PASSAGE_REFRESH_TOKEN, null)
 
     init {
         ApiClient.accessToken = authToken
     }
 
-    public fun setAuthToken(token: String?) {
+    private fun setAuthToken(token: String?) {
         with (sharedPreferences.edit()) {
             putString(PASSAGE_AUTH_TOKEN, token)
             apply()
@@ -54,14 +52,14 @@ public final class PassageTokenStore(activity: Activity) {
         ApiClient.accessToken = token
     }
 
-    public fun setRefreshToken(token: String?) {
+    private fun setRefreshToken(token: String?) {
         with (sharedPreferences.edit()) {
             putString(PASSAGE_REFRESH_TOKEN, token)
             apply()
         }
     }
 
-    public fun setTokens(authResult: PassageAuthResult?) {
+    internal fun setTokens(authResult: PassageAuthResult?) {
         authResult?.let {
             setAuthToken(it.authToken)
             setRefreshToken(it.refreshToken)
@@ -70,7 +68,7 @@ public final class PassageTokenStore(activity: Activity) {
         }
     }
 
-    public suspend fun clearAndRevokeTokens() {
+    internal suspend fun clearAndRevokeTokens() {
         refreshToken?.let {
             PassageToken.revokeRefreshToken(it)
         }
@@ -78,7 +76,7 @@ public final class PassageTokenStore(activity: Activity) {
         setRefreshToken(null)
     }
 
-    public suspend fun attemptRefreshTokenStore() {
+    internal suspend fun attemptRefreshTokenStore() {
         refreshToken?.let {
             try {
                 val authResult = PassageToken.refreshAuthToken(it)

@@ -1,4 +1,4 @@
-@file:Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
+@file:Suppress("RedundantVisibilityModifier", "RedundantModalityModifier")
 
 package id.passage.android.exceptions
 
@@ -38,18 +38,18 @@ public final class PassageCredentialException(message: String): PassageException
     }
 }
 
-public final class PassageAppException(message: String): PassageException(message) {
-    companion object {
-        const val NO_APP = "Could not get Passage App information."
-        const val NO_PUBLIC_SIGNUP = "Public registration disabled for this Passage App."
-    }
-}
+//public final class PassageAppException(message: String): PassageException(message) {
+//    companion object {
+//        const val NO_APP = "Could not get Passage App information."
+//        const val NO_PUBLIC_SIGNUP = "Public registration disabled for this Passage App."
+//    }
+//}
 
-public final class PassageTokenException(message: String): PassageException(message) {
-    companion object {
-        const val REFRESH_FAILED = "Auth token refresh failed."
-    }
-}
+//public final class PassageTokenException(message: String): PassageException(message) {
+//    companion object {
+//        const val REFRESH_FAILED = "Auth token refresh failed."
+//    }
+//}
 
 @JsonClass(generateAdapter = true)
 final class PassageClientError(val status: String?, val error: String?, val code: String?)

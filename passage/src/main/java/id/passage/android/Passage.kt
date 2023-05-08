@@ -79,20 +79,15 @@ public final class Passage(private val activity: Activity) {
      *
      * Get information about an application.
      * @return PassageApp?
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws AppInfoException
      */
     public suspend fun appInfo(): PassageApp? {
         val appsAPI = AppsAPI(BASE_PATH)
-        val appInfo = try {
+        return try {
             appsAPI.getApp(appId)
         } catch (e: Exception) {
-            throw e
-        }
-        Log.e(TAG, "app id ${appInfo.app?.id ?: ""}")
-        Log.e(TAG, "app ${appInfo.app?.authFallbackMethod?.toString() ?: "No fallback method"}")
-        return appInfo.app
+            throw AppInfoException.convert(e)
+        }.app
     }
 
     // endregion
@@ -500,8 +495,7 @@ public final class Passage(private val activity: Activity) {
         val user = try {
             PassageUser.getCurrentUser()
         } catch (e: Exception) {
-            val exception = e
-            Log.e(TAG, "Getting current user failed. ${exception.message ?: e.toString()}")
+            Log.w(TAG, "Getting current user failed. ${e.message ?: e.toString()}")
             null
         }
         return user
@@ -514,9 +508,7 @@ public final class Passage(private val activity: Activity) {
      * clear all tokens from the Passage Token Store, and set the client's access token to null.
      * If not using Passage Token Store, calling this method will set the client's access token to null.
      * @return void
-     * @throws PassageClientException If the Passage API returns a client error response
-     * @throws PassageServerException If the Passage API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws PassageTokenException
      */
     public suspend fun signOutCurrentUser() {
         passageTokenStore?.clearAndRevokeTokens()
