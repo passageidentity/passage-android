@@ -14,8 +14,9 @@ public open class PassageException(message: String): RuntimeException(message) {
         @OptIn(ExperimentalStdlibApi::class)
         fun parseClientException(e: ClientException): PassageClientError? {
             val errorBody = (e.response as? ClientError<*>)?.body?.toString() ?: return null
+            if (errorBody.isEmpty()) return null
             val moshi = Moshi.Builder().build()
-            val jsonAdapter = moshi.adapter<PassageClientError?>().lenient()
+            val jsonAdapter = moshi.adapter<PassageClientError?>().lenient() ?: return null
             return jsonAdapter.fromJson(errorBody)
         }
 

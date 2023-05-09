@@ -2,8 +2,6 @@ package id.passage.android
 
 import android.app.Activity
 import android.util.Log
-import androidx.credentials.exceptions.CreateCredentialException
-import androidx.credentials.exceptions.GetCredentialException
 import id.passage.android.ResourceUtils.Companion.getOptionalResourceFromApp
 import id.passage.android.ResourceUtils.Companion.getRequiredResourceFromApp
 import id.passage.android.api.AppsAPI
@@ -231,7 +229,7 @@ public final class Passage(private val activity: Activity) {
      * @return PassageAuthResult?
      * @throws RegisterWithPasskeyException
      */
-    public suspend fun registerWithPasskey(identifier: String): PassageAuthResult? {
+    public suspend fun registerWithPasskey(identifier: String): PassageAuthResult {
         try {
             val registerAPI = RegisterAPI(BASE_PATH)
             // Get Create Credential challenge from Passage
@@ -529,16 +527,13 @@ public final class Passage(private val activity: Activity) {
      * the identifier types (e.g., it will throw an error if a phone number is supplied to an app
      * that only supports emails as an identifier).
      * @return PassageUser?
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
      */
     public suspend fun identifierExists(identifier: String): PassageUser? {
-        val usersAPI = UsersAPI()
+        val usersAPI = UsersAPI(BASE_PATH)
         val modelsUser = try {
-            usersAPI.checkUserIdentifier(BASE_PATH, identifier).user
+            usersAPI.checkUserIdentifier(appId, identifier).user
         } catch (e: Exception) {
-            throw e
+            return null
         } ?: return null
         return PassageUser.convertToPassageUser(modelsUser)
     }

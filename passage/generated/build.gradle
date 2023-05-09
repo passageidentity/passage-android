@@ -37,5 +37,4 @@ dependencies {
     kapt "com.squareup.moshi:moshi-kotlin-codegen:1.13.0"
     implementation "com.squareup.okhttp3:okhttp:4.10.0"
     testImplementation "io.kotlintest:kotlintest-runner-junit5:3.4.2"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.8.10"
 }
