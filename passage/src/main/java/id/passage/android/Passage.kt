@@ -116,6 +116,12 @@ public final class Passage(private val activity: Activity) {
         if (passageApp.publicSignup == false) {
             throw RegisterPublicDisabledException()
         }
+        val user = try {
+            identifierExists(identifier)
+        } catch(_: Exception) {
+            null
+        }
+        if (user != null) throw RegisterUserExistsException()
         val useFallback = passageApp.requireIdentifierVerification == true
         if (!useFallback) {
             try {
@@ -166,7 +172,7 @@ public final class Passage(private val activity: Activity) {
         // If app requires id verification and user has not yet logged in with a passkey, use a
         // fallback method
         val user = identifierExists(identifier)
-            ?: throw LoginInvalidIdentifierException()
+            ?: throw LoginNoExistingUserException()
         val useFallback = passageApp.requireIdentifierVerification == true && user.webauthn == false
         if (!useFallback) {
             try {

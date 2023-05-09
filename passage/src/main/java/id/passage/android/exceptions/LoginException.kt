@@ -6,7 +6,7 @@ package id.passage.android.exceptions
  * Thrown when there's an error logging in a user, typically an issue with Passage app setup.
  *
  * @see LoginInvalidAppException
- * @see LoginInvalidIdentifierException
+ * @see LoginNoExistingUserException
  * @see LoginNoFallbackException
  */
 public open class LoginException(message: String): PassageException(message)
@@ -20,7 +20,7 @@ public class LoginInvalidAppException(message: String = "Invalid Passage app."):
 /**
  * Thrown when login attempt failed because no user exists with provided identifier.
  */
-public class LoginInvalidIdentifierException(message: String = "User with this identifier does not exist."): LoginException(message)
+public class LoginNoExistingUserException(message: String = "User with this identifier does not exist."): LoginException(message)
 
 /**
  * Thrown when attempting to use a fallback login method but none has been set in Passage app.

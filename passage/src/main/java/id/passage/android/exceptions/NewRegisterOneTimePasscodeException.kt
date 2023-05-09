@@ -6,6 +6,12 @@ import id.passage.android.model.Model400Code
 import id.passage.client.infrastructure.ClientException
 import id.passage.client.infrastructure.ServerException
 
+/**
+ * Thrown when creating a new registration one time passcode fails.
+ *
+ * @see NewRegisterOneTimePasscodeInvalidIdentifierException
+ * @see NewRegisterOneTimePasscodeServerException
+ */
 public open class NewRegisterOneTimePasscodeException(message: String): PassageException(message) {
 
     internal companion object {
@@ -32,5 +38,12 @@ public open class NewRegisterOneTimePasscodeException(message: String): PassageE
 
 }
 
+/**
+ * Thrown when the provided identifier is invalid.
+ */
 public class NewRegisterOneTimePasscodeInvalidIdentifierException(message: String): NewRegisterOneTimePasscodeException(message)
+
+/**
+ * Thrown when Passage internal server error occurs.
+ */
 public class NewRegisterOneTimePasscodeServerException(message: String): NewRegisterOneTimePasscodeException(message)

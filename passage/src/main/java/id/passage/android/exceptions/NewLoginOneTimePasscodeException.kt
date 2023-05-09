@@ -6,6 +6,12 @@ import id.passage.android.model.Model400Code
 import id.passage.client.infrastructure.ClientException
 import id.passage.client.infrastructure.ServerException
 
+/**
+ * Thrown when creating a new login one time passcode fails.
+ *
+ * @see NewLoginOneTimePasscodeInvalidIdentifierException
+ * @see NewLoginOneTimePasscodeServerException
+ */
 public open class NewLoginOneTimePasscodeException(message: String): PassageException(message) {
 
     internal companion object {
@@ -32,5 +38,12 @@ public open class NewLoginOneTimePasscodeException(message: String): PassageExce
 
 }
 
+/**
+ * Thrown when the provided identifier is invalid.
+ */
 public class NewLoginOneTimePasscodeInvalidIdentifierException(message: String): NewLoginOneTimePasscodeException(message)
+
+/**
+ * Thrown when Passage internal server error occurs.
+ */
 public class NewLoginOneTimePasscodeServerException(message: String): NewLoginOneTimePasscodeException(message)

@@ -6,6 +6,12 @@ import id.passage.android.model.Model400Code
 import id.passage.client.infrastructure.ClientException
 import id.passage.client.infrastructure.ServerException
 
+/**
+ * Thrown when creating a new registration magic link fails.
+ *
+ * @see NewRegisterMagicLinkInvalidIdentifierException
+ * @see NewRegisterMagicLinkServerException
+ */
 public open class NewRegisterMagicLinkException(message: String): PassageException(message) {
 
     internal companion object {
@@ -32,5 +38,12 @@ public open class NewRegisterMagicLinkException(message: String): PassageExcepti
 
 }
 
+/**
+ * Thrown when the provided identifier is invalid.
+ */
 public class NewRegisterMagicLinkInvalidIdentifierException(message: String): NewRegisterMagicLinkException(message)
+
+/**
+ * Thrown when Passage internal server error occurs.
+ */
 public class NewRegisterMagicLinkServerException(message: String): NewRegisterMagicLinkException(message)

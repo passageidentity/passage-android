@@ -5,11 +5,17 @@ package id.passage.android.exceptions
 /**
  * Thrown when there's an error registering a user, typically an issue with Passage app setup.
  *
+ * @see RegisterUserExistsException
  * @see RegisterInvalidAppException
  * @see RegisterPublicDisabledException
  * @see RegisterNoFallbackException
  */
 public open class RegisterException(message: String): PassageException(message)
+
+/**
+ * Thrown when a user with provided identifier already exists.
+ */
+public class RegisterUserExistsException(message: String = "User already exists."): RegisterException(message)
 
 /**
  * Thrown when there's an issue with the Passage app, typically indicating "passage_app_id" has not
