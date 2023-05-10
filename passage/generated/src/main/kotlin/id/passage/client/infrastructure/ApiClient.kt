@@ -1,6 +1,5 @@
 package id.passage.client.infrastructure
 
-import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -191,8 +190,6 @@ open class ApiClient(val baseUrl: String, val client: OkHttpClient = defaultClie
             null
         }
 
-        Log.w("Passage", url.toString())
-
         val request = when (requestConfig.method) {
             RequestMethod.DELETE -> Request.Builder().url(url).delete(requestBody(requestConfig.body, contentType))
             RequestMethod.GET -> Request.Builder().url(url)
@@ -219,7 +216,7 @@ open class ApiClient(val baseUrl: String, val client: OkHttpClient = defaultClie
         }
 
         val accept = response.header(ContentType)?.substringBefore(";")?.lowercase(Locale.getDefault())
-//        Log.w("Passage", response.body?.toString() ?: "FUCK")
+
         // TODO: handle specific mapping types. e.g. Map<int, Class<?>>
         return when {
             response.isRedirect -> Redirection(
