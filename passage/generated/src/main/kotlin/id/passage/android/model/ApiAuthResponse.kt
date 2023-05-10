@@ -15,7 +15,7 @@
 
 package id.passage.android.model
 
-import id.passage.android.model.IdentityAuthResult
+import id.passage.android.model.ApiAuthResult
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -30,7 +30,7 @@ import com.squareup.moshi.JsonClass
 data class ApiAuthResponse (
 
     @Json(name = "auth_result")
-    val authResult: IdentityAuthResult? = null
+    val authResult: ApiAuthResult? = null
 
 )
 

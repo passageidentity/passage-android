@@ -6,7 +6,7 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**loginMagicLink**](LoginAPI.md#loginMagicLink) | **POST** /apps/{app_id}/login/magic-link/ | Login with Magic Link
 [**loginOneTimePasscode**](LoginAPI.md#loginOneTimePasscode) | **POST** /apps/{app_id}/login/otp | Login with OTP
-[**loginWebauthnFinish**](LoginAPI.md#loginWebauthnFinish) | **POST** /apps/{app_id}/login/webauthn/finish/ | Finish WebAuthn Login
+[**loginWebauthnFinish**](LoginAPI.md#loginWebauthnFinish) | **POST** /apps/{app_id}/login/webauthn/finish | Finish WebAuthn Login
 [**loginWebauthnStart**](LoginAPI.md#loginWebauthnStart) | **POST** /apps/{app_id}/login/webauthn/start/ | Start WebAuthn Login
 
 
@@ -110,7 +110,7 @@ No authorization required
 
 <a name="loginWebauthnFinish"></a>
 # **loginWebauthnFinish**
-> ApiAuthResponse loginWebauthnFinish(appId, user)
+> AuthResponse1 loginWebauthnFinish(appId, loginWebAuthnFinishRequest)
 
 Finish WebAuthn Login
 
@@ -124,9 +124,9 @@ Complete a WebAuthn login and authenticate the user. This endpoint accepts and v
 
 val apiInstance = LoginAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val user : ApiloginWebAuthnFinishRequest =  // ApiloginWebAuthnFinishRequest | User Data
+val loginWebAuthnFinishRequest : LoginWebAuthnFinishRequest =  // LoginWebAuthnFinishRequest | User Data
 try {
-    val result : ApiAuthResponse = apiInstance.loginWebauthnFinish(appId, user)
+    val result : AuthResponse1 = apiInstance.loginWebauthnFinish(appId, loginWebAuthnFinishRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling LoginAPI#loginWebauthnFinish")
@@ -142,11 +142,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **user** | [**ApiloginWebAuthnFinishRequest**](ApiloginWebAuthnFinishRequest.md)| User Data |
+ **loginWebAuthnFinishRequest** | [**LoginWebAuthnFinishRequest**](LoginWebAuthnFinishRequest.md)| User Data |
 
 ### Return type
 
-[**ApiAuthResponse**](ApiAuthResponse.md)
+[**AuthResponse1**](AuthResponse1.md)
 
 ### Authorization
 

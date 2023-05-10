@@ -15,7 +15,7 @@
 
 package id.passage.android.model
 
-import id.passage.android.model.ProtocolCredentialCreation
+import id.passage.android.model.ApiProtocolCredentialCreation
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -31,7 +31,7 @@ import com.squareup.moshi.JsonClass
 data class ApiCredentialCreationChallenge (
 
     @Json(name = "challenge")
-    val challenge: ProtocolCredentialCreation? = null,
+    val challenge: ApiProtocolCredentialCreation? = null,
 
     @Json(name = "id")
     val id: kotlin.String? = null

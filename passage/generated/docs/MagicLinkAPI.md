@@ -5,10 +5,10 @@ All URIs are relative to *https://virtserver.swaggerhub.com/passage_swagger/auth
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**activateMagicLink**](MagicLinkAPI.md#activateMagicLink) | **PATCH** /apps/{app_id}/magic-link/activate/ | Authenticate Magic Link
-[**activateMagicLinkWebauthnLoginFinish**](MagicLinkAPI.md#activateMagicLinkWebauthnLoginFinish) | **POST** /apps/{app_id}/magic-link/webauthn/login/finish/ | Finish a WebAuthn registration, initiated by a magic link.
+[**activateMagicLinkWebauthnLoginFinish**](MagicLinkAPI.md#activateMagicLinkWebauthnLoginFinish) | **POST** /apps/{app_id}/magic-link/webauthn/login/finish | Finish a WebAuthn registration, initiated by a magic link.
 [**activateMagicLinkWebauthnLoginStart**](MagicLinkAPI.md#activateMagicLinkWebauthnLoginStart) | **POST** /apps/{app_id}/magic-link/webauthn/login/start/ | Authenticate the user via magic link, then initiate a WebAuthn login.
-[**activateMagicLinkWebauthnNewDeviceFinish**](MagicLinkAPI.md#activateMagicLinkWebauthnNewDeviceFinish) | **POST** /apps/{app_id}/magic-link/webauthn/new/finish/ | Finish WebAuthn registration that was initiated from a magic link.
-[**activateMagicLinkWebauthnNewDeviceStart**](MagicLinkAPI.md#activateMagicLinkWebauthnNewDeviceStart) | **POST** /apps/{app_id}/magic-link/webauthn/new/start/ | Authenticate the user via magic link, then initiate a WebAuthn registration.
+[**activateMagicLinkWebauthnNewDeviceFinish**](MagicLinkAPI.md#activateMagicLinkWebauthnNewDeviceFinish) | **POST** /apps/{app_id}/magic-link/webauthn/new/finish | Finish WebAuthn registration that was initiated from a magic link.
+[**activateMagicLinkWebauthnNewDeviceStart**](MagicLinkAPI.md#activateMagicLinkWebauthnNewDeviceStart) | **POST** /apps/{app_id}/magic-link/webauthn/new/start | Authenticate the user via magic link, then initiate a WebAuthn registration.
 [**magicLinkStatus**](MagicLinkAPI.md#magicLinkStatus) | **POST** /apps/{app_id}/magic-link/status/ | Magic Link Status
 
 
@@ -63,7 +63,7 @@ No authorization required
 
 <a name="activateMagicLinkWebauthnLoginFinish"></a>
 # **activateMagicLinkWebauthnLoginFinish**
-> ApiAuthResponse activateMagicLinkWebauthnLoginFinish(appId, user)
+> AuthResponse1 activateMagicLinkWebauthnLoginFinish(appId, magicLinkLoginWebAuthnFinishRequest)
 
 Finish a WebAuthn registration, initiated by a magic link.
 
@@ -75,9 +75,9 @@ Finish a WebAuthn registration, initiated by a magic link.
 
 val apiInstance = MagicLinkAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val user : ApimagicLinkLoginWebAuthnFinishRequest =  // ApimagicLinkLoginWebAuthnFinishRequest | User Data
+val magicLinkLoginWebAuthnFinishRequest : MagicLinkLoginWebAuthnFinishRequest =  // MagicLinkLoginWebAuthnFinishRequest | User Data
 try {
-    val result : ApiAuthResponse = apiInstance.activateMagicLinkWebauthnLoginFinish(appId, user)
+    val result : AuthResponse1 = apiInstance.activateMagicLinkWebauthnLoginFinish(appId, magicLinkLoginWebAuthnFinishRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling MagicLinkAPI#activateMagicLinkWebauthnLoginFinish")
@@ -93,11 +93,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **user** | [**ApimagicLinkLoginWebAuthnFinishRequest**](ApimagicLinkLoginWebAuthnFinishRequest.md)| User Data |
+ **magicLinkLoginWebAuthnFinishRequest** | [**MagicLinkLoginWebAuthnFinishRequest**](MagicLinkLoginWebAuthnFinishRequest.md)| User Data |
 
 ### Return type
 
-[**ApiAuthResponse**](ApiAuthResponse.md)
+[**AuthResponse1**](AuthResponse1.md)
 
 ### Authorization
 
@@ -157,7 +157,7 @@ No authorization required
 
 <a name="activateMagicLinkWebauthnNewDeviceFinish"></a>
 # **activateMagicLinkWebauthnNewDeviceFinish**
-> ApiAuthResponse activateMagicLinkWebauthnNewDeviceFinish(appId, user)
+> AuthResponse1 activateMagicLinkWebauthnNewDeviceFinish(appId, magicLinkNewDeviceWebAuthnFinishRequest)
 
 Finish WebAuthn registration that was initiated from a magic link.
 
@@ -169,9 +169,9 @@ Finish WebAuthn registration that was initiated from a magic link.
 
 val apiInstance = MagicLinkAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val user : ApimagicLinkNewDeviceWebAuthnFinishRequest =  // ApimagicLinkNewDeviceWebAuthnFinishRequest | User Data
+val magicLinkNewDeviceWebAuthnFinishRequest : MagicLinkNewDeviceWebAuthnFinishRequest =  // MagicLinkNewDeviceWebAuthnFinishRequest | User Data
 try {
-    val result : ApiAuthResponse = apiInstance.activateMagicLinkWebauthnNewDeviceFinish(appId, user)
+    val result : AuthResponse1 = apiInstance.activateMagicLinkWebauthnNewDeviceFinish(appId, magicLinkNewDeviceWebAuthnFinishRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling MagicLinkAPI#activateMagicLinkWebauthnNewDeviceFinish")
@@ -187,11 +187,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **user** | [**ApimagicLinkNewDeviceWebAuthnFinishRequest**](ApimagicLinkNewDeviceWebAuthnFinishRequest.md)| User Data |
+ **magicLinkNewDeviceWebAuthnFinishRequest** | [**MagicLinkNewDeviceWebAuthnFinishRequest**](MagicLinkNewDeviceWebAuthnFinishRequest.md)| User Data |
 
 ### Return type
 
-[**ApiAuthResponse**](ApiAuthResponse.md)
+[**AuthResponse1**](AuthResponse1.md)
 
 ### Authorization
 
@@ -204,7 +204,7 @@ No authorization required
 
 <a name="activateMagicLinkWebauthnNewDeviceStart"></a>
 # **activateMagicLinkWebauthnNewDeviceStart**
-> ApimagicLinkNewDeviceWebAuthnStartResponse activateMagicLinkWebauthnNewDeviceStart(appId, user)
+> MagicLinkNewDeviceWebAuthnStartResponse activateMagicLinkWebauthnNewDeviceStart(appId, activateMagicLinkRequest)
 
 Authenticate the user via magic link, then initiate a WebAuthn registration.
 
@@ -216,9 +216,9 @@ Authenticate the user via magic link, then initiate a WebAuthn registration.
 
 val apiInstance = MagicLinkAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val user : ApiactivateMagicLinkRequest =  // ApiactivateMagicLinkRequest | User Data
+val activateMagicLinkRequest : ActivateMagicLinkRequest =  // ActivateMagicLinkRequest | User Data
 try {
-    val result : ApimagicLinkNewDeviceWebAuthnStartResponse = apiInstance.activateMagicLinkWebauthnNewDeviceStart(appId, user)
+    val result : MagicLinkNewDeviceWebAuthnStartResponse = apiInstance.activateMagicLinkWebauthnNewDeviceStart(appId, activateMagicLinkRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling MagicLinkAPI#activateMagicLinkWebauthnNewDeviceStart")
@@ -234,11 +234,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **user** | [**ApiactivateMagicLinkRequest**](ApiactivateMagicLinkRequest.md)| User Data |
+ **activateMagicLinkRequest** | [**ActivateMagicLinkRequest**](ActivateMagicLinkRequest.md)| User Data |
 
 ### Return type
 
-[**ApimagicLinkNewDeviceWebAuthnStartResponse**](ApimagicLinkNewDeviceWebAuthnStartResponse.md)
+[**MagicLinkNewDeviceWebAuthnStartResponse**](MagicLinkNewDeviceWebAuthnStartResponse.md)
 
 ### Authorization
 

@@ -4,7 +4,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**publicKey** | [**ProtocolPublicKeyCredentialCreationOptions**](ProtocolPublicKeyCredentialCreationOptions.md) |  |  [optional]
+**publicKey** | [**ProtocolCredentialCreationPublicKey**](ProtocolCredentialCreationPublicKey.md) |  |  [optional]
 
 
 

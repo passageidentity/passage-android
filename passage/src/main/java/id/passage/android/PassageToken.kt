@@ -2,7 +2,7 @@ package id.passage.android
 
 import id.passage.android.api.TokensAPI
 import id.passage.android.model.ApirefreshAuthTokenRequest
-import java.lang.Exception
+import id.passage.android.exceptions.*
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class PassageToken {
@@ -15,20 +15,24 @@ public final class PassageToken {
          * Creates and returns a new auth and refresh tokens
          * @param refreshToken Existing refresh token
          * @return PassageAuthResult
-         * @throws PassageTokenException If the Passage API returns a null auth result
-         * @throws PassageClientException If the Passage API returns a client error response
-         * @throws PassageServerException If the Passage API returns a server error response
-         * @throws PassageException If the request fails for another reason
+         * @throws PassageTokenException
          */
         public suspend fun refreshAuthToken(refreshToken: String): PassageAuthResult {
             val api = TokensAPI(Passage.BASE_PATH)
             val request = ApirefreshAuthTokenRequest(refreshToken)
-            val authResult = try {
+            val apiAuthResult = try {
                 api.refreshAuthToken(Passage.appId, request).authResult
-                    ?: throw PassageTokenException(PassageTokenException.REFRESH_FAILED)
+                    ?: throw PassageTokenException("Token refresh failed.")
             } catch (e: Exception) {
-                throw PassageException.checkException(e)
+                throw PassageTokenException.convert(e)
             }
+            // TODO: Once BE issue is fixed, we won't need to transform data model
+            val authResult = PassageAuthResult(
+                authToken = apiAuthResult.authToken,
+                redirectUrl = apiAuthResult.redirectUrl,
+                refreshToken = apiAuthResult.refreshToken,
+                refreshTokenExpiration = apiAuthResult.refreshTokenExpiration
+            )
             return authResult
         }
 
@@ -38,13 +42,15 @@ public final class PassageToken {
          * Creates and returns a new auth and refresh tokens
          * @param refreshToken Refresh token
          * @return void
-         * @throws PassageClientException If the Passage API returns a client error response
-         * @throws PassageServerException If the Passage API returns a server error response
-         * @throws PassageException If the request fails for another reason
+         * @throws PassageTokenException
          */
         public suspend fun revokeRefreshToken(refreshToken: String) {
             val api = TokensAPI(Passage.BASE_PATH)
-            api.revokeRefreshToken(Passage.appId, refreshToken)
+            try {
+                api.revokeRefreshToken(Passage.appId, refreshToken)
+            } catch (e: Exception) {
+                throw PassageTokenException.convert(e)
+            }
         }
 
     }

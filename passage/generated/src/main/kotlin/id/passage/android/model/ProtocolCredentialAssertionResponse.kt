@@ -15,7 +15,7 @@
 
 package id.passage.android.model
 
-import id.passage.android.model.ProtocolAuthenticatorAssertionResponse
+import id.passage.android.model.ProtocolCredentialAssertionResponseResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -48,7 +48,7 @@ data class ProtocolCredentialAssertionResponse (
     val rawId: kotlin.String? = null,
 
     @Json(name = "response")
-    val response: ProtocolAuthenticatorAssertionResponse? = null,
+    val response: ProtocolCredentialAssertionResponseResponse? = null,
 
     /* Type is the value of the object’s interface object's [[type]] slot, which specifies the credential type represented by this object. This should be type \"public-key\" for Webauthn credentials. */
     @Json(name = "type")

@@ -4,7 +4,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**challenge** | [**ProtocolCredentialCreation**](ProtocolCredentialCreation.md) |  |  [optional]
+**challenge** | [**ApiProtocolCredentialCreation**](ApiProtocolCredentialCreation.md) |  |  [optional]
 **id** | **kotlin.String** |  |  [optional]
 
 

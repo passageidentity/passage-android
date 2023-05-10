@@ -15,7 +15,7 @@
 
 package id.passage.android.model
 
-import id.passage.android.model.ProtocolPublicKeyCredentialCreationOptions
+import id.passage.android.model.ProtocolCredentialCreationPublicKey
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -30,7 +30,7 @@ import com.squareup.moshi.JsonClass
 data class ProtocolCredentialCreation (
 
     @Json(name = "publicKey")
-    val publicKey: ProtocolPublicKeyCredentialCreationOptions? = null
+    val publicKey: ProtocolCredentialCreationPublicKey? = null
 
 )
 

@@ -2,9 +2,6 @@ package id.passage.android
 
 import android.app.Activity
 import android.util.Log
-import androidx.credentials.exceptions.CreateCredentialException
-import androidx.credentials.exceptions.GetCredentialException
-import id.passage.android.PassageException.Companion.checkException
 import id.passage.android.ResourceUtils.Companion.getOptionalResourceFromApp
 import id.passage.android.ResourceUtils.Companion.getRequiredResourceFromApp
 import id.passage.android.api.AppsAPI
@@ -17,14 +14,15 @@ import id.passage.android.model.ActivateOneTimePasscodeRequest
 import id.passage.android.model.ApiactivateMagicLinkRequest
 import id.passage.android.model.ApigetMagicLinkStatusRequest
 import id.passage.android.model.ApiloginMagicLinkRequest
-import id.passage.android.model.ApiloginWebAuthnFinishRequest
 import id.passage.android.model.ApiloginWebAuthnStartRequest
 import id.passage.android.model.ApiregisterMagicLinkRequest
-import id.passage.android.model.ApiregisterWebAuthnFinishRequest
-import id.passage.android.model.ApiregisterWebAuthnStartRequest
 import id.passage.android.model.LoginOneTimePasscodeRequest
+import id.passage.android.model.LoginWebAuthnFinishRequest
 import id.passage.android.model.RegisterOneTimePasscodeRequest
+import id.passage.android.model.RegisterWebAuthnFinishRequest
+import id.passage.android.model.RegisterWebAuthnStartRequest
 import id.passage.client.infrastructure.ApiClient
+import id.passage.android.exceptions.*
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class Passage(private val activity: Activity) {
@@ -79,18 +77,15 @@ public final class Passage(private val activity: Activity) {
      *
      * Get information about an application.
      * @return PassageApp?
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws AppInfoException
      */
     public suspend fun appInfo(): PassageApp? {
         val appsAPI = AppsAPI(BASE_PATH)
-        val appInfo = try {
+        return try {
             appsAPI.getApp(appId)
         } catch (e: Exception) {
-            throw checkException(e)
-        }
-        return appInfo.app
+            throw AppInfoException.convert(e)
+        }.app
     }
 
     // endregion
@@ -109,17 +104,22 @@ public final class Passage(private val activity: Activity) {
      * and if neither are returned, then the user was not registered and no fallback method was used.
      * @param identifier valid email or E164 phone number
      * @return Pair<PassageAuthResult?, PassageAuthFallbackResult?>
-     * @throws CreateCredentialException If the attempt to create a passkey fails
-     * @throws PassageClientException If the Passage API returns a client error response
-     * @throws PassageServerException If the Passage API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws RegisterException when there's a registration issue with the Passage app setup
+     * @throws NewRegisterMagicLinkException when passkey registration AND magic link creation fails
+     * @throws NewRegisterOneTimePasscodeException when passkey registration AND otp generation fails
      */
     public suspend fun register(identifier: String): Pair<PassageAuthResult?, PassageAuthFallbackResult?> {
         val passageApp = appInfo()
-            ?: throw PassageException("Invalid Passage app.")
+            ?: throw RegisterInvalidAppException()
         if (passageApp.publicSignup == false) {
-            throw PassageException("Public registration disabled for this app.")
+            throw RegisterPublicDisabledException()
         }
+        val user = try {
+            identifierExists(identifier)
+        } catch(_: Exception) {
+            null
+        }
+        if (user != null) throw RegisterUserExistsException()
         val useFallback = passageApp.requireIdentifierVerification == true
         if (!useFallback) {
             try {
@@ -130,10 +130,10 @@ public final class Passage(private val activity: Activity) {
             }
         }
         val fallbackMethod = passageApp.authFallbackMethod
-            ?: throw PassageException("Passage app requires identifier verification but has no auth fallback method set.")
+            ?: throw RegisterNoFallbackException()
         val fallback: PassageAuthFallbackResult = when (fallbackMethod) {
             PassageAuthFallbackMethod.magicLink -> {
-                val magicLinkId = newRegisterMagicLink(identifier)?.id ?: throw Exception("")
+                val magicLinkId = newRegisterMagicLink(identifier)?.id ?: ""
                 PassageAuthFallbackResult(id = magicLinkId, method = fallbackMethod)
             }
             PassageAuthFallbackMethod.otp -> {
@@ -141,7 +141,7 @@ public final class Passage(private val activity: Activity) {
                 PassageAuthFallbackResult(id = otpId, method = fallbackMethod)
             }
             PassageAuthFallbackMethod.none -> {
-                throw PassageException("Passage app requires identifier verification but has no auth fallback method set.")
+                throw RegisterNoFallbackException()
             }
         }
         return Pair(null, fallback)
@@ -160,18 +160,17 @@ public final class Passage(private val activity: Activity) {
      *
      * @param identifier valid email or E164 phone number
      * @return PassageAuthResult?
-     * @throws GetCredentialException If the attempt to create a passkey fails
-     * @throws PassageClientException If the Passage API returns a client error response
-     * @throws PassageServerException If the Passage API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws LoginException when there's a login issue with the Passage app setup
+     * @throws NewLoginMagicLinkException when passkey login AND magic link creation fails
+     * @throws NewLoginOneTimePasscodeException when passkey login AND otp generation fails
      */
     public suspend fun login(identifier: String): Pair<PassageAuthResult?, PassageAuthFallbackResult?> {
         val passageApp = appInfo()
-            ?: throw PassageException("Invalid Passage app.")
+            ?: throw LoginInvalidAppException()
         // If app requires id verification and user has not yet logged in with a passkey, use a
         // fallback method
         val user = identifierExists(identifier)
-            ?: throw PassageException("User with this identifier does not exist.")
+            ?: throw LoginNoExistingUserException()
         val useFallback = passageApp.requireIdentifierVerification == true && user.webauthn == false
         if (!useFallback) {
             try {
@@ -183,11 +182,11 @@ public final class Passage(private val activity: Activity) {
         }
         // If useFallback or if passkey login fails, attempt new fallback login.
         val fallbackMethod = passageApp.authFallbackMethod
-            ?: throw PassageException("Passage app requires identifier verification but has no auth fallback method set.")
+            ?: throw LoginNoFallbackException()
         val fallback: PassageAuthFallbackResult =
             when (fallbackMethod) {
                 PassageAuthFallbackMethod.magicLink -> {
-                    val magicLinkId = newLoginMagicLink(identifier)?.id ?: throw Exception("")
+                    val magicLinkId = newLoginMagicLink(identifier)?.id ?: ""
                     PassageAuthFallbackResult(id = magicLinkId, method = fallbackMethod)
                 }
                 PassageAuthFallbackMethod.otp -> {
@@ -195,7 +194,7 @@ public final class Passage(private val activity: Activity) {
                     PassageAuthFallbackResult(id = otpId, method = fallbackMethod)
                 }
                 PassageAuthFallbackMethod.none -> {
-                    throw PassageException("Passage app requires identifier verification but has no auth fallback method set.")
+                    throw LoginNoFallbackException()
                 }
             }
         return Pair(null, fallback)
@@ -228,33 +227,30 @@ public final class Passage(private val activity: Activity) {
      * Create a user, prompt the user to create a passkey, and register the user.
      * @param identifier valid email or E164 phone number
      * @return PassageAuthResult?
-     * @throws CreateCredentialException If the attempt to create a passkey fails
-     * @throws PassageClientException If the Passage API returns a client error response
-     * @throws PassageServerException If the Passage API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws RegisterWithPasskeyException
      */
-    public suspend fun registerWithPasskey(identifier: String): PassageAuthResult? {
+    public suspend fun registerWithPasskey(identifier: String): PassageAuthResult {
         try {
             val registerAPI = RegisterAPI(BASE_PATH)
             // Get Create Credential challenge from Passage
-            val webauthnStartRequest = ApiregisterWebAuthnStartRequest(identifier)
+            val webauthnStartRequest = RegisterWebAuthnStartRequest(identifier)
             val webauthnStartResponse = registerAPI.registerWebauthnStart(appId, webauthnStartRequest)
             // Use Create Credential challenge to prompt user to create a passkey
             val createCredOptionsJson = PasskeyUtils.getCreateCredentialOptionsJson(webauthnStartResponse.handshake)
             val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
             // Complete registration and authenticate the user
             val handshakeResponse = PasskeyUtils.getCreateCredentialHandshakeResponse(createCredResponse)
-            val webauthnFinishRequest = ApiregisterWebAuthnFinishRequest(
-                handshakeId = webauthnStartResponse.handshake?.id,
+            val webauthnFinishRequest = RegisterWebAuthnFinishRequest(
+                handshakeId = webauthnStartResponse.handshake.id,
                 handshakeResponse = handshakeResponse,
-                userId = webauthnStartResponse.user?.id
+                userId = webauthnStartResponse.user?.id ?: ""
             )
             val authResponse = registerAPI.registerWebauthnFinish(appId, webauthnFinishRequest)
             // Handle and return auth result
             handleAuthResult(authResponse.authResult)
             return authResponse.authResult
         } catch (e: Exception) {
-            throw checkException(e)
+            throw RegisterWithPasskeyException.convert(e)
         }
     }
 
@@ -264,12 +260,9 @@ public final class Passage(private val activity: Activity) {
      * Prompt the user to select a passkey to login with and authenticate the user.
      * @param identifier valid email or E164 phone number
      * @return PassageAuthResult?
-     * @throws GetCredentialException If the attempt to create a passkey fails
-     * @throws PassageClientException If the Passage API returns a client error response
-     * @throws PassageServerException If the Passage API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws LoginWithPasskeyException
      */
-    public suspend fun loginWithPasskey(identifier: String): PassageAuthResult? {
+    public suspend fun loginWithPasskey(identifier: String): PassageAuthResult {
         try {
             val loginAPI = LoginAPI(BASE_PATH)
             // Get Credential challenge from Passage
@@ -280,8 +273,8 @@ public final class Passage(private val activity: Activity) {
             val credResponse = PasskeyUtils.getPasskey(credOptionsJson, activity)
             // Complete login and authenticate the user
             val handshakeResponse = PasskeyUtils.getCredentialHandshakeResponse(credResponse)
-            val webauthnFinishRequest = ApiloginWebAuthnFinishRequest(
-                handshakeId = webauthnStartResponse.handshake?.id,
+            val webauthnFinishRequest = LoginWebAuthnFinishRequest(
+                handshakeId = webauthnStartResponse.handshake?.id ?: "",
                 handshakeResponse = handshakeResponse,
                 userId = webauthnStartResponse.user?.id
             )
@@ -290,7 +283,7 @@ public final class Passage(private val activity: Activity) {
             // Return auth result
             return authResponse.authResult
         } catch(e: Exception) {
-            throw checkException(e)
+            throw LoginWithPasskeyException.convert(e)
         }
     }
 
@@ -305,9 +298,7 @@ public final class Passage(private val activity: Activity) {
      * @param identifier valid email or E164 phone number
      * @param magicLinkPath path relative to the app's auth origin (optional)
      * @return MagicLink
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws NewRegisterMagicLinkException
      */
     public suspend fun newRegisterMagicLink(identifier: String, magicLinkPath: String? = null): MagicLink? {
         val registerAPI = RegisterAPI(BASE_PATH)
@@ -319,7 +310,7 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             registerAPI.registerMagicLink(appId, request)
         } catch (e: Exception) {
-            throw checkException(e)
+            throw NewRegisterMagicLinkException.convert(e)
         }
         return response.magicLink
     }
@@ -331,9 +322,7 @@ public final class Passage(private val activity: Activity) {
      * @param identifier valid email or E164 phone number
      * @param magicLinkPath path relative to the app's auth_origin (optional)
      * @return MagicLink?
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws NewLoginMagicLinkException
      */
     public suspend fun newLoginMagicLink(identifier: String, magicLinkPath: String? = null): MagicLink? {
         val loginAPI = LoginAPI(BASE_PATH)
@@ -345,7 +334,7 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             loginAPI.loginMagicLink(appId, request)
         } catch (e: Exception) {
-            throw checkException(e)
+            throw NewLoginMagicLinkException.convert(e)
         }
         return response.magicLink
     }
@@ -357,9 +346,7 @@ public final class Passage(private val activity: Activity) {
      * then returns an authentication token for the user.
      * @param userMagicLink full magic link that starts with "ml" (sent via email or text to the user)
      * @return PassageAuthResult?
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws MagicLinkActivateException
      */
     public suspend fun magicLinkActivate(userMagicLink: String): PassageAuthResult? {
         val magicLinkAPI = MagicLinkAPI(BASE_PATH)
@@ -367,10 +354,17 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             magicLinkAPI.activateMagicLink(appId, request)
         } catch (e: Exception) {
-            throw checkException(e)
+            throw MagicLinkActivateException.convert(e)
         }
-        handleAuthResult(response.authResult)
-        return response.authResult
+        // TODO: Once BE issue is fixed, we won't need to transform data model
+        val authResult = PassageAuthResult(
+            authToken = response.authResult?.authToken ?: "",
+            redirectUrl = response.authResult?.redirectUrl ?: "",
+            refreshToken = response.authResult?.refreshToken,
+            refreshTokenExpiration = response.authResult?.refreshTokenExpiration
+        )
+        handleAuthResult(authResult)
+        return authResult
     }
 
     /**
@@ -382,9 +376,7 @@ public final class Passage(private val activity: Activity) {
      * device.
      * @param magicLinkId Magic Link ID
      * @return PassageAuthResult?
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws GetMagicLinkStatusException
      */
     public suspend fun getMagicLinkStatus(magicLinkId: String): PassageAuthResult? {
         val magicLinkAPI = MagicLinkAPI(BASE_PATH)
@@ -392,10 +384,22 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             magicLinkAPI.magicLinkStatus(appId, request)
         } catch (e: Exception) {
-            throw checkException(e)
+            val exception = GetMagicLinkStatusException.convert(e)
+            if (exception is GetMagicLinkStatusNotFoundException) {
+                Log.w(TAG, "Magic link not activated.")
+                return null
+            }
+            throw exception
         }
-        handleAuthResult(response.authResult)
-        return response.authResult
+        // TODO: Once BE issue is fixed, we won't need to transform data model
+        val authResult = PassageAuthResult(
+            authToken = response.authResult?.authToken ?: "",
+            redirectUrl = response.authResult?.redirectUrl ?: "",
+            refreshToken = response.authResult?.refreshToken,
+            refreshTokenExpiration = response.authResult?.refreshTokenExpiration
+        )
+        handleAuthResult(authResult)
+        return authResult
     }
 
     // endregion
@@ -409,9 +413,7 @@ public final class Passage(private val activity: Activity) {
      * email or text with a one time passcode to complete their registration.
      * @param identifier valid email or E164 phone number
      * @return OneTimePasscode
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws NewRegisterOneTimePasscodeException
      */
     public suspend fun newRegisterOneTimePasscode(identifier: String): OneTimePasscode {
         val registerAPI = RegisterAPI(BASE_PATH)
@@ -419,7 +421,7 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             registerAPI.registerOneTimePasscode(appId, request)
         } catch (e: Exception) {
-            throw checkException(e)
+            throw NewRegisterOneTimePasscodeException.convert(e)
         }
         return response
     }
@@ -431,9 +433,7 @@ public final class Passage(private val activity: Activity) {
      * passcode to complete their login.
      * @param identifier valid email or E164 phone number
      * @return OneTimePasscode
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws NewLoginOneTimePasscodeException
      */
     public suspend fun newLoginOneTimePasscode(identifier: String): OneTimePasscode {
         val loginAPI = LoginAPI(BASE_PATH)
@@ -441,7 +441,7 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             loginAPI.loginOneTimePasscode(appId, request)
         } catch (e: Exception) {
-            throw checkException(e)
+            throw NewLoginOneTimePasscodeException.convert(e)
         }
         return response
     }
@@ -454,9 +454,7 @@ public final class Passage(private val activity: Activity) {
      * @param otp The one time passcode
      * @param otpId The OTP id
      * @return PassageAuthResult
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws OneTimePasscodeActivateException
      */
     public suspend fun oneTimePasscodeActivate(otp: String, otpId: String): PassageAuthResult {
         val otpAPI = OTPAPI(BASE_PATH)
@@ -464,7 +462,7 @@ public final class Passage(private val activity: Activity) {
         val response = try {
             otpAPI.activateOneTimePasscode(appId, request)
         } catch (e: Exception) {
-            throw checkException(e)
+            throw OneTimePasscodeActivateException.convert(e)
         }
         val otpAuthResult = response.authResult
         // NOTE: The OpenAPI codegen produces an `IdentityAuthResult` for passkey and magic link
@@ -501,8 +499,7 @@ public final class Passage(private val activity: Activity) {
         val user = try {
             PassageUser.getCurrentUser()
         } catch (e: Exception) {
-            val exception = checkException(e)
-            Log.e(TAG, "Getting current user failed. ${exception.message ?: e.toString()}")
+            Log.w(TAG, "Getting current user failed. ${e.message ?: e.toString()}")
             null
         }
         return user
@@ -515,9 +512,7 @@ public final class Passage(private val activity: Activity) {
      * clear all tokens from the Passage Token Store, and set the client's access token to null.
      * If not using Passage Token Store, calling this method will set the client's access token to null.
      * @return void
-     * @throws PassageClientException If the Passage API returns a client error response
-     * @throws PassageServerException If the Passage API returns a server error response
-     * @throws PassageException If the request fails for another reason
+     * @throws PassageTokenException
      */
     public suspend fun signOutCurrentUser() {
         passageTokenStore?.clearAndRevokeTokens()
@@ -532,16 +527,13 @@ public final class Passage(private val activity: Activity) {
      * the identifier types (e.g., it will throw an error if a phone number is supplied to an app
      * that only supports emails as an identifier).
      * @return PassageUser?
-     * @throws PassageClientException If the API returns a client error response
-     * @throws PassageServerException If the API returns a server error response
-     * @throws PassageException If the request fails for another reason
      */
     public suspend fun identifierExists(identifier: String): PassageUser? {
-        val usersAPI = UsersAPI()
+        val usersAPI = UsersAPI(BASE_PATH)
         val modelsUser = try {
-            usersAPI.checkUserIdentifier(BASE_PATH, identifier).user
+            usersAPI.checkUserIdentifier(appId, identifier).user
         } catch (e: Exception) {
-            throw checkException(e)
+            return null
         } ?: return null
         return PassageUser.convertToPassageUser(modelsUser)
     }

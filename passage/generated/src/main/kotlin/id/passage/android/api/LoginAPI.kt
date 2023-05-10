@@ -20,14 +20,17 @@ import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
 import id.passage.android.model.APIError
-import id.passage.android.model.ApiAuthResponse
 import id.passage.android.model.ApiloginMagicLinkRequest
 import id.passage.android.model.ApiloginMagicLinkResponse
-import id.passage.android.model.ApiloginWebAuthnFinishRequest
 import id.passage.android.model.ApiloginWebAuthnStartRequest
 import id.passage.android.model.ApiloginWebAuthnStartResponse
+import id.passage.android.model.AuthResponse1
 import id.passage.android.model.HttpErrorsHTTPError
 import id.passage.android.model.LoginOneTimePasscodeRequest
+import id.passage.android.model.LoginWebAuthnFinishRequest
+import id.passage.android.model.Model400Error
+import id.passage.android.model.Model401Error
+import id.passage.android.model.Model500Error
 import id.passage.android.model.OneTimePasscodeResponse
 
 import com.squareup.moshi.Json
@@ -210,8 +213,8 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * Finish WebAuthn Login
      * Complete a WebAuthn login and authenticate the user. This endpoint accepts and verifies the response from &#x60;navigator.credential.get()&#x60; and returns an authentication token for the user.
      * @param appId App ID
-     * @param user User Data
-     * @return ApiAuthResponse
+     * @param loginWebAuthnFinishRequest User Data
+     * @return AuthResponse1
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -220,11 +223,11 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun loginWebauthnFinish(appId: kotlin.String, user: ApiloginWebAuthnFinishRequest) : ApiAuthResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = loginWebauthnFinishWithHttpInfo(appId = appId, user = user)
+    suspend fun loginWebauthnFinish(appId: kotlin.String, loginWebAuthnFinishRequest: LoginWebAuthnFinishRequest) : AuthResponse1 = withContext(Dispatchers.IO) {
+        val localVarResponse = loginWebauthnFinishWithHttpInfo(appId = appId, loginWebAuthnFinishRequest = loginWebAuthnFinishRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiAuthResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as AuthResponse1
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -242,17 +245,17 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * Finish WebAuthn Login
      * Complete a WebAuthn login and authenticate the user. This endpoint accepts and verifies the response from &#x60;navigator.credential.get()&#x60; and returns an authentication token for the user.
      * @param appId App ID
-     * @param user User Data
-     * @return ApiResponse<ApiAuthResponse?>
+     * @param loginWebAuthnFinishRequest User Data
+     * @return ApiResponse<AuthResponse1?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun loginWebauthnFinishWithHttpInfo(appId: kotlin.String, user: ApiloginWebAuthnFinishRequest) : ApiResponse<ApiAuthResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = loginWebauthnFinishRequestConfig(appId = appId, user = user)
+    suspend fun loginWebauthnFinishWithHttpInfo(appId: kotlin.String, loginWebAuthnFinishRequest: LoginWebAuthnFinishRequest) : ApiResponse<AuthResponse1?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = loginWebauthnFinishRequestConfig(appId = appId, loginWebAuthnFinishRequest = loginWebAuthnFinishRequest)
 
-        return@withContext request<ApiloginWebAuthnFinishRequest, ApiAuthResponse>(
+        return@withContext request<LoginWebAuthnFinishRequest, AuthResponse1>(
             localVariableConfig
         )
     }
@@ -261,11 +264,11 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * To obtain the request config of the operation loginWebauthnFinish
      *
      * @param appId App ID
-     * @param user User Data
+     * @param loginWebAuthnFinishRequest User Data
      * @return RequestConfig
      */
-    fun loginWebauthnFinishRequestConfig(appId: kotlin.String, user: ApiloginWebAuthnFinishRequest) : RequestConfig<ApiloginWebAuthnFinishRequest> {
-        val localVariableBody = user
+    fun loginWebauthnFinishRequestConfig(appId: kotlin.String, loginWebAuthnFinishRequest: LoginWebAuthnFinishRequest) : RequestConfig<LoginWebAuthnFinishRequest> {
+        val localVariableBody = loginWebAuthnFinishRequest
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
         localVariableHeaders["Content-Type"] = "application/json"
@@ -273,7 +276,7 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
 
         return RequestConfig(
             method = RequestMethod.POST,
-            path = "/apps/{app_id}/login/webauthn/finish/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/login/webauthn/finish".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
