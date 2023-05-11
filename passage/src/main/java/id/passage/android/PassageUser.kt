@@ -1,8 +1,8 @@
 package id.passage.android
 
 import android.app.Activity
-import androidx.credentials.exceptions.CreateCredentialException
 import id.passage.android.api.CurrentuserAPI
+import id.passage.android.exceptions.AddDevicePasskeyException
 import id.passage.android.exceptions.PassageUserException
 import id.passage.android.model.ApiCurrentUserDevice
 import id.passage.android.model.ApiCurrentUserDevices
@@ -194,27 +194,28 @@ final class PassageUser private constructor(
      *
      * Returns the created device for the user. User must be authenticated via a bearer token.
      * @param activity Activity to surface the Credentials Manager prompt within
-     * @return ApiCurrentUserDevice
-     * @throws CreateCredentialException when the attempt to create a passkey fails
-     * @throws PassageUserException when the request fails for any other reason
+     * @return PassageCredential?
+     * @throws AddDevicePasskeyException
      */
-    public suspend fun addDevice(activity: Activity): ApiCurrentUserDevice {
-        // TODO: Update this once code gen types are consistent
-        throw Exception("Not supported yet.")
-//        val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-//        // Get Create Credential challenge from Passage
-//        val webauthnStartResponse = currentUserAPI.postCurrentuserAddDeviceStart(Passage.appId)
-//        // Use Create Credential challenge to prompt user to create a passkey
-//        val createCredOptionsJson = PasskeyUtils.getCreateCredentialOptionsJson(webauthnStartResponse.handshake)
-//        val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
-//        // Complete registration
-//        val handshakeResponse = PasskeyUtils.getCreateCredentialHandshakeResponse(createCredResponse)
-//        val finishRequest = ApiaddDeviceFinishRequest(
-//            handshakeId = webauthnStartResponse.handshake?.id,
-//            handshakeResponse = handshakeResponse,
-//            userId = webauthnStartResponse.user?.id
-//        )
-//        return currentUserAPI.postCurrentuserAddDeviceFinish(Passage.appId, finishRequest)
+    public suspend fun addDevicePasskey(activity: Activity): PassageCredential? {
+        try {
+            val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
+            // Get Create Credential challenge from Passage
+            val webauthnStartResponse = currentUserAPI.postCurrentuserAddDeviceStart(Passage.appId)
+            // Use Create Credential challenge to prompt user to create a passkey
+            val createCredOptionsJson = PasskeyUtils.getCreateCredentialOptionsJson(webauthnStartResponse.handshake)
+            val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
+            // Complete registration
+            val handshakeResponse = PasskeyUtils.getCreateCredentialHandshakeResponse(createCredResponse)
+            val finishRequest = ApiaddDeviceFinishRequest(
+                handshakeId = webauthnStartResponse.handshake?.id,
+                handshakeResponse = handshakeResponse,
+                userId = webauthnStartResponse.user?.id
+            )
+            return currentUserAPI.postCurrentuserAddDeviceFinish(Passage.appId, finishRequest).device
+        } catch (e: Exception) {
+            throw AddDevicePasskeyException.convert(e)
+        }
     }
 
     /**

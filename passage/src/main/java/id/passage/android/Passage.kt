@@ -239,7 +239,7 @@ public final class Passage(private val activity: Activity) {
             val createCredOptionsJson = PasskeyUtils.getCreateCredentialOptionsJson(webauthnStartResponse.handshake)
             val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
             // Complete registration and authenticate the user
-            val handshakeResponse = PasskeyUtils.getCreateCredentialHandshakeResponse(createCredResponse)
+            val handshakeResponse = PasskeyUtils.getCreateCredentialHandshakeResponse1(createCredResponse)
             val webauthnFinishRequest = RegisterWebAuthnFinishRequest(
                 handshakeId = webauthnStartResponse.handshake.id,
                 handshakeResponse = handshakeResponse,
