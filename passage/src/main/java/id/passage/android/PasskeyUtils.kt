@@ -26,6 +26,10 @@ import id.passage.android.exceptions.*
 import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_MISSING
 import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_PARSING_FAILED
 import id.passage.android.exceptions.CredentialParsingException.Companion.CREDENTIAL_PARSING_FAILED
+import id.passage.android.model.ApiCredentialCreationChallenge
+import id.passage.android.model.ProtocolCredentialCreationResponse
+import id.passage.android.model.ProtocolCredentialCreationResponseJsonAdapter
+import id.passage.android.model.ProtocolPublicKeyCredentialCreationOptionsJsonAdapter
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class PasskeyUtils {
@@ -98,6 +102,16 @@ public final class PasskeyUtils {
                 ?: throw CredentialParsingException(CHALLENGE_PARSING_FAILED)
         }
 
+        // NOTE: Temporary, until Open API spec uses `CredentialCreationChallenge` rather than `ApiCredentialCreationChallenge`
+        internal fun getCreateCredentialOptionsJson(challenge: ApiCredentialCreationChallenge?): String {
+            val publicKey = challenge?.challenge?.publicKey
+                ?: throw CredentialParsingException(CHALLENGE_MISSING)
+            val moshi = Moshi.Builder().build()
+            val adapter = ProtocolPublicKeyCredentialCreationOptionsJsonAdapter(moshi)
+            return adapter.toJson(publicKey)
+                ?: throw CredentialParsingException(CHALLENGE_PARSING_FAILED)
+        }
+
         /**
          * Get Create Credential Handshake Response
          *
@@ -107,7 +121,17 @@ public final class PasskeyUtils {
          * @return ProtocolCredentialCreationResponse
          * @throws CredentialParsingException
          */
-        internal fun getCreateCredentialHandshakeResponse(createCredentialResponse: CreateCredentialResponse): ProtocolCredentialCreationResponse1 {
+        internal fun getCreateCredentialHandshakeResponse(createCredentialResponse: CreateCredentialResponse): ProtocolCredentialCreationResponse {
+            val handshakeResponseJson =
+                createCredentialResponse.data.getString(REGISTRATION_RESPONSE_BUNDLE_KEY).toString()
+            val moshi = Moshi.Builder().build()
+            val handshakeResponseAdapter = ProtocolCredentialCreationResponseJsonAdapter(moshi)
+            return handshakeResponseAdapter.fromJson(handshakeResponseJson)
+                ?: throw CredentialParsingException(CREDENTIAL_PARSING_FAILED)
+        }
+
+        // NOTE: Temporary, until Open API spec uses `ProtocolCredentialCreationResponse` rather than `ProtocolCredentialCreationResponse1`
+        internal fun getCreateCredentialHandshakeResponse1(createCredentialResponse: CreateCredentialResponse): ProtocolCredentialCreationResponse1 {
             val handshakeResponseJson =
                 createCredentialResponse.data.getString(REGISTRATION_RESPONSE_BUNDLE_KEY).toString()
             val moshi = Moshi.Builder().build()
