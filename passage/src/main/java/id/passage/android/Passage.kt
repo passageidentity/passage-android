@@ -2,6 +2,7 @@ package id.passage.android
 
 import android.app.Activity
 import android.util.Log
+import android.webkit.WebSettings
 import id.passage.android.ResourceUtils.Companion.getOptionalResourceFromApp
 import id.passage.android.ResourceUtils.Companion.getRequiredResourceFromApp
 import id.passage.android.api.AppsAPI
@@ -23,6 +24,7 @@ import id.passage.android.model.RegisterWebAuthnFinishRequest
 import id.passage.android.model.RegisterWebAuthnStartRequest
 import id.passage.client.infrastructure.ApiClient
 import id.passage.android.exceptions.*
+import okhttp3.OkHttpClient
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class Passage(private val activity: Activity) {
@@ -40,6 +42,20 @@ public final class Passage(private val activity: Activity) {
     // region INSTANCE VARIABLES
 
     private var passageTokenStore: PassageTokenStore? = null
+
+    private val passageClient: OkHttpClient by lazy {
+        val userAgent = WebSettings.getDefaultUserAgent(activity) ?: "Android"
+        OkHttpClient.Builder()
+            .addNetworkInterceptor { chain ->
+                chain.proceed(
+                    chain.request()
+                        .newBuilder()
+                        .header("User-Agent", userAgent)
+                        .build()
+                )
+            }
+            .build()
+    }
 
     // endregion
 
@@ -80,7 +96,7 @@ public final class Passage(private val activity: Activity) {
      * @throws AppInfoException
      */
     public suspend fun appInfo(): PassageApp? {
-        val appsAPI = AppsAPI(BASE_PATH)
+        val appsAPI = AppsAPI(BASE_PATH, passageClient)
         return try {
             appsAPI.getApp(appId)
         } catch (e: Exception) {
@@ -231,7 +247,7 @@ public final class Passage(private val activity: Activity) {
      */
     public suspend fun registerWithPasskey(identifier: String): PassageAuthResult {
         try {
-            val registerAPI = RegisterAPI(BASE_PATH)
+            val registerAPI = RegisterAPI(BASE_PATH, passageClient)
             // Get Create Credential challenge from Passage
             val webauthnStartRequest = RegisterWebAuthnStartRequest(identifier)
             val webauthnStartResponse = registerAPI.registerWebauthnStart(appId, webauthnStartRequest)
@@ -264,7 +280,7 @@ public final class Passage(private val activity: Activity) {
      */
     public suspend fun loginWithPasskey(identifier: String): PassageAuthResult {
         try {
-            val loginAPI = LoginAPI(BASE_PATH)
+            val loginAPI = LoginAPI(BASE_PATH, passageClient)
             // Get Credential challenge from Passage
             val webauthnStartRequest = ApiloginWebAuthnStartRequest(identifier)
             val webauthnStartResponse = loginAPI.loginWebauthnStart(appId, webauthnStartRequest)
@@ -301,7 +317,7 @@ public final class Passage(private val activity: Activity) {
      * @throws NewRegisterMagicLinkException
      */
     public suspend fun newRegisterMagicLink(identifier: String, magicLinkPath: String? = null): MagicLink? {
-        val registerAPI = RegisterAPI(BASE_PATH)
+        val registerAPI = RegisterAPI(BASE_PATH, passageClient)
         val request = ApiregisterMagicLinkRequest(
             identifier = identifier,
             language = language,
@@ -325,7 +341,7 @@ public final class Passage(private val activity: Activity) {
      * @throws NewLoginMagicLinkException
      */
     public suspend fun newLoginMagicLink(identifier: String, magicLinkPath: String? = null): MagicLink? {
-        val loginAPI = LoginAPI(BASE_PATH)
+        val loginAPI = LoginAPI(BASE_PATH, passageClient)
         val request = ApiloginMagicLinkRequest(
             identifier = identifier,
             language = language,
@@ -349,7 +365,7 @@ public final class Passage(private val activity: Activity) {
      * @throws MagicLinkActivateException
      */
     public suspend fun magicLinkActivate(userMagicLink: String): PassageAuthResult? {
-        val magicLinkAPI = MagicLinkAPI(BASE_PATH)
+        val magicLinkAPI = MagicLinkAPI(BASE_PATH, passageClient)
         val request = ApiactivateMagicLinkRequest(userMagicLink)
         val response = try {
             magicLinkAPI.activateMagicLink(appId, request)
@@ -379,7 +395,7 @@ public final class Passage(private val activity: Activity) {
      * @throws GetMagicLinkStatusException
      */
     public suspend fun getMagicLinkStatus(magicLinkId: String): PassageAuthResult? {
-        val magicLinkAPI = MagicLinkAPI(BASE_PATH)
+        val magicLinkAPI = MagicLinkAPI(BASE_PATH, passageClient)
         val request = ApigetMagicLinkStatusRequest(magicLinkId)
         val response = try {
             magicLinkAPI.magicLinkStatus(appId, request)
@@ -416,7 +432,7 @@ public final class Passage(private val activity: Activity) {
      * @throws NewRegisterOneTimePasscodeException
      */
     public suspend fun newRegisterOneTimePasscode(identifier: String): OneTimePasscode {
-        val registerAPI = RegisterAPI(BASE_PATH)
+        val registerAPI = RegisterAPI(BASE_PATH, passageClient)
         val request = RegisterOneTimePasscodeRequest(identifier, language)
         val response = try {
             registerAPI.registerOneTimePasscode(appId, request)
@@ -436,7 +452,7 @@ public final class Passage(private val activity: Activity) {
      * @throws NewLoginOneTimePasscodeException
      */
     public suspend fun newLoginOneTimePasscode(identifier: String): OneTimePasscode {
-        val loginAPI = LoginAPI(BASE_PATH)
+        val loginAPI = LoginAPI(BASE_PATH, passageClient)
         val request = LoginOneTimePasscodeRequest(identifier, language)
         val response = try {
             loginAPI.loginOneTimePasscode(appId, request)
@@ -457,7 +473,7 @@ public final class Passage(private val activity: Activity) {
      * @throws OneTimePasscodeActivateException
      */
     public suspend fun oneTimePasscodeActivate(otp: String, otpId: String): PassageAuthResult {
-        val otpAPI = OTPAPI(BASE_PATH)
+        val otpAPI = OTPAPI(BASE_PATH, passageClient)
         val request = ActivateOneTimePasscodeRequest(otp, otpId)
         val response = try {
             otpAPI.activateOneTimePasscode(appId, request)
@@ -529,7 +545,7 @@ public final class Passage(private val activity: Activity) {
      * @return PassageUser?
      */
     public suspend fun identifierExists(identifier: String): PassageUser? {
-        val usersAPI = UsersAPI(BASE_PATH)
+        val usersAPI = UsersAPI(BASE_PATH, passageClient)
         val modelsUser = try {
             usersAPI.checkUserIdentifier(appId, identifier).user
         } catch (e: Exception) {
