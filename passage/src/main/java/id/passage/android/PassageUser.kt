@@ -4,11 +4,8 @@ import android.app.Activity
 import id.passage.android.api.CurrentuserAPI
 import id.passage.android.exceptions.AddDevicePasskeyException
 import id.passage.android.exceptions.PassageUserException
-import id.passage.android.model.ApiCurrentUserDevice
-import id.passage.android.model.ApiCurrentUserDevices
 import id.passage.android.model.ApiaddDeviceFinishRequest
 import id.passage.android.model.ApiupdateDeviceRequest
-import id.passage.android.model.ModelsCredential
 import id.passage.android.model.ModelsCurrentUser
 import id.passage.android.model.ModelsUser
 import id.passage.android.model.UserUpdateUserEmailRequest
@@ -53,7 +50,7 @@ final class PassageUser private constructor(
     val webauthn: Boolean? = null,
 
     /* The list of devices this user has authenticated with via webAuthn */
-    val webauthnDevices: List<ModelsCredential>? = null,
+    val webauthnDevices: List<PassageCredential>? = null,
 
     /* List of credential types that user has created */
     val webauthnTypes: List<String>? = null
@@ -154,36 +151,37 @@ final class PassageUser private constructor(
     }
 
     /**
-     * List Devices
+     * List Device Passkeys
      *
      * List all WebAuthn devices for the authenticated user. User must be authenticated via bearer token.
-     * @return ApiCurrentUserDevices
+     * @return List<PassageCredential>
      * @throws PassageUserException
      */
-    public suspend fun listDevices(): ApiCurrentUserDevices {
+    public suspend fun listDevicePasskeys(): List<PassageCredential> {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         return try {
-            currentUserAPI.getCurrentuserDevices(Passage.appId)
+            currentUserAPI.getCurrentuserDevices(Passage.appId).devices ?: emptyList()
         } catch (e: Exception) {
             throw PassageUserException.convert(e)
         }
     }
 
     /**
-     * Edit Device
+     * Edit Device Passkey Name
      *
      * Update a device by ID for the current user. Currently the only field that can be updated is
      * the friendly name. User must be authenticated via a bearer token.
      * @param deviceId Device ID
-     * @param newDeviceName Friendly Name
-     * @return ApiCurrentUserDevice
+     * @param newDevicePasskeyName Friendly Name
+     * @return PassageCredential
      * @throws PassageUserException
      */
-    public suspend fun editDevice(deviceId: String, newDeviceName: String): ApiCurrentUserDevice {
+    public suspend fun editDevicePasskeyName(deviceId: String, newDevicePasskeyName: String): PassageCredential {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-        val request = ApiupdateDeviceRequest(friendlyName = newDeviceName)
+        val request = ApiupdateDeviceRequest(friendlyName = newDevicePasskeyName)
         return try {
-            currentUserAPI.updateCurrentuserDevice(Passage.appId, deviceId, request)
+            currentUserAPI.updateCurrentuserDevice(Passage.appId, deviceId, request).device
+                ?: throw PassageUserException("Unknown error getting updated device.")
         } catch (e: Exception) {
             throw PassageUserException.convert(e)
         }
@@ -194,10 +192,10 @@ final class PassageUser private constructor(
      *
      * Returns the created device for the user. User must be authenticated via a bearer token.
      * @param activity Activity to surface the Credentials Manager prompt within
-     * @return PassageCredential?
+     * @return PassageCredential
      * @throws AddDevicePasskeyException
      */
-    public suspend fun addDevicePasskey(activity: Activity): PassageCredential? {
+    public suspend fun addDevicePasskey(activity: Activity): PassageCredential {
         try {
             val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
             // Get Create Credential challenge from Passage
@@ -213,20 +211,21 @@ final class PassageUser private constructor(
                 userId = webauthnStartResponse.user?.id
             )
             return currentUserAPI.postCurrentuserAddDeviceFinish(Passage.appId, finishRequest).device
+                ?: throw PassageUserException("Unknown error getting updated device.")
         } catch (e: Exception) {
             throw AddDevicePasskeyException.convert(e)
         }
     }
 
     /**
-     * Delete Device
+     * Delete Device Passkey
      *
      * Revoke a device by ID for the current user. User must be authenticated via a bearer token.
      * @param deviceId Device ID
      * @return void
      * @throws PassageUserException
      */
-    public suspend fun deleteDevice(deviceId: String) {
+    public suspend fun deleteDevicePasskey(deviceId: String) {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         try {
             currentUserAPI.deleteCurrentuserDevice(Passage.appId, deviceId)
