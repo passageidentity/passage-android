@@ -32,16 +32,26 @@ public final class Passage(private val activity: Activity) {
     // region CONSTANTS AND SINGLETON VARIABLES
     internal companion object {
         internal const val TAG = "Passage"
-        internal const val BASE_PATH = "https://auth-uat.passage.dev/v1"
+        internal const val BASE_PATH = "https://auth.passage.id/v1"
 
         internal lateinit var appId: String
         internal var language: String? = null
+
+        public fun setAuthToken(token: String?) {
+            ApiClient.accessToken = token
+        }
+
+        public fun getAuthToken(): String? {
+            return ApiClient.accessToken
+        }
     }
     // endregion
 
     // region INSTANCE VARIABLES
 
-    private var passageTokenStore: PassageTokenStore? = null
+    public lateinit var tokenStore: PassageTokenStore
+
+    private var isUsingTokenStore = false
 
     private val passageClient: OkHttpClient by lazy {
         val userAgent = WebSettings.getDefaultUserAgent(activity) ?: "Android"
@@ -65,23 +75,11 @@ public final class Passage(private val activity: Activity) {
         appId = getRequiredResourceFromApp(activity, "passage_app_id")
         language = getOptionalResourceFromApp(activity, "passage_language")
 
-        // NOTE: Not sure I love this implementation yet
         val usePassageStore = getOptionalResourceFromApp(activity, "use_passage_store")
-        if (usePassageStore == "true") {
-            passageTokenStore = PassageTokenStore(activity)
+        if (usePassageStore != "false") {
+            isUsingTokenStore = true
+            tokenStore = PassageTokenStore(activity)
         }
-    }
-
-    // endregion
-
-    // region TOKEN METHODS
-    // TODO: Document this method. Its for developer if they don't want to use the PassageStore
-    public fun setAuthToken(token: String?) {
-        ApiClient.accessToken = token
-    }
-
-    public fun getAuthToken(): String? {
-        return ApiClient.accessToken
     }
 
     // endregion
@@ -149,7 +147,7 @@ public final class Passage(private val activity: Activity) {
             ?: throw RegisterNoFallbackException()
         val fallback: PassageAuthFallbackResult = when (fallbackMethod) {
             PassageAuthFallbackMethod.magicLink -> {
-                val magicLinkId = newRegisterMagicLink(identifier)?.id ?: ""
+                val magicLinkId = newRegisterMagicLink(identifier).id ?: ""
                 PassageAuthFallbackResult(id = magicLinkId, method = fallbackMethod)
             }
             PassageAuthFallbackMethod.otp -> {
@@ -202,7 +200,7 @@ public final class Passage(private val activity: Activity) {
         val fallback: PassageAuthFallbackResult =
             when (fallbackMethod) {
                 PassageAuthFallbackMethod.magicLink -> {
-                    val magicLinkId = newLoginMagicLink(identifier)?.id ?: ""
+                    val magicLinkId = newLoginMagicLink(identifier).id ?: ""
                     PassageAuthFallbackResult(id = magicLinkId, method = fallbackMethod)
                 }
                 PassageAuthFallbackMethod.otp -> {
@@ -316,19 +314,19 @@ public final class Passage(private val activity: Activity) {
      * @return MagicLink
      * @throws NewRegisterMagicLinkException
      */
-    public suspend fun newRegisterMagicLink(identifier: String, magicLinkPath: String? = null): MagicLink? {
+    public suspend fun newRegisterMagicLink(identifier: String, magicLinkPath: String? = null): MagicLink {
         val registerAPI = RegisterAPI(BASE_PATH, passageClient)
         val request = ApiregisterMagicLinkRequest(
             identifier = identifier,
             language = language,
             magicLinkPath = magicLinkPath
         )
-        val response = try {
-            registerAPI.registerMagicLink(appId, request)
+        val magicLink = try {
+            registerAPI.registerMagicLink(appId, request).magicLink
         } catch (e: Exception) {
             throw NewRegisterMagicLinkException.convert(e)
         }
-        return response.magicLink
+        return magicLink ?: throw NewRegisterMagicLinkException("Unknown error creating Magic Link")
     }
 
     /**
@@ -340,7 +338,7 @@ public final class Passage(private val activity: Activity) {
      * @return MagicLink?
      * @throws NewLoginMagicLinkException
      */
-    public suspend fun newLoginMagicLink(identifier: String, magicLinkPath: String? = null): MagicLink? {
+    public suspend fun newLoginMagicLink(identifier: String, magicLinkPath: String? = null): MagicLink {
         val loginAPI = LoginAPI(BASE_PATH, passageClient)
         val request = ApiloginMagicLinkRequest(
             identifier = identifier,
@@ -352,7 +350,7 @@ public final class Passage(private val activity: Activity) {
         } catch (e: Exception) {
             throw NewLoginMagicLinkException.convert(e)
         }
-        return response.magicLink
+        return response.magicLink  ?: throw NewLoginMagicLinkException("Unknown error creating Magic Link")
     }
 
     /**
@@ -364,7 +362,7 @@ public final class Passage(private val activity: Activity) {
      * @return PassageAuthResult?
      * @throws MagicLinkActivateException
      */
-    public suspend fun magicLinkActivate(userMagicLink: String): PassageAuthResult? {
+    public suspend fun magicLinkActivate(userMagicLink: String): PassageAuthResult {
         val magicLinkAPI = MagicLinkAPI(BASE_PATH, passageClient)
         val request = ApiactivateMagicLinkRequest(userMagicLink)
         val response = try {
@@ -509,8 +507,8 @@ public final class Passage(private val activity: Activity) {
      * @return PassageUser?
      */
     public suspend fun getCurrentUser(): PassageUser? {
-        if (passageTokenStore != null && ApiClient.accessToken == null) {
-            passageTokenStore?.attemptRefreshTokenStore()
+        if (isUsingTokenStore && ApiClient.accessToken == null) {
+            tokenStore.attemptRefreshTokenStore()
         }
         val user = try {
             PassageUser.getCurrentUser()
@@ -531,8 +529,11 @@ public final class Passage(private val activity: Activity) {
      * @throws PassageTokenException
      */
     public suspend fun signOutCurrentUser() {
-        passageTokenStore?.clearAndRevokeTokens()
-            ?: setAuthToken(null)
+        if (isUsingTokenStore) {
+            tokenStore.clearAndRevokeTokens()
+        } else {
+            setAuthToken(null)
+        }
     }
 
     /**
@@ -565,7 +566,8 @@ public final class Passage(private val activity: Activity) {
      * @param authResult The new Auth Result
      */
     private fun handleAuthResult(authResult: PassageAuthResult?) {
-        passageTokenStore?.setTokens(authResult)
+        if (!isUsingTokenStore) return
+        tokenStore.setTokens(authResult)
     }
     // endregion
 

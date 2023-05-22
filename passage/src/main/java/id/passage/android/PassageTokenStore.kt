@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import id.passage.android.exceptions.PassageTokenException
 import id.passage.client.infrastructure.ApiClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,7 @@ public final class PassageTokenStore(activity: Activity) {
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
-    internal val authToken: String?
+    public val authToken: String?
         get() = sharedPreferences.getString(PASSAGE_AUTH_TOKEN, null)
 
     internal val refreshToken: String?
@@ -70,7 +71,11 @@ public final class PassageTokenStore(activity: Activity) {
 
     internal suspend fun clearAndRevokeTokens() {
         refreshToken?.let {
-            PassageToken.revokeRefreshToken(it)
+            try {
+                PassageToken.revokeRefreshToken(it)
+            } catch (e: PassageTokenException) {
+                Log.e(Passage.TAG, e.message ?: e.toString())
+            }
         }
         setAuthToken(null)
         setRefreshToken(null)
