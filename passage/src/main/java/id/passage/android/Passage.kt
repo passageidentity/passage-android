@@ -32,7 +32,7 @@ public final class Passage(private val activity: Activity) {
     // region CONSTANTS AND SINGLETON VARIABLES
     internal companion object {
         internal const val TAG = "Passage"
-        internal const val BASE_PATH = "https://auth.passage.id/v1"
+        internal var BASE_PATH = "https://auth.passage.id/v1"
 
         internal lateinit var appId: String
         internal var language: String? = null
