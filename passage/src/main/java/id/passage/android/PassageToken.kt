@@ -1,6 +1,5 @@
 package id.passage.android
 
-import android.util.Log
 import id.passage.android.api.TokensAPI
 import id.passage.android.model.ApirefreshAuthTokenRequest
 import id.passage.android.exceptions.*
@@ -73,11 +72,9 @@ public object PassageToken {
                 return false
             }
             val payload = String(Base64.getUrlDecoder().decode(parts[1]))
-            println("Payload: $payload")
-            Log.w(Passage.TAG, "Payload: $payload")
-            val json = Json { ignoreUnknownKeys = true } // configure to ignore unknown keys
+            val json = Json { ignoreUnknownKeys = true }
             val data = json.decodeFromString<AuthTokenPayload>(payload)
-            val expirationTime = data.exp * 1000 // convert to milliseconds
+            val expirationTime = data.exp * 1000
             val currentTime = System.currentTimeMillis()
             return expirationTime > currentTime
         } catch (e: Exception) {
