@@ -44,6 +44,18 @@ public final class PassageTokenStore(activity: Activity) {
         ApiClient.accessToken = authToken
     }
 
+    public suspend fun getValidAuthToken(): String {
+        val currentAuthToken = authToken ?: throw PassageTokenException("Auth token not found in store.")
+        val tokenIsValid = PassageToken.isAuthTokenValid(currentAuthToken)
+        if (tokenIsValid) {
+            return currentAuthToken
+        }
+        val currentRefreshToken = refreshToken ?: throw PassageTokenException("Auth token invalid. Refresh token not found in store.")
+        val authResult = PassageToken.refreshAuthToken(currentRefreshToken)
+        setTokens(authResult)
+        return authResult.authToken
+    }
+
     private fun setAuthToken(token: String?) {
         with (sharedPreferences.edit()) {
             putString(PASSAGE_AUTH_TOKEN, token)
