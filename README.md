@@ -9,4 +9,12 @@ Integrating passkey technology can be really hard. That's why we built the Passa
 <br>
 <br>
 
-NOTE: This library will be ready import into your app through Maven soon.
+## Usage
+
+You can import the Passage library by including this in your app's `build.gradle` file dependencies:
+```
+implementation 'id.passage.android:passage:1.0.0'
+```
+
+## Documentation
+To get started using Passage in your Android app, please visit our [Passage Docs](https://docs.passage.id/mobile/android/).
