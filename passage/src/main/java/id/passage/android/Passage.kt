@@ -27,7 +27,10 @@ import id.passage.android.exceptions.*
 import okhttp3.OkHttpClient
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
-public final class Passage(private val activity: Activity) {
+public final class Passage(
+    private val activity: Activity,
+    appId: String? = null
+) {
 
     // region CONSTANTS AND SINGLETON VARIABLES
     internal companion object {
@@ -72,7 +75,7 @@ public final class Passage(private val activity: Activity) {
     // region INITIALIZATION
 
     init {
-        appId = getRequiredResourceFromApp(activity, "passage_app_id")
+        Companion.appId = appId ?: getRequiredResourceFromApp(activity, "passage_app_id")
         language = getOptionalResourceFromApp(activity, "passage_language")
 
         val usePassageStore = getOptionalResourceFromApp(activity, "use_passage_store")
@@ -555,6 +558,12 @@ public final class Passage(private val activity: Activity) {
         return PassageUser.convertToPassageUser(modelsUser)
     }
 
+    // endregion
+
+    // region OVERRIDE METHODS
+    public fun overrideBasePath(newPath: String) {
+        BASE_PATH = newPath
+    }
     // endregion
 
     // region PRIVATE METHODS
