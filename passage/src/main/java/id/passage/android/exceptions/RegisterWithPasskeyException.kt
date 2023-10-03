@@ -14,6 +14,8 @@ import id.passage.client.infrastructure.ServerException
  * @see RegisterWithPasskeyCancellationException
  * @see RegisterWithPasskeyInterruptedException
  * @see RegisterWithPasskeyConfigurationException
+ * @see RegisterWithPasskeyNoCreateOptionException
+ * @see RegisterWithPasskeyUnsupportedException
  * @see RegisterWithPasskeyInvalidRequestException
  * @see RegisterWithPasskeyCredentialException
  * @see RegisterWithPasskeyServerException
@@ -60,6 +62,12 @@ public open class RegisterWithPasskeyException(message: String): PassageExceptio
                 is CreateCredentialProviderConfigurationException -> {
                     RegisterWithPasskeyConfigurationException(message)
                 }
+                is CreateCredentialNoCreateOptionException -> {
+                    RegisterWithPasskeyNoCreateOptionException(message)
+                }
+                is CreateCredentialUnsupportedException -> {
+                    RegisterWithPasskeyUnsupportedException(message)
+                }
                 else -> RegisterWithPasskeyException(message)
             }
         }
@@ -83,6 +91,18 @@ public class RegisterWithPasskeyInterruptedException(message: String): RegisterW
  * Most likely, your app has not been properly configured for Passage.
  */
 public class RegisterWithPasskeyConfigurationException(message: String): RegisterWithPasskeyException(message)
+
+/**
+ * During the create credential flow, this is thrown when no viable creation options were found for
+ * the given CreateCredentialRequest.
+ */
+public class RegisterWithPasskeyNoCreateOptionException(message: String): RegisterWithPasskeyException(message)
+
+/**
+ * During the create credential flow, this is thrown when credential manager is unsupported,
+ * typically because the device has disabled it or did not ship with this feature enabled.
+ */
+public class RegisterWithPasskeyUnsupportedException(message: String): RegisterWithPasskeyException(message)
 
 /**
  * Thrown because of a bad request, typically when an invalid identifier is provided.

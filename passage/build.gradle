@@ -13,7 +13,8 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = "id.passage.android"
-version = "1.1.1"
+version = "1.2.0"
+
 
 def localProperties = new Properties()
 File localPropertiesFile = rootProject.file('local.properties')
@@ -25,13 +26,14 @@ if (localPropertiesFile.exists()) {
 
 android {
     namespace 'id.passage.android'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 28 // Minimum support for Credentials Manager - ie passkeys
-        targetSdk 33
-        versionCode 3
-        versionName "1.1.1"
+        targetSdk 34
+        versionCode 4
+        versionName "1.2.0"
+
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -69,9 +71,9 @@ android {
 
 dependencies {
     // Android core dependencies
-    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     // For testing
@@ -96,11 +98,11 @@ dependencies {
     implementation "androidx.security:security-crypto:1.1.0-alpha06"
 
     // For Android Credentials support
-    implementation "androidx.credentials:credentials:1.0.0-alpha03"
+    implementation "androidx.credentials:credentials:1.2.0-beta04"
 
     // Needed for credentials support from play services, for devices running
     // Android 13 (sdk 33) and below.
-    implementation "androidx.credentials:credentials-play-services-auth:1.0.0-alpha03"
+    implementation "androidx.credentials:credentials-play-services-auth:1.2.0-beta04"
 }
 
 openApiGenerate {

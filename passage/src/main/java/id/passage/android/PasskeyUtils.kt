@@ -19,9 +19,6 @@ import id.passage.android.model.ProtocolCredentialCreationResponse1
 import id.passage.android.model.ProtocolCredentialCreationResponse1JsonAdapter
 import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptions
 import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptionsJsonAdapter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import id.passage.android.exceptions.*
 import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_MISSING
 import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_PARSING_FAILED
@@ -52,14 +49,8 @@ public final class PasskeyUtils {
         public suspend fun createPasskey(requestJson: String, activity: Activity): CreateCredentialResponse {
             val credentialManager = CredentialManager.create(activity)
             val publicKeyCredRequest = CreatePublicKeyCredentialRequest(requestJson)
-            val publicKeyCredResponse = CoroutineScope(Dispatchers.IO).async {
-                // Show the user Credential Manager with option to create a Passkey
-                return@async credentialManager.createCredential(
-                    publicKeyCredRequest,
-                    activity
-                )
-            }.await()
-            return publicKeyCredResponse
+            // Show the user Credential Manager with option to create a Passkey
+            return credentialManager.createCredential(activity, publicKeyCredRequest)
         }
 
         /**
@@ -74,15 +65,9 @@ public final class PasskeyUtils {
         public suspend fun getPasskey(requestJson: String, activity: Activity): GetCredentialResponse {
             val credentialManager = CredentialManager.create(activity)
             val getCredOption = GetPublicKeyCredentialOption(requestJson)
-            val getCredRequest = GetCredentialRequest(listOf(getCredOption), isAutoSelectAllowed = true)
-            val getCredResponse = CoroutineScope(Dispatchers.IO).async {
-                // Show the user Credential Manager with option to login with a Passkey
-                return@async credentialManager.getCredential(
-                    getCredRequest,
-                    activity
-                )
-            }
-            return getCredResponse.await()
+            val getCredRequest = GetCredentialRequest(listOf(getCredOption))
+            // Show the user Credential Manager with option to login with a Passkey
+            return credentialManager.getCredential(activity, getCredRequest)
         }
 
         /**
