@@ -14,6 +14,8 @@ import id.passage.client.infrastructure.ServerException
  * @see LoginWithPasskeyCancellationException
  * @see LoginWithPasskeyInterruptedException
  * @see LoginWithPasskeyConfigurationException
+ * @see LoginWithPasskeyUnsupportedException
+ * @see LoginWithPasskeyNoCredentialException
  * @see LoginWithPasskeyInvalidRequestException
  * @see LoginWithPasskeyDiscoverableLoginException
  * @see LoginWithPasskeyInactiveUserException
@@ -68,6 +70,12 @@ public open class LoginWithPasskeyException(message: String): PassageException(m
                 is GetCredentialProviderConfigurationException -> {
                     LoginWithPasskeyConfigurationException(message)
                 }
+                is GetCredentialUnsupportedException -> {
+                    LoginWithPasskeyUnsupportedException(message)
+                }
+                is NoCredentialException -> {
+                    LoginWithPasskeyNoCredentialException(message)
+                }
                 else -> LoginWithPasskeyException(message)
             }
         }
@@ -91,6 +99,18 @@ public class LoginWithPasskeyInterruptedException(message: String): LoginWithPas
  * Most likely, your app has not been properly configured for Passage.
  */
 public class LoginWithPasskeyConfigurationException(message: String): LoginWithPasskeyException(message)
+
+/**
+ * During the get credential flow, this is thrown when credential manager is unsupported, typically
+ * because the device has disabled it or did not ship with this feature enabled.
+ */
+public class LoginWithPasskeyUnsupportedException(message: String): LoginWithPasskeyException(message)
+
+/**
+ * During the get credential flow, this is returned when no viable credential is available for the
+ * the user.
+ */
+public class LoginWithPasskeyNoCredentialException(message: String): LoginWithPasskeyException(message)
 
 /**
  * Thrown because of a bad request, typically when an invalid identifier is provided.
