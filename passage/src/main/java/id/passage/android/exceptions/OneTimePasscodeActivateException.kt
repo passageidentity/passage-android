@@ -13,6 +13,7 @@ import id.passage.client.infrastructure.ServerException
  *
  * @see OneTimePasscodeActivateInvalidRequestException
  * @see OneTimePasscodeActivateInactiveUserException
+ * @see OneTimePasscodeActivateExceededAttemptsException
  * @see OneTimePasscodeActivateServerException
  */
 public open class OneTimePasscodeActivateException(message: String): PassageException(message) {
