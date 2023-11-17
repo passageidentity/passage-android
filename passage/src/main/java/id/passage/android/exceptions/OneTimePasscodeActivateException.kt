@@ -38,6 +38,9 @@ public open class OneTimePasscodeActivateException(message: String): PassageExce
                 Model401Code.userNotActive.toString() -> {
                     OneTimePasscodeActivateInactiveUserException(message)
                 }
+                "exceeded_attempts" -> {
+                    OneTimePasscodeActivateExceededAttemptsException(message)
+                }
                 else -> {
                     OneTimePasscodeActivateException(message)
                 }
@@ -57,6 +60,11 @@ public class OneTimePasscodeActivateInvalidRequestException(message: String): On
  * Thrown when the user is not active.
  */
 public class OneTimePasscodeActivateInactiveUserException(message: String): OneTimePasscodeActivateException(message)
+
+/**
+ * Thrown when the user has had too many failed activation attempts.
+ */
+public class OneTimePasscodeActivateExceededAttemptsException(message: String): OneTimePasscodeActivateException(message)
 
 /**
  * Thrown when Passage internal server error occurs.
