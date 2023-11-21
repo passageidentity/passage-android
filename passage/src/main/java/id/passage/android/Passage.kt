@@ -125,6 +125,7 @@ public final class Passage(
      * @throws NewRegisterMagicLinkException when passkey registration AND magic link creation fails
      * @throws NewRegisterOneTimePasscodeException when passkey registration AND otp generation fails
      */
+    @Deprecated("Use registerWithPasskey(identifier) instead.", replaceWith = ReplaceWith("registerWithPasskey(identifier)"))
     public suspend fun register(identifier: String): Pair<PassageAuthResult?, PassageAuthFallbackResult?> {
         val passageApp = appInfo()
             ?: throw RegisterInvalidAppException()
@@ -181,6 +182,7 @@ public final class Passage(
      * @throws NewLoginMagicLinkException when passkey login AND magic link creation fails
      * @throws NewLoginOneTimePasscodeException when passkey login AND otp generation fails
      */
+    @Deprecated("Use loginWithPasskey() instead.", replaceWith = ReplaceWith("loginWithPasskey()"))
     public suspend fun login(identifier: String): Pair<PassageAuthResult?, PassageAuthFallbackResult?> {
         val passageApp = appInfo()
             ?: throw LoginInvalidAppException()
@@ -279,11 +281,45 @@ public final class Passage(
      * @return PassageAuthResult?
      * @throws LoginWithPasskeyException
      */
+    @Deprecated("Use loginWithPasskey() instead.", replaceWith = ReplaceWith("loginWithPasskey()"))
     public suspend fun loginWithPasskey(identifier: String): PassageAuthResult {
         try {
             val loginAPI = LoginAPI(BASE_PATH, passageClient)
             // Get Credential challenge from Passage
             val webauthnStartRequest = ApiloginWebAuthnStartRequest(identifier)
+            val webauthnStartResponse = loginAPI.loginWebauthnStart(appId, webauthnStartRequest)
+            // Use Credential challenge to prompt user to login with a passkey
+            val credOptionsJson = PasskeyUtils.getCredentialOptionsJson(webauthnStartResponse.handshake)
+            val credResponse = PasskeyUtils.getPasskey(credOptionsJson, activity)
+            // Complete login and authenticate the user
+            val handshakeResponse = PasskeyUtils.getCredentialHandshakeResponse(credResponse)
+            val webauthnFinishRequest = LoginWebAuthnFinishRequest(
+                handshakeId = webauthnStartResponse.handshake?.id ?: "",
+                handshakeResponse = handshakeResponse,
+                userId = webauthnStartResponse.user?.id
+            )
+            val authResponse = loginAPI.loginWebauthnFinish(appId, webauthnFinishRequest)
+            handleAuthResult(authResponse.authResult)
+            // Return auth result
+            return authResponse.authResult
+        } catch(e: Exception) {
+            throw LoginWithPasskeyException.convert(e)
+        }
+    }
+
+
+    /**
+     * Log in user with passkey
+     *
+     * Prompt the user to select an existing passkey to login with and authenticate the user.
+     * @return PassageAuthResult?
+     * @throws LoginWithPasskeyException
+     */
+    public suspend fun loginWithPasskey(): PassageAuthResult {
+        try {
+            val loginAPI = LoginAPI(BASE_PATH, passageClient)
+            // Get Credential challenge from Passage
+            val webauthnStartRequest = ApiloginWebAuthnStartRequest()
             val webauthnStartResponse = loginAPI.loginWebauthnStart(appId, webauthnStartRequest)
             // Use Credential challenge to prompt user to login with a passkey
             val credOptionsJson = PasskeyUtils.getCredentialOptionsJson(webauthnStartResponse.handshake)

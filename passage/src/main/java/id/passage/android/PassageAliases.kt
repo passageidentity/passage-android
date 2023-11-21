@@ -18,6 +18,7 @@ public typealias OneTimePasscode = OneTimePasscodeResponse
 
 public typealias PassageApp = IdentityApp
 
+@Deprecated("Authentication methods are no longer treated as fallbacks. This enum class will be removed in a future version.")
 public typealias PassageAuthFallbackMethod = IdentityApp.AuthFallbackMethod
 
 public typealias PassageCredential = ModelsCredential
