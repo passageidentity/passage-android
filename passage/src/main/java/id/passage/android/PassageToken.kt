@@ -1,8 +1,8 @@
 package id.passage.android
 
 import id.passage.android.api.TokensAPI
-import id.passage.android.model.ApirefreshAuthTokenRequest
 import id.passage.android.exceptions.*
+import id.passage.android.model.RefreshAuthTokenRequest
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -24,21 +24,13 @@ public object PassageToken {
      */
     public suspend fun refreshAuthToken(refreshToken: String): PassageAuthResult {
         val api = TokensAPI(Passage.BASE_PATH)
-        val request = ApirefreshAuthTokenRequest(refreshToken)
+        val request = RefreshAuthTokenRequest(refreshToken)
         val apiAuthResult = try {
             api.refreshAuthToken(Passage.appId, request).authResult
-                ?: throw PassageTokenException("Token refresh failed.")
         } catch (e: Exception) {
             throw PassageTokenException.convert(e)
         }
-        // TODO: Once BE issue is fixed, we won't need to transform data model
-        val authResult = PassageAuthResult(
-            authToken = apiAuthResult.authToken,
-            redirectUrl = apiAuthResult.redirectUrl,
-            refreshToken = apiAuthResult.refreshToken,
-            refreshTokenExpiration = apiAuthResult.refreshTokenExpiration
-        )
-        return authResult
+        return apiAuthResult
     }
 
     /**
