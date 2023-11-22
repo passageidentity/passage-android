@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **handshakeId** | **kotlin.String** |  | 
-**handshakeResponse** | [**ProtocolCredentialCreationResponse1**](ProtocolCredentialCreationResponse1.md) |  | 
+**handshakeResponse** | [**CredentialCreationResponse**](CredentialCreationResponse.md) |  | 
 **userId** | **kotlin.String** |  | 
 
 

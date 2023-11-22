@@ -106,7 +106,7 @@ dependencies {
 
 openApiGenerate {
     generatorName = "kotlin"
-    remoteInputSpec = "https://api.swaggerhub.com/apis/passage_swagger/auth-gw/v1"
+    remoteInputSpec = "https://api.swaggerhub.com/apis/passage/passage-auth-api/1"
     outputDir = "$projectDir/generated".toString()
     apiPackage = "id.passage.android.api"
     modelPackage = "id.passage.android.model"

@@ -1,19 +1,19 @@
 # CurrentuserAPI
 
-All URIs are relative to *https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1*
+All URIs are relative to *https://auth.passage.id/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**deleteCurrentuserDevice**](CurrentuserAPI.md#deleteCurrentuserDevice) | **DELETE** /apps/{app_id}/currentuser/devices/{device_id}/ | Revoke Device
-[**getCurrentuser**](CurrentuserAPI.md#getCurrentuser) | **GET** /apps/{app_id}/currentuser/ | Get Current User
-[**getCurrentuserDevices**](CurrentuserAPI.md#getCurrentuserDevices) | **GET** /apps/{app_id}/currentuser/devices/ | List Devices
-[**getCurrentuserMetadata**](CurrentuserAPI.md#getCurrentuserMetadata) | **GET** /apps/{app_id}/currentuser/user-metadata/ | Get user&#39;s metadata
+[**deleteCurrentuserDevice**](CurrentuserAPI.md#deleteCurrentuserDevice) | **DELETE** /apps/{app_id}/currentuser/devices/{device_id} | Revoke Device
+[**getCurrentuser**](CurrentuserAPI.md#getCurrentuser) | **GET** /apps/{app_id}/currentuser | Get Current User
+[**getCurrentuserDevices**](CurrentuserAPI.md#getCurrentuserDevices) | **GET** /apps/{app_id}/currentuser/devices | List Devices
+[**getCurrentuserMetadata**](CurrentuserAPI.md#getCurrentuserMetadata) | **GET** /apps/{app_id}/currentuser/user-metadata | Get user&#39;s metadata
 [**postCurrentuserAddDeviceFinish**](CurrentuserAPI.md#postCurrentuserAddDeviceFinish) | **POST** /apps/{app_id}/currentuser/devices/finish | Finish WebAuthn Add Device
-[**postCurrentuserAddDeviceStart**](CurrentuserAPI.md#postCurrentuserAddDeviceStart) | **POST** /apps/{app_id}/currentuser/devices/start/ | Start WebAuthn Add Device
-[**updateCurrentuserDevice**](CurrentuserAPI.md#updateCurrentuserDevice) | **PATCH** /apps/{app_id}/currentuser/devices/{device_id}/ | Update Device
-[**updateCurrentuserMetadata**](CurrentuserAPI.md#updateCurrentuserMetadata) | **PATCH** /apps/{app_id}/currentuser/user-metadata/ | Update user&#39;s metadata
-[**updateEmailCurrentuser**](CurrentuserAPI.md#updateEmailCurrentuser) | **PATCH** /apps/{app_id}/currentuser/email/ | Change Email
-[**updatePhoneCurrentuser**](CurrentuserAPI.md#updatePhoneCurrentuser) | **PATCH** /apps/{app_id}/currentuser/phone/ | Change Phone
+[**postCurrentuserAddDeviceStart**](CurrentuserAPI.md#postCurrentuserAddDeviceStart) | **POST** /apps/{app_id}/currentuser/devices/start | Start WebAuthn Add Device
+[**updateCurrentuserDevice**](CurrentuserAPI.md#updateCurrentuserDevice) | **PATCH** /apps/{app_id}/currentuser/devices/{device_id} | Update Device
+[**updateCurrentuserMetadata**](CurrentuserAPI.md#updateCurrentuserMetadata) | **PATCH** /apps/{app_id}/currentuser/user-metadata | Update user&#39;s metadata
+[**updateEmailCurrentuser**](CurrentuserAPI.md#updateEmailCurrentuser) | **PATCH** /apps/{app_id}/currentuser/email | Change Email
+[**updatePhoneCurrentuser**](CurrentuserAPI.md#updatePhoneCurrentuser) | **PATCH** /apps/{app_id}/currentuser/phone | Change Phone
 
 
 <a name="deleteCurrentuserDevice"></a>
@@ -68,7 +68,7 @@ Configure bearerAuth:
 
 <a name="getCurrentuser"></a>
 # **getCurrentuser**
-> ApiCurrentUserResponse getCurrentuser(appId)
+> CurrentUserResponse getCurrentuser(appId)
 
 Get Current User
 
@@ -83,7 +83,7 @@ Get information about a user that is currently authenticated via bearer token.
 val apiInstance = CurrentuserAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
 try {
-    val result : ApiCurrentUserResponse = apiInstance.getCurrentuser(appId)
+    val result : CurrentUserResponse = apiInstance.getCurrentuser(appId)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling CurrentuserAPI#getCurrentuser")
@@ -102,7 +102,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ApiCurrentUserResponse**](ApiCurrentUserResponse.md)
+[**CurrentUserResponse**](CurrentUserResponse.md)
 
 ### Authorization
 
@@ -117,7 +117,7 @@ Configure bearerAuth:
 
 <a name="getCurrentuserDevices"></a>
 # **getCurrentuserDevices**
-> ApiCurrentUserDevices getCurrentuserDevices(appId)
+> CurrentUserDevices getCurrentuserDevices(appId)
 
 List Devices
 
@@ -132,7 +132,7 @@ List all WebAuthn devices for the authenticated user. User must be authenticated
 val apiInstance = CurrentuserAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
 try {
-    val result : ApiCurrentUserDevices = apiInstance.getCurrentuserDevices(appId)
+    val result : CurrentUserDevices = apiInstance.getCurrentuserDevices(appId)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling CurrentuserAPI#getCurrentuserDevices")
@@ -151,7 +151,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ApiCurrentUserDevices**](ApiCurrentUserDevices.md)
+[**CurrentUserDevices**](CurrentUserDevices.md)
 
 ### Authorization
 
@@ -166,7 +166,7 @@ Configure bearerAuth:
 
 <a name="getCurrentuserMetadata"></a>
 # **getCurrentuserMetadata**
-> ApiUserMetadataResponse getCurrentuserMetadata(appId)
+> UserMetadataResponse getCurrentuserMetadata(appId)
 
 Get user&#39;s metadata
 
@@ -181,7 +181,7 @@ Get the user-metadata for the current user.
 val apiInstance = CurrentuserAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
 try {
-    val result : ApiUserMetadataResponse = apiInstance.getCurrentuserMetadata(appId)
+    val result : UserMetadataResponse = apiInstance.getCurrentuserMetadata(appId)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling CurrentuserAPI#getCurrentuserMetadata")
@@ -200,7 +200,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ApiUserMetadataResponse**](ApiUserMetadataResponse.md)
+[**UserMetadataResponse**](UserMetadataResponse.md)
 
 ### Authorization
 
@@ -215,7 +215,7 @@ Configure bearerAuth:
 
 <a name="postCurrentuserAddDeviceFinish"></a>
 # **postCurrentuserAddDeviceFinish**
-> ApiCurrentUserDevice postCurrentuserAddDeviceFinish(appId, user)
+> CurrentUserDevice postCurrentuserAddDeviceFinish(appId, addDeviceFinishRequest)
 
 Finish WebAuthn Add Device
 
@@ -229,9 +229,9 @@ Complete a WebAuthn add device operation for the current user. This endpoint acc
 
 val apiInstance = CurrentuserAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val user : ApiaddDeviceFinishRequest =  // ApiaddDeviceFinishRequest | WebAuthn Response Data
+val addDeviceFinishRequest : AddDeviceFinishRequest =  // AddDeviceFinishRequest | WebAuthn Response Data
 try {
-    val result : ApiCurrentUserDevice = apiInstance.postCurrentuserAddDeviceFinish(appId, user)
+    val result : CurrentUserDevice = apiInstance.postCurrentuserAddDeviceFinish(appId, addDeviceFinishRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling CurrentuserAPI#postCurrentuserAddDeviceFinish")
@@ -247,11 +247,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **user** | [**ApiaddDeviceFinishRequest**](ApiaddDeviceFinishRequest.md)| WebAuthn Response Data |
+ **addDeviceFinishRequest** | [**AddDeviceFinishRequest**](AddDeviceFinishRequest.md)| WebAuthn Response Data |
 
 ### Return type
 
-[**ApiCurrentUserDevice**](ApiCurrentUserDevice.md)
+[**CurrentUserDevice**](CurrentUserDevice.md)
 
 ### Authorization
 
@@ -261,12 +261,12 @@ Configure bearerAuth:
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 <a name="postCurrentuserAddDeviceStart"></a>
 # **postCurrentuserAddDeviceStart**
-> ApiaddDeviceStartResponse postCurrentuserAddDeviceStart(appId)
+> AddDeviceStartResponse postCurrentuserAddDeviceStart(appId, currentUserDevicesStartRequest)
 
 Start WebAuthn Add Device
 
@@ -280,8 +280,9 @@ Initiate a WebAuthn add device operation for the current user. This endpoint cre
 
 val apiInstance = CurrentuserAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
+val currentUserDevicesStartRequest : CurrentUserDevicesStartRequest =  // CurrentUserDevicesStartRequest | WebAuthn Start Response Data
 try {
-    val result : ApiaddDeviceStartResponse = apiInstance.postCurrentuserAddDeviceStart(appId)
+    val result : AddDeviceStartResponse = apiInstance.postCurrentuserAddDeviceStart(appId, currentUserDevicesStartRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling CurrentuserAPI#postCurrentuserAddDeviceStart")
@@ -297,10 +298,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
+ **currentUserDevicesStartRequest** | [**CurrentUserDevicesStartRequest**](CurrentUserDevicesStartRequest.md)| WebAuthn Start Response Data | [optional]
 
 ### Return type
 
-[**ApiaddDeviceStartResponse**](ApiaddDeviceStartResponse.md)
+[**AddDeviceStartResponse**](AddDeviceStartResponse.md)
 
 ### Authorization
 
@@ -315,7 +317,7 @@ Configure bearerAuth:
 
 <a name="updateCurrentuserDevice"></a>
 # **updateCurrentuserDevice**
-> ApiCurrentUserDevice updateCurrentuserDevice(appId, deviceId, friendlyName)
+> CurrentUserDevice updateCurrentuserDevice(appId, deviceId, updateDeviceRequest)
 
 Update Device
 
@@ -330,9 +332,9 @@ Update a device by ID for the current user. Currently the only field that can be
 val apiInstance = CurrentuserAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
 val deviceId : kotlin.String = deviceId_example // kotlin.String | Device ID
-val friendlyName : ApiupdateDeviceRequest =  // ApiupdateDeviceRequest | Friendly Name
+val updateDeviceRequest : UpdateDeviceRequest =  // UpdateDeviceRequest | Friendly Name
 try {
-    val result : ApiCurrentUserDevice = apiInstance.updateCurrentuserDevice(appId, deviceId, friendlyName)
+    val result : CurrentUserDevice = apiInstance.updateCurrentuserDevice(appId, deviceId, updateDeviceRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling CurrentuserAPI#updateCurrentuserDevice")
@@ -349,11 +351,11 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
  **deviceId** | **kotlin.String**| Device ID |
- **friendlyName** | [**ApiupdateDeviceRequest**](ApiupdateDeviceRequest.md)| Friendly Name |
+ **updateDeviceRequest** | [**UpdateDeviceRequest**](UpdateDeviceRequest.md)| Friendly Name |
 
 ### Return type
 
-[**ApiCurrentUserDevice**](ApiCurrentUserDevice.md)
+[**CurrentUserDevice**](CurrentUserDevice.md)
 
 ### Authorization
 
@@ -363,12 +365,12 @@ Configure bearerAuth:
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 <a name="updateCurrentuserMetadata"></a>
 # **updateCurrentuserMetadata**
-> ApiCurrentUserResponse updateCurrentuserMetadata(appId, userMetadata)
+> CurrentUserResponse updateCurrentuserMetadata(appId, updateMetadataRequest)
 
 Update user&#39;s metadata
 
@@ -382,9 +384,9 @@ Update the metadata for the current user. Only valid metadata fields are accepte
 
 val apiInstance = CurrentuserAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val userMetadata : ApiupdateMetadataRequest =  // ApiupdateMetadataRequest | User Metadata
+val updateMetadataRequest : UpdateMetadataRequest =  // UpdateMetadataRequest | User Metadata
 try {
-    val result : ApiCurrentUserResponse = apiInstance.updateCurrentuserMetadata(appId, userMetadata)
+    val result : CurrentUserResponse = apiInstance.updateCurrentuserMetadata(appId, updateMetadataRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling CurrentuserAPI#updateCurrentuserMetadata")
@@ -400,11 +402,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **userMetadata** | [**ApiupdateMetadataRequest**](ApiupdateMetadataRequest.md)| User Metadata |
+ **updateMetadataRequest** | [**UpdateMetadataRequest**](UpdateMetadataRequest.md)| User Metadata |
 
 ### Return type
 
-[**ApiCurrentUserResponse**](ApiCurrentUserResponse.md)
+[**CurrentUserResponse**](CurrentUserResponse.md)
 
 ### Authorization
 
@@ -414,12 +416,12 @@ Configure bearerAuth:
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 <a name="updateEmailCurrentuser"></a>
 # **updateEmailCurrentuser**
-> ApiMagicLinkResponse updateEmailCurrentuser(appId, user)
+> MagicLinkResponse updateEmailCurrentuser(appId, updateUserEmailRequest)
 
 Change Email
 
@@ -433,9 +435,9 @@ Initiate an email change for the authenticated user. An email change requires ve
 
 val apiInstance = CurrentuserAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val user : UserUpdateUserEmailRequest =  // UserUpdateUserEmailRequest | email
+val updateUserEmailRequest : UpdateUserEmailRequest =  // UpdateUserEmailRequest | email
 try {
-    val result : ApiMagicLinkResponse = apiInstance.updateEmailCurrentuser(appId, user)
+    val result : MagicLinkResponse = apiInstance.updateEmailCurrentuser(appId, updateUserEmailRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling CurrentuserAPI#updateEmailCurrentuser")
@@ -451,11 +453,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **user** | [**UserUpdateUserEmailRequest**](UserUpdateUserEmailRequest.md)| email |
+ **updateUserEmailRequest** | [**UpdateUserEmailRequest**](UpdateUserEmailRequest.md)| email |
 
 ### Return type
 
-[**ApiMagicLinkResponse**](ApiMagicLinkResponse.md)
+[**MagicLinkResponse**](MagicLinkResponse.md)
 
 ### Authorization
 
@@ -465,12 +467,12 @@ Configure bearerAuth:
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 <a name="updatePhoneCurrentuser"></a>
 # **updatePhoneCurrentuser**
-> ApiMagicLinkResponse updatePhoneCurrentuser(appId, user)
+> MagicLinkResponse updatePhoneCurrentuser(appId, updateUserPhoneRequest)
 
 Change Phone
 
@@ -484,9 +486,9 @@ Initiate a phone number change for the authenticated user. An phone number chang
 
 val apiInstance = CurrentuserAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val user : UserUpdateUserPhoneRequest =  // UserUpdateUserPhoneRequest | phone
+val updateUserPhoneRequest : UpdateUserPhoneRequest =  // UpdateUserPhoneRequest | phone
 try {
-    val result : ApiMagicLinkResponse = apiInstance.updatePhoneCurrentuser(appId, user)
+    val result : MagicLinkResponse = apiInstance.updatePhoneCurrentuser(appId, updateUserPhoneRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling CurrentuserAPI#updatePhoneCurrentuser")
@@ -502,11 +504,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **user** | [**UserUpdateUserPhoneRequest**](UserUpdateUserPhoneRequest.md)| phone |
+ **updateUserPhoneRequest** | [**UpdateUserPhoneRequest**](UpdateUserPhoneRequest.md)| phone |
 
 ### Return type
 
-[**ApiMagicLinkResponse**](ApiMagicLinkResponse.md)
+[**MagicLinkResponse**](MagicLinkResponse.md)
 
 ### Authorization
 
@@ -516,6 +518,6 @@ Configure bearerAuth:
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 

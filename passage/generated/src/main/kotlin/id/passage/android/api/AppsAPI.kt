@@ -19,8 +19,9 @@ import java.io.IOException
 import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
-import id.passage.android.model.ApigetAppResponse
-import id.passage.android.model.HttpErrorsHTTPError
+import id.passage.android.model.GetAppResponse
+import id.passage.android.model.Model404Error
+import id.passage.android.model.Model500Error
 
 import com.squareup.moshi.Json
 
@@ -44,7 +45,7 @@ class AppsAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient = 
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://auth.passage.id/v1")
         }
     }
 
@@ -52,7 +53,7 @@ class AppsAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient = 
      * Get App
      * Get information about an application.
      * @param appId App ID
-     * @return ApigetAppResponse
+     * @return GetAppResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -61,11 +62,11 @@ class AppsAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient = 
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun getApp(appId: kotlin.String) : ApigetAppResponse = withContext(Dispatchers.IO) {
+    suspend fun getApp(appId: kotlin.String) : GetAppResponse = withContext(Dispatchers.IO) {
         val localVarResponse = getAppWithHttpInfo(appId = appId)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApigetAppResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as GetAppResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -83,16 +84,16 @@ class AppsAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient = 
      * Get App
      * Get information about an application.
      * @param appId App ID
-     * @return ApiResponse<ApigetAppResponse?>
+     * @return ApiResponse<GetAppResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun getAppWithHttpInfo(appId: kotlin.String) : ApiResponse<ApigetAppResponse?> = withContext(Dispatchers.IO) {
+    suspend fun getAppWithHttpInfo(appId: kotlin.String) : ApiResponse<GetAppResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = getAppRequestConfig(appId = appId)
 
-        return@withContext request<Unit, ApigetAppResponse>(
+        return@withContext request<Unit, GetAppResponse>(
             localVariableConfig
         )
     }
@@ -111,7 +112,7 @@ class AppsAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient = 
 
         return RequestConfig(
             method = RequestMethod.GET,
-            path = "/apps/{app_id}/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,

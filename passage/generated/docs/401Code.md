@@ -6,11 +6,13 @@
 
     * `discoverableLoginFailed` (value: `"discoverable_login_failed"`)
 
-    * `userNotActive` (value: `"user_not_active"`)
-
     * `webauthnLoginFailed` (value: `"webauthn_login_failed"`)
 
     * `invalidMagicLink` (value: `"invalid_magic_link"`)
+
+    * `invalidAccessToken` (value: `"invalid_access_token"`)
+
+    * `exceededAttempts` (value: `"exceeded_attempts"`)
 
 
 

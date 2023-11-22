@@ -19,9 +19,12 @@ import java.io.IOException
 import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
-import id.passage.android.model.ApiAuthResponse
-import id.passage.android.model.ApirefreshAuthTokenRequest
-import id.passage.android.model.HttpErrorsHTTPError
+import id.passage.android.model.AuthResponse
+import id.passage.android.model.Model400Error
+import id.passage.android.model.Model401Error
+import id.passage.android.model.Model404Error
+import id.passage.android.model.Model500Error
+import id.passage.android.model.RefreshAuthTokenRequest
 
 import com.squareup.moshi.Json
 
@@ -45,7 +48,7 @@ class TokensAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://auth.passage.id/v1")
         }
     }
 
@@ -53,8 +56,8 @@ class TokensAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * Creates new auth and refresh token
      * Creates and returns a new auth token and a new refresh token
      * @param appId App ID
-     * @param token Refresh token
-     * @return ApiAuthResponse
+     * @param refreshAuthTokenRequest Refresh token
+     * @return AuthResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -63,11 +66,11 @@ class TokensAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun refreshAuthToken(appId: kotlin.String, token: ApirefreshAuthTokenRequest) : ApiAuthResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = refreshAuthTokenWithHttpInfo(appId = appId, token = token)
+    suspend fun refreshAuthToken(appId: kotlin.String, refreshAuthTokenRequest: RefreshAuthTokenRequest) : AuthResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = refreshAuthTokenWithHttpInfo(appId = appId, refreshAuthTokenRequest = refreshAuthTokenRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiAuthResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as AuthResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -85,17 +88,17 @@ class TokensAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * Creates new auth and refresh token
      * Creates and returns a new auth token and a new refresh token
      * @param appId App ID
-     * @param token Refresh token
-     * @return ApiResponse<ApiAuthResponse?>
+     * @param refreshAuthTokenRequest Refresh token
+     * @return ApiResponse<AuthResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun refreshAuthTokenWithHttpInfo(appId: kotlin.String, token: ApirefreshAuthTokenRequest) : ApiResponse<ApiAuthResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = refreshAuthTokenRequestConfig(appId = appId, token = token)
+    suspend fun refreshAuthTokenWithHttpInfo(appId: kotlin.String, refreshAuthTokenRequest: RefreshAuthTokenRequest) : ApiResponse<AuthResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = refreshAuthTokenRequestConfig(appId = appId, refreshAuthTokenRequest = refreshAuthTokenRequest)
 
-        return@withContext request<ApirefreshAuthTokenRequest, ApiAuthResponse>(
+        return@withContext request<RefreshAuthTokenRequest, AuthResponse>(
             localVariableConfig
         )
     }
@@ -104,11 +107,11 @@ class TokensAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * To obtain the request config of the operation refreshAuthToken
      *
      * @param appId App ID
-     * @param token Refresh token
+     * @param refreshAuthTokenRequest Refresh token
      * @return RequestConfig
      */
-    fun refreshAuthTokenRequestConfig(appId: kotlin.String, token: ApirefreshAuthTokenRequest) : RequestConfig<ApirefreshAuthTokenRequest> {
-        val localVariableBody = token
+    fun refreshAuthTokenRequestConfig(appId: kotlin.String, refreshAuthTokenRequest: RefreshAuthTokenRequest) : RequestConfig<RefreshAuthTokenRequest> {
+        val localVariableBody = refreshAuthTokenRequest
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
         localVariableHeaders["Content-Type"] = "application/json"
@@ -116,7 +119,7 @@ class TokensAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
 
         return RequestConfig(
             method = RequestMethod.POST,
-            path = "/apps/{app_id}/tokens/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/tokens".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -187,10 +190,11 @@ class TokensAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
                 put("refresh_token", listOf(refreshToken.toString()))
             }
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        
+        localVariableHeaders["Accept"] = "application/json"
+
         return RequestConfig(
             method = RequestMethod.DELETE,
-            path = "/apps/{app_id}/tokens/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/tokens".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,

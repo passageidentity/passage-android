@@ -21,7 +21,7 @@ import com.squareup.moshi.Json
 /**
  * 
  *
- * Values: discoverableLoginFailed,userNotActive,webauthnLoginFailed,invalidMagicLink
+ * Values: discoverableLoginFailed,webauthnLoginFailed,invalidMagicLink,invalidAccessToken,exceededAttempts
  */
 
 enum class Model401Code(val value: kotlin.String) {
@@ -29,14 +29,17 @@ enum class Model401Code(val value: kotlin.String) {
     @Json(name = "discoverable_login_failed")
     discoverableLoginFailed("discoverable_login_failed"),
 
-    @Json(name = "user_not_active")
-    userNotActive("user_not_active"),
-
     @Json(name = "webauthn_login_failed")
     webauthnLoginFailed("webauthn_login_failed"),
 
     @Json(name = "invalid_magic_link")
-    invalidMagicLink("invalid_magic_link");
+    invalidMagicLink("invalid_magic_link"),
+
+    @Json(name = "invalid_access_token")
+    invalidAccessToken("invalid_access_token"),
+
+    @Json(name = "exceeded_attempts")
+    exceededAttempts("exceeded_attempts");
 
     /**
      * Override toString() to avoid using the enum variable name as the value, and instead use

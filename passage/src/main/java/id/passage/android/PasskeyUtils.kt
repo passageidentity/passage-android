@@ -10,23 +10,19 @@ import androidx.credentials.GetPublicKeyCredentialOption
 import androidx.credentials.exceptions.CreateCredentialException
 import androidx.credentials.exceptions.GetCredentialException
 import com.squareup.moshi.Moshi
-import id.passage.android.model.ApiCredentialAssertionChallenge
 import id.passage.android.model.CredentialCreationChallenge
-import id.passage.android.model.ProtocolCredentialAssertionResponse
-import id.passage.android.model.ProtocolCredentialAssertionResponseJsonAdapter
-import id.passage.android.model.ProtocolCredentialCreationPublicKeyJsonAdapter
-import id.passage.android.model.ProtocolCredentialCreationResponse1
-import id.passage.android.model.ProtocolCredentialCreationResponse1JsonAdapter
-import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptions
-import id.passage.android.model.ProtocolPublicKeyCredentialRequestOptionsJsonAdapter
 import id.passage.android.exceptions.*
 import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_MISSING
 import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_PARSING_FAILED
 import id.passage.android.exceptions.CredentialParsingException.Companion.CREDENTIAL_PARSING_FAILED
-import id.passage.android.model.ApiCredentialCreationChallenge
-import id.passage.android.model.ProtocolCredentialCreationResponse
-import id.passage.android.model.ProtocolCredentialCreationResponseJsonAdapter
-import id.passage.android.model.ProtocolPublicKeyCredentialCreationOptionsJsonAdapter
+import id.passage.android.model.CredentialAssertionChallenge
+import id.passage.android.model.CredentialAssertionResponse
+import id.passage.android.model.CredentialAssertionResponseJsonAdapter
+import id.passage.android.model.CredentialCreationPublicKeyJsonAdapter
+import id.passage.android.model.CredentialCreationResponse
+import id.passage.android.model.CredentialCreationResponseJsonAdapter
+import id.passage.android.model.ProtocolCredentialAssertionPublicKey
+import id.passage.android.model.ProtocolCredentialAssertionPublicKeyJsonAdapter
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class PasskeyUtils {
@@ -82,17 +78,7 @@ public final class PasskeyUtils {
             val publicKey = challenge?.challenge?.publicKey
                 ?: throw CredentialParsingException(CHALLENGE_MISSING)
             val moshi = Moshi.Builder().build()
-            val adapter = ProtocolCredentialCreationPublicKeyJsonAdapter(moshi)
-            return adapter.toJson(publicKey)
-                ?: throw CredentialParsingException(CHALLENGE_PARSING_FAILED)
-        }
-
-        // NOTE: Temporary, until Open API spec uses `CredentialCreationChallenge` rather than `ApiCredentialCreationChallenge`
-        internal fun getCreateCredentialOptionsJson(challenge: ApiCredentialCreationChallenge?): String {
-            val publicKey = challenge?.challenge?.publicKey
-                ?: throw CredentialParsingException(CHALLENGE_MISSING)
-            val moshi = Moshi.Builder().build()
-            val adapter = ProtocolPublicKeyCredentialCreationOptionsJsonAdapter(moshi)
+            val adapter = CredentialCreationPublicKeyJsonAdapter(moshi)
             return adapter.toJson(publicKey)
                 ?: throw CredentialParsingException(CHALLENGE_PARSING_FAILED)
         }
@@ -106,21 +92,11 @@ public final class PasskeyUtils {
          * @return ProtocolCredentialCreationResponse
          * @throws CredentialParsingException
          */
-        internal fun getCreateCredentialHandshakeResponse(createCredentialResponse: CreateCredentialResponse): ProtocolCredentialCreationResponse {
+        internal fun getCreateCredentialHandshakeResponse(createCredentialResponse: CreateCredentialResponse): CredentialCreationResponse {
             val handshakeResponseJson =
                 createCredentialResponse.data.getString(REGISTRATION_RESPONSE_BUNDLE_KEY).toString()
             val moshi = Moshi.Builder().build()
-            val handshakeResponseAdapter = ProtocolCredentialCreationResponseJsonAdapter(moshi)
-            return handshakeResponseAdapter.fromJson(handshakeResponseJson)
-                ?: throw CredentialParsingException(CREDENTIAL_PARSING_FAILED)
-        }
-
-        // NOTE: Temporary, until Open API spec uses `ProtocolCredentialCreationResponse` rather than `ProtocolCredentialCreationResponse1`
-        internal fun getCreateCredentialHandshakeResponse1(createCredentialResponse: CreateCredentialResponse): ProtocolCredentialCreationResponse1 {
-            val handshakeResponseJson =
-                createCredentialResponse.data.getString(REGISTRATION_RESPONSE_BUNDLE_KEY).toString()
-            val moshi = Moshi.Builder().build()
-            val handshakeResponseAdapter = ProtocolCredentialCreationResponse1JsonAdapter(moshi)
+            val handshakeResponseAdapter = CredentialCreationResponseJsonAdapter(moshi)
             return handshakeResponseAdapter.fromJson(handshakeResponseJson)
                 ?: throw CredentialParsingException(CREDENTIAL_PARSING_FAILED)
         }
@@ -133,15 +109,15 @@ public final class PasskeyUtils {
          * @return String
          * @throws CredentialParsingException
          */
-        internal fun getCredentialOptionsJson(challenge: ApiCredentialAssertionChallenge?): String {
+        internal fun getCredentialOptionsJson(challenge: CredentialAssertionChallenge?): String {
             val credOptions = challenge?.challenge?.publicKey
                 ?: throw CredentialParsingException(CHALLENGE_MISSING)
             val moshi = Moshi.Builder().build()
-            val credOptionsAdapter = ProtocolPublicKeyCredentialRequestOptionsJsonAdapter(moshi)
+            val credOptionsAdapter = ProtocolCredentialAssertionPublicKeyJsonAdapter(moshi)
             // Passage API bug: Login API frequently returns challenge with non-url-safe characters
             // "+" and "/" that cause "Bad Base 64" exception to be thrown by the credential manager.
-            val modifiedChallenge = credOptions.challenge?.replace('+', '-')?.replace('/', '_')
-            val modifiedCredOptions = ProtocolPublicKeyCredentialRequestOptions(
+            val modifiedChallenge = credOptions.challenge.replace('+', '-').replace('/', '_')
+            val modifiedCredOptions = ProtocolCredentialAssertionPublicKey(
                 allowCredentials = credOptions.allowCredentials,
                 challenge = modifiedChallenge,
                 extensions = credOptions.extensions,
@@ -162,11 +138,11 @@ public final class PasskeyUtils {
          * @return ProtocolCredentialAssertionResponse
          * @throws CredentialParsingException
          */
-        internal fun getCredentialHandshakeResponse(credentialResponse: GetCredentialResponse): ProtocolCredentialAssertionResponse {
+        internal fun getCredentialHandshakeResponse(credentialResponse: GetCredentialResponse): CredentialAssertionResponse {
             val handshakeResponseJson =
                 credentialResponse.credential.data.getString(AUTH_RESPONSE_BUNDLE_KEY).toString()
             val moshi = Moshi.Builder().build()
-            val handshakeResponseAdapter = ProtocolCredentialAssertionResponseJsonAdapter(moshi)
+            val handshakeResponseAdapter = CredentialAssertionResponseJsonAdapter(moshi)
             return handshakeResponseAdapter.fromJson(handshakeResponseJson)
                 ?: throw CredentialParsingException(CREDENTIAL_PARSING_FAILED)
         }

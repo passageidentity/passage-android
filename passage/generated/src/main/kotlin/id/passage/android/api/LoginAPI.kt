@@ -19,17 +19,17 @@ import java.io.IOException
 import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
-import id.passage.android.model.APIError
-import id.passage.android.model.ApiloginMagicLinkRequest
-import id.passage.android.model.ApiloginMagicLinkResponse
-import id.passage.android.model.ApiloginWebAuthnStartRequest
-import id.passage.android.model.ApiloginWebAuthnStartResponse
-import id.passage.android.model.AuthResponse1
-import id.passage.android.model.HttpErrorsHTTPError
+import id.passage.android.model.AuthResponse
+import id.passage.android.model.LoginMagicLinkRequest
+import id.passage.android.model.LoginMagicLinkResponse
 import id.passage.android.model.LoginOneTimePasscodeRequest
 import id.passage.android.model.LoginWebAuthnFinishRequest
+import id.passage.android.model.LoginWebAuthnStartRequest
+import id.passage.android.model.LoginWebAuthnStartResponse
 import id.passage.android.model.Model400Error
 import id.passage.android.model.Model401Error
+import id.passage.android.model.Model403Error
+import id.passage.android.model.Model404Error
 import id.passage.android.model.Model500Error
 import id.passage.android.model.OneTimePasscodeResponse
 
@@ -55,7 +55,7 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://auth.passage.id/v1")
         }
     }
 
@@ -63,8 +63,8 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * Login with Magic Link
      * Send a login email or SMS to the user. The user will receive an email or text with a link to complete their login.
      * @param appId App ID
-     * @param user User Data
-     * @return ApiloginMagicLinkResponse
+     * @param loginMagicLinkRequest User Data
+     * @return LoginMagicLinkResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -73,11 +73,11 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun loginMagicLink(appId: kotlin.String, user: ApiloginMagicLinkRequest) : ApiloginMagicLinkResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = loginMagicLinkWithHttpInfo(appId = appId, user = user)
+    suspend fun loginMagicLink(appId: kotlin.String, loginMagicLinkRequest: LoginMagicLinkRequest) : LoginMagicLinkResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = loginMagicLinkWithHttpInfo(appId = appId, loginMagicLinkRequest = loginMagicLinkRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiloginMagicLinkResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as LoginMagicLinkResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -95,17 +95,17 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * Login with Magic Link
      * Send a login email or SMS to the user. The user will receive an email or text with a link to complete their login.
      * @param appId App ID
-     * @param user User Data
-     * @return ApiResponse<ApiloginMagicLinkResponse?>
+     * @param loginMagicLinkRequest User Data
+     * @return ApiResponse<LoginMagicLinkResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun loginMagicLinkWithHttpInfo(appId: kotlin.String, user: ApiloginMagicLinkRequest) : ApiResponse<ApiloginMagicLinkResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = loginMagicLinkRequestConfig(appId = appId, user = user)
+    suspend fun loginMagicLinkWithHttpInfo(appId: kotlin.String, loginMagicLinkRequest: LoginMagicLinkRequest) : ApiResponse<LoginMagicLinkResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = loginMagicLinkRequestConfig(appId = appId, loginMagicLinkRequest = loginMagicLinkRequest)
 
-        return@withContext request<ApiloginMagicLinkRequest, ApiloginMagicLinkResponse>(
+        return@withContext request<LoginMagicLinkRequest, LoginMagicLinkResponse>(
             localVariableConfig
         )
     }
@@ -114,11 +114,11 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * To obtain the request config of the operation loginMagicLink
      *
      * @param appId App ID
-     * @param user User Data
+     * @param loginMagicLinkRequest User Data
      * @return RequestConfig
      */
-    fun loginMagicLinkRequestConfig(appId: kotlin.String, user: ApiloginMagicLinkRequest) : RequestConfig<ApiloginMagicLinkRequest> {
-        val localVariableBody = user
+    fun loginMagicLinkRequestConfig(appId: kotlin.String, loginMagicLinkRequest: LoginMagicLinkRequest) : RequestConfig<LoginMagicLinkRequest> {
+        val localVariableBody = loginMagicLinkRequest
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
         localVariableHeaders["Content-Type"] = "application/json"
@@ -126,7 +126,7 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
 
         return RequestConfig(
             method = RequestMethod.POST,
-            path = "/apps/{app_id}/login/magic-link/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/login/magic-link".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -214,7 +214,7 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * Complete a WebAuthn login and authenticate the user. This endpoint accepts and verifies the response from &#x60;navigator.credential.get()&#x60; and returns an authentication token for the user.
      * @param appId App ID
      * @param loginWebAuthnFinishRequest User Data
-     * @return AuthResponse1
+     * @return AuthResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -223,11 +223,11 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun loginWebauthnFinish(appId: kotlin.String, loginWebAuthnFinishRequest: LoginWebAuthnFinishRequest) : AuthResponse1 = withContext(Dispatchers.IO) {
+    suspend fun loginWebauthnFinish(appId: kotlin.String, loginWebAuthnFinishRequest: LoginWebAuthnFinishRequest) : AuthResponse = withContext(Dispatchers.IO) {
         val localVarResponse = loginWebauthnFinishWithHttpInfo(appId = appId, loginWebAuthnFinishRequest = loginWebAuthnFinishRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as AuthResponse1
+            ResponseType.Success -> (localVarResponse as Success<*>).data as AuthResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -246,16 +246,16 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * Complete a WebAuthn login and authenticate the user. This endpoint accepts and verifies the response from &#x60;navigator.credential.get()&#x60; and returns an authentication token for the user.
      * @param appId App ID
      * @param loginWebAuthnFinishRequest User Data
-     * @return ApiResponse<AuthResponse1?>
+     * @return ApiResponse<AuthResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun loginWebauthnFinishWithHttpInfo(appId: kotlin.String, loginWebAuthnFinishRequest: LoginWebAuthnFinishRequest) : ApiResponse<AuthResponse1?> = withContext(Dispatchers.IO) {
+    suspend fun loginWebauthnFinishWithHttpInfo(appId: kotlin.String, loginWebAuthnFinishRequest: LoginWebAuthnFinishRequest) : ApiResponse<AuthResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = loginWebauthnFinishRequestConfig(appId = appId, loginWebAuthnFinishRequest = loginWebAuthnFinishRequest)
 
-        return@withContext request<LoginWebAuthnFinishRequest, AuthResponse1>(
+        return@withContext request<LoginWebAuthnFinishRequest, AuthResponse>(
             localVariableConfig
         )
     }
@@ -288,8 +288,8 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * Start WebAuthn Login
      * Initiate a WebAuthn login for a user. This endpoint creates a WebAuthn credential assertion challenge that is used to perform the login ceremony from the browser.
      * @param appId App ID
-     * @param user User Data
-     * @return ApiloginWebAuthnStartResponse
+     * @param loginWebAuthnStartRequest User Data (optional)
+     * @return LoginWebAuthnStartResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -298,11 +298,11 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun loginWebauthnStart(appId: kotlin.String, user: ApiloginWebAuthnStartRequest) : ApiloginWebAuthnStartResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = loginWebauthnStartWithHttpInfo(appId = appId, user = user)
+    suspend fun loginWebauthnStart(appId: kotlin.String, loginWebAuthnStartRequest: LoginWebAuthnStartRequest? = null) : LoginWebAuthnStartResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = loginWebauthnStartWithHttpInfo(appId = appId, loginWebAuthnStartRequest = loginWebAuthnStartRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiloginWebAuthnStartResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as LoginWebAuthnStartResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -320,17 +320,17 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * Start WebAuthn Login
      * Initiate a WebAuthn login for a user. This endpoint creates a WebAuthn credential assertion challenge that is used to perform the login ceremony from the browser.
      * @param appId App ID
-     * @param user User Data
-     * @return ApiResponse<ApiloginWebAuthnStartResponse?>
+     * @param loginWebAuthnStartRequest User Data (optional)
+     * @return ApiResponse<LoginWebAuthnStartResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun loginWebauthnStartWithHttpInfo(appId: kotlin.String, user: ApiloginWebAuthnStartRequest) : ApiResponse<ApiloginWebAuthnStartResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = loginWebauthnStartRequestConfig(appId = appId, user = user)
+    suspend fun loginWebauthnStartWithHttpInfo(appId: kotlin.String, loginWebAuthnStartRequest: LoginWebAuthnStartRequest?) : ApiResponse<LoginWebAuthnStartResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = loginWebauthnStartRequestConfig(appId = appId, loginWebAuthnStartRequest = loginWebAuthnStartRequest)
 
-        return@withContext request<ApiloginWebAuthnStartRequest, ApiloginWebAuthnStartResponse>(
+        return@withContext request<LoginWebAuthnStartRequest, LoginWebAuthnStartResponse>(
             localVariableConfig
         )
     }
@@ -339,19 +339,18 @@ class LoginAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * To obtain the request config of the operation loginWebauthnStart
      *
      * @param appId App ID
-     * @param user User Data
+     * @param loginWebAuthnStartRequest User Data (optional)
      * @return RequestConfig
      */
-    fun loginWebauthnStartRequestConfig(appId: kotlin.String, user: ApiloginWebAuthnStartRequest) : RequestConfig<ApiloginWebAuthnStartRequest> {
-        val localVariableBody = user
+    fun loginWebauthnStartRequestConfig(appId: kotlin.String, loginWebAuthnStartRequest: LoginWebAuthnStartRequest?) : RequestConfig<LoginWebAuthnStartRequest> {
+        val localVariableBody = loginWebAuthnStartRequest
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        localVariableHeaders["Content-Type"] = "application/json"
         localVariableHeaders["Accept"] = "application/json"
 
         return RequestConfig(
             method = RequestMethod.POST,
-            path = "/apps/{app_id}/login/webauthn/start/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/login/webauthn/start".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,

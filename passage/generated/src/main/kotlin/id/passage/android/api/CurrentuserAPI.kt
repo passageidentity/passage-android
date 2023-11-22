@@ -19,18 +19,23 @@ import java.io.IOException
 import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
-import id.passage.android.model.ApiCurrentUserDevice
-import id.passage.android.model.ApiCurrentUserDevices
-import id.passage.android.model.ApiCurrentUserResponse
-import id.passage.android.model.ApiMagicLinkResponse
-import id.passage.android.model.ApiUserMetadataResponse
-import id.passage.android.model.ApiaddDeviceFinishRequest
-import id.passage.android.model.ApiaddDeviceStartResponse
-import id.passage.android.model.ApiupdateDeviceRequest
-import id.passage.android.model.ApiupdateMetadataRequest
-import id.passage.android.model.HttpErrorsHTTPError
-import id.passage.android.model.UserUpdateUserEmailRequest
-import id.passage.android.model.UserUpdateUserPhoneRequest
+import id.passage.android.model.AddDeviceFinishRequest
+import id.passage.android.model.AddDeviceStartResponse
+import id.passage.android.model.CurrentUserDevice
+import id.passage.android.model.CurrentUserDevices
+import id.passage.android.model.CurrentUserDevicesStartRequest
+import id.passage.android.model.CurrentUserResponse
+import id.passage.android.model.MagicLinkResponse
+import id.passage.android.model.Model400Error
+import id.passage.android.model.Model401Error
+import id.passage.android.model.Model403Error
+import id.passage.android.model.Model404Error
+import id.passage.android.model.Model500Error
+import id.passage.android.model.UpdateDeviceRequest
+import id.passage.android.model.UpdateMetadataRequest
+import id.passage.android.model.UpdateUserEmailRequest
+import id.passage.android.model.UpdateUserPhoneRequest
+import id.passage.android.model.UserMetadataResponse
 
 import com.squareup.moshi.Json
 
@@ -54,7 +59,7 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://auth.passage.id/v1")
         }
     }
 
@@ -122,7 +127,7 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
         return RequestConfig(
             method = RequestMethod.DELETE,
-            path = "/apps/{app_id}/currentuser/devices/{device_id}/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())).replace("{"+"device_id"+"}", encodeURIComponent(deviceId.toString())),
+            path = "/apps/{app_id}/currentuser/devices/{device_id}".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())).replace("{"+"device_id"+"}", encodeURIComponent(deviceId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = true,
@@ -134,7 +139,7 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Get Current User
      * Get information about a user that is currently authenticated via bearer token.
      * @param appId App ID
-     * @return ApiCurrentUserResponse
+     * @return CurrentUserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -143,11 +148,11 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun getCurrentuser(appId: kotlin.String) : ApiCurrentUserResponse = withContext(Dispatchers.IO) {
+    suspend fun getCurrentuser(appId: kotlin.String) : CurrentUserResponse = withContext(Dispatchers.IO) {
         val localVarResponse = getCurrentuserWithHttpInfo(appId = appId)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiCurrentUserResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as CurrentUserResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -165,16 +170,16 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Get Current User
      * Get information about a user that is currently authenticated via bearer token.
      * @param appId App ID
-     * @return ApiResponse<ApiCurrentUserResponse?>
+     * @return ApiResponse<CurrentUserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun getCurrentuserWithHttpInfo(appId: kotlin.String) : ApiResponse<ApiCurrentUserResponse?> = withContext(Dispatchers.IO) {
+    suspend fun getCurrentuserWithHttpInfo(appId: kotlin.String) : ApiResponse<CurrentUserResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = getCurrentuserRequestConfig(appId = appId)
 
-        return@withContext request<Unit, ApiCurrentUserResponse>(
+        return@withContext request<Unit, CurrentUserResponse>(
             localVariableConfig
         )
     }
@@ -193,7 +198,7 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
         return RequestConfig(
             method = RequestMethod.GET,
-            path = "/apps/{app_id}/currentuser/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/currentuser".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = true,
@@ -205,7 +210,7 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * List Devices
      * List all WebAuthn devices for the authenticated user. User must be authenticated via bearer token.
      * @param appId App ID
-     * @return ApiCurrentUserDevices
+     * @return CurrentUserDevices
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -214,11 +219,11 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun getCurrentuserDevices(appId: kotlin.String) : ApiCurrentUserDevices = withContext(Dispatchers.IO) {
+    suspend fun getCurrentuserDevices(appId: kotlin.String) : CurrentUserDevices = withContext(Dispatchers.IO) {
         val localVarResponse = getCurrentuserDevicesWithHttpInfo(appId = appId)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiCurrentUserDevices
+            ResponseType.Success -> (localVarResponse as Success<*>).data as CurrentUserDevices
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -236,16 +241,16 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * List Devices
      * List all WebAuthn devices for the authenticated user. User must be authenticated via bearer token.
      * @param appId App ID
-     * @return ApiResponse<ApiCurrentUserDevices?>
+     * @return ApiResponse<CurrentUserDevices?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun getCurrentuserDevicesWithHttpInfo(appId: kotlin.String) : ApiResponse<ApiCurrentUserDevices?> = withContext(Dispatchers.IO) {
+    suspend fun getCurrentuserDevicesWithHttpInfo(appId: kotlin.String) : ApiResponse<CurrentUserDevices?> = withContext(Dispatchers.IO) {
         val localVariableConfig = getCurrentuserDevicesRequestConfig(appId = appId)
 
-        return@withContext request<Unit, ApiCurrentUserDevices>(
+        return@withContext request<Unit, CurrentUserDevices>(
             localVariableConfig
         )
     }
@@ -264,7 +269,7 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
         return RequestConfig(
             method = RequestMethod.GET,
-            path = "/apps/{app_id}/currentuser/devices/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/currentuser/devices".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = true,
@@ -276,7 +281,7 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Get user&#39;s metadata
      * Get the user-metadata for the current user.
      * @param appId App ID
-     * @return ApiUserMetadataResponse
+     * @return UserMetadataResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -285,11 +290,11 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun getCurrentuserMetadata(appId: kotlin.String) : ApiUserMetadataResponse = withContext(Dispatchers.IO) {
+    suspend fun getCurrentuserMetadata(appId: kotlin.String) : UserMetadataResponse = withContext(Dispatchers.IO) {
         val localVarResponse = getCurrentuserMetadataWithHttpInfo(appId = appId)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiUserMetadataResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as UserMetadataResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -307,16 +312,16 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Get user&#39;s metadata
      * Get the user-metadata for the current user.
      * @param appId App ID
-     * @return ApiResponse<ApiUserMetadataResponse?>
+     * @return ApiResponse<UserMetadataResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun getCurrentuserMetadataWithHttpInfo(appId: kotlin.String) : ApiResponse<ApiUserMetadataResponse?> = withContext(Dispatchers.IO) {
+    suspend fun getCurrentuserMetadataWithHttpInfo(appId: kotlin.String) : ApiResponse<UserMetadataResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = getCurrentuserMetadataRequestConfig(appId = appId)
 
-        return@withContext request<Unit, ApiUserMetadataResponse>(
+        return@withContext request<Unit, UserMetadataResponse>(
             localVariableConfig
         )
     }
@@ -335,7 +340,7 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
         return RequestConfig(
             method = RequestMethod.GET,
-            path = "/apps/{app_id}/currentuser/user-metadata/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/currentuser/user-metadata".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = true,
@@ -347,8 +352,8 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Finish WebAuthn Add Device
      * Complete a WebAuthn add device operation for the current user. This endpoint accepts and verifies the response from &#x60;navigator.credential.create()&#x60; and returns the created device for the user. User must be authenticated via a bearer token.
      * @param appId App ID
-     * @param user WebAuthn Response Data
-     * @return ApiCurrentUserDevice
+     * @param addDeviceFinishRequest WebAuthn Response Data
+     * @return CurrentUserDevice
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -357,11 +362,11 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun postCurrentuserAddDeviceFinish(appId: kotlin.String, user: ApiaddDeviceFinishRequest) : ApiCurrentUserDevice = withContext(Dispatchers.IO) {
-        val localVarResponse = postCurrentuserAddDeviceFinishWithHttpInfo(appId = appId, user = user)
+    suspend fun postCurrentuserAddDeviceFinish(appId: kotlin.String, addDeviceFinishRequest: AddDeviceFinishRequest) : CurrentUserDevice = withContext(Dispatchers.IO) {
+        val localVarResponse = postCurrentuserAddDeviceFinishWithHttpInfo(appId = appId, addDeviceFinishRequest = addDeviceFinishRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiCurrentUserDevice
+            ResponseType.Success -> (localVarResponse as Success<*>).data as CurrentUserDevice
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -379,17 +384,17 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Finish WebAuthn Add Device
      * Complete a WebAuthn add device operation for the current user. This endpoint accepts and verifies the response from &#x60;navigator.credential.create()&#x60; and returns the created device for the user. User must be authenticated via a bearer token.
      * @param appId App ID
-     * @param user WebAuthn Response Data
-     * @return ApiResponse<ApiCurrentUserDevice?>
+     * @param addDeviceFinishRequest WebAuthn Response Data
+     * @return ApiResponse<CurrentUserDevice?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun postCurrentuserAddDeviceFinishWithHttpInfo(appId: kotlin.String, user: ApiaddDeviceFinishRequest) : ApiResponse<ApiCurrentUserDevice?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = postCurrentuserAddDeviceFinishRequestConfig(appId = appId, user = user)
+    suspend fun postCurrentuserAddDeviceFinishWithHttpInfo(appId: kotlin.String, addDeviceFinishRequest: AddDeviceFinishRequest) : ApiResponse<CurrentUserDevice?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = postCurrentuserAddDeviceFinishRequestConfig(appId = appId, addDeviceFinishRequest = addDeviceFinishRequest)
 
-        return@withContext request<ApiaddDeviceFinishRequest, ApiCurrentUserDevice>(
+        return@withContext request<AddDeviceFinishRequest, CurrentUserDevice>(
             localVariableConfig
         )
     }
@@ -398,13 +403,14 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * To obtain the request config of the operation postCurrentuserAddDeviceFinish
      *
      * @param appId App ID
-     * @param user WebAuthn Response Data
+     * @param addDeviceFinishRequest WebAuthn Response Data
      * @return RequestConfig
      */
-    fun postCurrentuserAddDeviceFinishRequestConfig(appId: kotlin.String, user: ApiaddDeviceFinishRequest) : RequestConfig<ApiaddDeviceFinishRequest> {
-        val localVariableBody = user
+    fun postCurrentuserAddDeviceFinishRequestConfig(appId: kotlin.String, addDeviceFinishRequest: AddDeviceFinishRequest) : RequestConfig<AddDeviceFinishRequest> {
+        val localVariableBody = addDeviceFinishRequest
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
         localVariableHeaders["Accept"] = "application/json"
 
         return RequestConfig(
@@ -421,7 +427,8 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Start WebAuthn Add Device
      * Initiate a WebAuthn add device operation for the current user. This endpoint creates a WebAuthn credential creation challenge that is used to perform the registration ceremony from the browser. User must be authenticated via a bearer token.
      * @param appId App ID
-     * @return ApiaddDeviceStartResponse
+     * @param currentUserDevicesStartRequest WebAuthn Start Response Data (optional)
+     * @return AddDeviceStartResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -430,11 +437,11 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun postCurrentuserAddDeviceStart(appId: kotlin.String) : ApiaddDeviceStartResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = postCurrentuserAddDeviceStartWithHttpInfo(appId = appId)
+    suspend fun postCurrentuserAddDeviceStart(appId: kotlin.String, currentUserDevicesStartRequest: CurrentUserDevicesStartRequest? = null) : AddDeviceStartResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = postCurrentuserAddDeviceStartWithHttpInfo(appId = appId, currentUserDevicesStartRequest = currentUserDevicesStartRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiaddDeviceStartResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as AddDeviceStartResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -452,16 +459,17 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Start WebAuthn Add Device
      * Initiate a WebAuthn add device operation for the current user. This endpoint creates a WebAuthn credential creation challenge that is used to perform the registration ceremony from the browser. User must be authenticated via a bearer token.
      * @param appId App ID
-     * @return ApiResponse<ApiaddDeviceStartResponse?>
+     * @param currentUserDevicesStartRequest WebAuthn Start Response Data (optional)
+     * @return ApiResponse<AddDeviceStartResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun postCurrentuserAddDeviceStartWithHttpInfo(appId: kotlin.String) : ApiResponse<ApiaddDeviceStartResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = postCurrentuserAddDeviceStartRequestConfig(appId = appId)
+    suspend fun postCurrentuserAddDeviceStartWithHttpInfo(appId: kotlin.String, currentUserDevicesStartRequest: CurrentUserDevicesStartRequest?) : ApiResponse<AddDeviceStartResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = postCurrentuserAddDeviceStartRequestConfig(appId = appId, currentUserDevicesStartRequest = currentUserDevicesStartRequest)
 
-        return@withContext request<Unit, ApiaddDeviceStartResponse>(
+        return@withContext request<CurrentUserDevicesStartRequest, AddDeviceStartResponse>(
             localVariableConfig
         )
     }
@@ -470,17 +478,18 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * To obtain the request config of the operation postCurrentuserAddDeviceStart
      *
      * @param appId App ID
+     * @param currentUserDevicesStartRequest WebAuthn Start Response Data (optional)
      * @return RequestConfig
      */
-    fun postCurrentuserAddDeviceStartRequestConfig(appId: kotlin.String) : RequestConfig<Unit> {
-        val localVariableBody = null
+    fun postCurrentuserAddDeviceStartRequestConfig(appId: kotlin.String, currentUserDevicesStartRequest: CurrentUserDevicesStartRequest?) : RequestConfig<CurrentUserDevicesStartRequest> {
+        val localVariableBody = currentUserDevicesStartRequest
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
         localVariableHeaders["Accept"] = "application/json"
 
         return RequestConfig(
             method = RequestMethod.POST,
-            path = "/apps/{app_id}/currentuser/devices/start/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/currentuser/devices/start".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = true,
@@ -493,8 +502,8 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Update a device by ID for the current user. Currently the only field that can be updated is the friendly name. User must be authenticated via a bearer token.
      * @param appId App ID
      * @param deviceId Device ID
-     * @param friendlyName Friendly Name
-     * @return ApiCurrentUserDevice
+     * @param updateDeviceRequest Friendly Name
+     * @return CurrentUserDevice
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -503,11 +512,11 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun updateCurrentuserDevice(appId: kotlin.String, deviceId: kotlin.String, friendlyName: ApiupdateDeviceRequest) : ApiCurrentUserDevice = withContext(Dispatchers.IO) {
-        val localVarResponse = updateCurrentuserDeviceWithHttpInfo(appId = appId, deviceId = deviceId, friendlyName = friendlyName)
+    suspend fun updateCurrentuserDevice(appId: kotlin.String, deviceId: kotlin.String, updateDeviceRequest: UpdateDeviceRequest) : CurrentUserDevice = withContext(Dispatchers.IO) {
+        val localVarResponse = updateCurrentuserDeviceWithHttpInfo(appId = appId, deviceId = deviceId, updateDeviceRequest = updateDeviceRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiCurrentUserDevice
+            ResponseType.Success -> (localVarResponse as Success<*>).data as CurrentUserDevice
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -526,17 +535,17 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Update a device by ID for the current user. Currently the only field that can be updated is the friendly name. User must be authenticated via a bearer token.
      * @param appId App ID
      * @param deviceId Device ID
-     * @param friendlyName Friendly Name
-     * @return ApiResponse<ApiCurrentUserDevice?>
+     * @param updateDeviceRequest Friendly Name
+     * @return ApiResponse<CurrentUserDevice?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun updateCurrentuserDeviceWithHttpInfo(appId: kotlin.String, deviceId: kotlin.String, friendlyName: ApiupdateDeviceRequest) : ApiResponse<ApiCurrentUserDevice?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = updateCurrentuserDeviceRequestConfig(appId = appId, deviceId = deviceId, friendlyName = friendlyName)
+    suspend fun updateCurrentuserDeviceWithHttpInfo(appId: kotlin.String, deviceId: kotlin.String, updateDeviceRequest: UpdateDeviceRequest) : ApiResponse<CurrentUserDevice?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = updateCurrentuserDeviceRequestConfig(appId = appId, deviceId = deviceId, updateDeviceRequest = updateDeviceRequest)
 
-        return@withContext request<ApiupdateDeviceRequest, ApiCurrentUserDevice>(
+        return@withContext request<UpdateDeviceRequest, CurrentUserDevice>(
             localVariableConfig
         )
     }
@@ -546,18 +555,19 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      *
      * @param appId App ID
      * @param deviceId Device ID
-     * @param friendlyName Friendly Name
+     * @param updateDeviceRequest Friendly Name
      * @return RequestConfig
      */
-    fun updateCurrentuserDeviceRequestConfig(appId: kotlin.String, deviceId: kotlin.String, friendlyName: ApiupdateDeviceRequest) : RequestConfig<ApiupdateDeviceRequest> {
-        val localVariableBody = friendlyName
+    fun updateCurrentuserDeviceRequestConfig(appId: kotlin.String, deviceId: kotlin.String, updateDeviceRequest: UpdateDeviceRequest) : RequestConfig<UpdateDeviceRequest> {
+        val localVariableBody = updateDeviceRequest
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
         localVariableHeaders["Accept"] = "application/json"
 
         return RequestConfig(
             method = RequestMethod.PATCH,
-            path = "/apps/{app_id}/currentuser/devices/{device_id}/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())).replace("{"+"device_id"+"}", encodeURIComponent(deviceId.toString())),
+            path = "/apps/{app_id}/currentuser/devices/{device_id}".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())).replace("{"+"device_id"+"}", encodeURIComponent(deviceId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = true,
@@ -569,8 +579,8 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Update user&#39;s metadata
      * Update the metadata for the current user. Only valid metadata fields are accepted. Invalid metadata fields that are present will abort the update. User must be authenticated via a bearer token.
      * @param appId App ID
-     * @param userMetadata User Metadata
-     * @return ApiCurrentUserResponse
+     * @param updateMetadataRequest User Metadata
+     * @return CurrentUserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -579,11 +589,11 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun updateCurrentuserMetadata(appId: kotlin.String, userMetadata: ApiupdateMetadataRequest) : ApiCurrentUserResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = updateCurrentuserMetadataWithHttpInfo(appId = appId, userMetadata = userMetadata)
+    suspend fun updateCurrentuserMetadata(appId: kotlin.String, updateMetadataRequest: UpdateMetadataRequest) : CurrentUserResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = updateCurrentuserMetadataWithHttpInfo(appId = appId, updateMetadataRequest = updateMetadataRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiCurrentUserResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as CurrentUserResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -601,17 +611,17 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Update user&#39;s metadata
      * Update the metadata for the current user. Only valid metadata fields are accepted. Invalid metadata fields that are present will abort the update. User must be authenticated via a bearer token.
      * @param appId App ID
-     * @param userMetadata User Metadata
-     * @return ApiResponse<ApiCurrentUserResponse?>
+     * @param updateMetadataRequest User Metadata
+     * @return ApiResponse<CurrentUserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun updateCurrentuserMetadataWithHttpInfo(appId: kotlin.String, userMetadata: ApiupdateMetadataRequest) : ApiResponse<ApiCurrentUserResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = updateCurrentuserMetadataRequestConfig(appId = appId, userMetadata = userMetadata)
+    suspend fun updateCurrentuserMetadataWithHttpInfo(appId: kotlin.String, updateMetadataRequest: UpdateMetadataRequest) : ApiResponse<CurrentUserResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = updateCurrentuserMetadataRequestConfig(appId = appId, updateMetadataRequest = updateMetadataRequest)
 
-        return@withContext request<ApiupdateMetadataRequest, ApiCurrentUserResponse>(
+        return@withContext request<UpdateMetadataRequest, CurrentUserResponse>(
             localVariableConfig
         )
     }
@@ -620,18 +630,19 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * To obtain the request config of the operation updateCurrentuserMetadata
      *
      * @param appId App ID
-     * @param userMetadata User Metadata
+     * @param updateMetadataRequest User Metadata
      * @return RequestConfig
      */
-    fun updateCurrentuserMetadataRequestConfig(appId: kotlin.String, userMetadata: ApiupdateMetadataRequest) : RequestConfig<ApiupdateMetadataRequest> {
-        val localVariableBody = userMetadata
+    fun updateCurrentuserMetadataRequestConfig(appId: kotlin.String, updateMetadataRequest: UpdateMetadataRequest) : RequestConfig<UpdateMetadataRequest> {
+        val localVariableBody = updateMetadataRequest
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
         localVariableHeaders["Accept"] = "application/json"
 
         return RequestConfig(
             method = RequestMethod.PATCH,
-            path = "/apps/{app_id}/currentuser/user-metadata/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/currentuser/user-metadata".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = true,
@@ -643,8 +654,8 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Change Email
      * Initiate an email change for the authenticated user. An email change requires verification, so an email will be sent to the user which they must verify before the email change takes effect.
      * @param appId App ID
-     * @param user email
-     * @return ApiMagicLinkResponse
+     * @param updateUserEmailRequest email
+     * @return MagicLinkResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -653,11 +664,11 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun updateEmailCurrentuser(appId: kotlin.String, user: UserUpdateUserEmailRequest) : ApiMagicLinkResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = updateEmailCurrentuserWithHttpInfo(appId = appId, user = user)
+    suspend fun updateEmailCurrentuser(appId: kotlin.String, updateUserEmailRequest: UpdateUserEmailRequest) : MagicLinkResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = updateEmailCurrentuserWithHttpInfo(appId = appId, updateUserEmailRequest = updateUserEmailRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiMagicLinkResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as MagicLinkResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -675,17 +686,17 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Change Email
      * Initiate an email change for the authenticated user. An email change requires verification, so an email will be sent to the user which they must verify before the email change takes effect.
      * @param appId App ID
-     * @param user email
-     * @return ApiResponse<ApiMagicLinkResponse?>
+     * @param updateUserEmailRequest email
+     * @return ApiResponse<MagicLinkResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun updateEmailCurrentuserWithHttpInfo(appId: kotlin.String, user: UserUpdateUserEmailRequest) : ApiResponse<ApiMagicLinkResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = updateEmailCurrentuserRequestConfig(appId = appId, user = user)
+    suspend fun updateEmailCurrentuserWithHttpInfo(appId: kotlin.String, updateUserEmailRequest: UpdateUserEmailRequest) : ApiResponse<MagicLinkResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = updateEmailCurrentuserRequestConfig(appId = appId, updateUserEmailRequest = updateUserEmailRequest)
 
-        return@withContext request<UserUpdateUserEmailRequest, ApiMagicLinkResponse>(
+        return@withContext request<UpdateUserEmailRequest, MagicLinkResponse>(
             localVariableConfig
         )
     }
@@ -694,18 +705,19 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * To obtain the request config of the operation updateEmailCurrentuser
      *
      * @param appId App ID
-     * @param user email
+     * @param updateUserEmailRequest email
      * @return RequestConfig
      */
-    fun updateEmailCurrentuserRequestConfig(appId: kotlin.String, user: UserUpdateUserEmailRequest) : RequestConfig<UserUpdateUserEmailRequest> {
-        val localVariableBody = user
+    fun updateEmailCurrentuserRequestConfig(appId: kotlin.String, updateUserEmailRequest: UpdateUserEmailRequest) : RequestConfig<UpdateUserEmailRequest> {
+        val localVariableBody = updateUserEmailRequest
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
         localVariableHeaders["Accept"] = "application/json"
 
         return RequestConfig(
             method = RequestMethod.PATCH,
-            path = "/apps/{app_id}/currentuser/email/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/currentuser/email".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = true,
@@ -717,8 +729,8 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Change Phone
      * Initiate a phone number change for the authenticated user. An phone number change requires verification, so an SMS with a link will be sent to the user which they must verify before the phone number change takes effect.
      * @param appId App ID
-     * @param user phone
-     * @return ApiMagicLinkResponse
+     * @param updateUserPhoneRequest phone
+     * @return MagicLinkResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -727,11 +739,11 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun updatePhoneCurrentuser(appId: kotlin.String, user: UserUpdateUserPhoneRequest) : ApiMagicLinkResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = updatePhoneCurrentuserWithHttpInfo(appId = appId, user = user)
+    suspend fun updatePhoneCurrentuser(appId: kotlin.String, updateUserPhoneRequest: UpdateUserPhoneRequest) : MagicLinkResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = updatePhoneCurrentuserWithHttpInfo(appId = appId, updateUserPhoneRequest = updateUserPhoneRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiMagicLinkResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as MagicLinkResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -749,17 +761,17 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * Change Phone
      * Initiate a phone number change for the authenticated user. An phone number change requires verification, so an SMS with a link will be sent to the user which they must verify before the phone number change takes effect.
      * @param appId App ID
-     * @param user phone
-     * @return ApiResponse<ApiMagicLinkResponse?>
+     * @param updateUserPhoneRequest phone
+     * @return ApiResponse<MagicLinkResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun updatePhoneCurrentuserWithHttpInfo(appId: kotlin.String, user: UserUpdateUserPhoneRequest) : ApiResponse<ApiMagicLinkResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = updatePhoneCurrentuserRequestConfig(appId = appId, user = user)
+    suspend fun updatePhoneCurrentuserWithHttpInfo(appId: kotlin.String, updateUserPhoneRequest: UpdateUserPhoneRequest) : ApiResponse<MagicLinkResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = updatePhoneCurrentuserRequestConfig(appId = appId, updateUserPhoneRequest = updateUserPhoneRequest)
 
-        return@withContext request<UserUpdateUserPhoneRequest, ApiMagicLinkResponse>(
+        return@withContext request<UpdateUserPhoneRequest, MagicLinkResponse>(
             localVariableConfig
         )
     }
@@ -768,18 +780,19 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      * To obtain the request config of the operation updatePhoneCurrentuser
      *
      * @param appId App ID
-     * @param user phone
+     * @param updateUserPhoneRequest phone
      * @return RequestConfig
      */
-    fun updatePhoneCurrentuserRequestConfig(appId: kotlin.String, user: UserUpdateUserPhoneRequest) : RequestConfig<UserUpdateUserPhoneRequest> {
-        val localVariableBody = user
+    fun updatePhoneCurrentuserRequestConfig(appId: kotlin.String, updateUserPhoneRequest: UpdateUserPhoneRequest) : RequestConfig<UpdateUserPhoneRequest> {
+        val localVariableBody = updateUserPhoneRequest
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
         localVariableHeaders["Accept"] = "application/json"
 
         return RequestConfig(
             method = RequestMethod.PATCH,
-            path = "/apps/{app_id}/currentuser/phone/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/currentuser/phone".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = true,

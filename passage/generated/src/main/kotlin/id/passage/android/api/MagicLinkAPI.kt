@@ -20,17 +20,11 @@ import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
 import id.passage.android.model.ActivateMagicLinkRequest
-import id.passage.android.model.ApiAuthResponse
-import id.passage.android.model.ApiactivateMagicLinkRequest
-import id.passage.android.model.ApigetMagicLinkStatusRequest
-import id.passage.android.model.ApimagicLinkLoginWebAuthnStartResponse
-import id.passage.android.model.AuthResponse1
-import id.passage.android.model.HttpErrorsHTTPError
-import id.passage.android.model.MagicLinkLoginWebAuthnFinishRequest
-import id.passage.android.model.MagicLinkNewDeviceWebAuthnFinishRequest
-import id.passage.android.model.MagicLinkNewDeviceWebAuthnStartResponse
+import id.passage.android.model.AuthResponse
+import id.passage.android.model.GetMagicLinkStatusRequest
 import id.passage.android.model.Model400Error
 import id.passage.android.model.Model401Error
+import id.passage.android.model.Model403Error
 import id.passage.android.model.Model404Error
 import id.passage.android.model.Model500Error
 
@@ -56,7 +50,7 @@ class MagicLinkAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClie
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://auth.passage.id/v1")
         }
     }
 
@@ -64,8 +58,8 @@ class MagicLinkAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClie
      * Authenticate Magic Link
      * Authenticate a magic link for a user. This endpoint checks that the magic link is valid, then returns an authentication token for the user.
      * @param appId App ID
-     * @param user User Data
-     * @return ApiAuthResponse
+     * @param activateMagicLinkRequest User Data
+     * @return AuthResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -74,11 +68,11 @@ class MagicLinkAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClie
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun activateMagicLink(appId: kotlin.String, user: ApiactivateMagicLinkRequest) : ApiAuthResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = activateMagicLinkWithHttpInfo(appId = appId, user = user)
+    suspend fun activateMagicLink(appId: kotlin.String, activateMagicLinkRequest: ActivateMagicLinkRequest) : AuthResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = activateMagicLinkWithHttpInfo(appId = appId, activateMagicLinkRequest = activateMagicLinkRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiAuthResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as AuthResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -96,17 +90,17 @@ class MagicLinkAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClie
      * Authenticate Magic Link
      * Authenticate a magic link for a user. This endpoint checks that the magic link is valid, then returns an authentication token for the user.
      * @param appId App ID
-     * @param user User Data
-     * @return ApiResponse<ApiAuthResponse?>
+     * @param activateMagicLinkRequest User Data
+     * @return ApiResponse<AuthResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun activateMagicLinkWithHttpInfo(appId: kotlin.String, user: ApiactivateMagicLinkRequest) : ApiResponse<ApiAuthResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = activateMagicLinkRequestConfig(appId = appId, user = user)
+    suspend fun activateMagicLinkWithHttpInfo(appId: kotlin.String, activateMagicLinkRequest: ActivateMagicLinkRequest) : ApiResponse<AuthResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = activateMagicLinkRequestConfig(appId = appId, activateMagicLinkRequest = activateMagicLinkRequest)
 
-        return@withContext request<ApiactivateMagicLinkRequest, ApiAuthResponse>(
+        return@withContext request<ActivateMagicLinkRequest, AuthResponse>(
             localVariableConfig
         )
     }
@@ -115,310 +109,10 @@ class MagicLinkAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClie
      * To obtain the request config of the operation activateMagicLink
      *
      * @param appId App ID
-     * @param user User Data
-     * @return RequestConfig
-     */
-    fun activateMagicLinkRequestConfig(appId: kotlin.String, user: ApiactivateMagicLinkRequest) : RequestConfig<ApiactivateMagicLinkRequest> {
-        val localVariableBody = user
-        val localVariableQuery: MultiValueMap = mutableMapOf()
-        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        localVariableHeaders["Content-Type"] = "application/json"
-        localVariableHeaders["Accept"] = "application/json"
-
-        return RequestConfig(
-            method = RequestMethod.PATCH,
-            path = "/apps/{app_id}/magic-link/activate/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
-            query = localVariableQuery,
-            headers = localVariableHeaders,
-            requiresAuthentication = false,
-            body = localVariableBody
-        )
-    }
-
-    /**
-     * Finish a WebAuthn registration, initiated by a magic link.
-     * 
-     * @param appId App ID
-     * @param magicLinkLoginWebAuthnFinishRequest User Data
-     * @return AuthResponse1
-     * @throws IllegalStateException If the request is not correctly configured
-     * @throws IOException Rethrows the OkHttp execute method exception
-     * @throws UnsupportedOperationException If the API returns an informational or redirection response
-     * @throws ClientException If the API returns a client error response
-     * @throws ServerException If the API returns a server error response
-     */
-    @Suppress("UNCHECKED_CAST")
-    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun activateMagicLinkWebauthnLoginFinish(appId: kotlin.String, magicLinkLoginWebAuthnFinishRequest: MagicLinkLoginWebAuthnFinishRequest) : AuthResponse1 = withContext(Dispatchers.IO) {
-        val localVarResponse = activateMagicLinkWebauthnLoginFinishWithHttpInfo(appId = appId, magicLinkLoginWebAuthnFinishRequest = magicLinkLoginWebAuthnFinishRequest)
-
-        return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as AuthResponse1
-            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
-            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
-            ResponseType.ClientError -> {
-                val localVarError = localVarResponse as ClientError<*>
-                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
-            }
-            ResponseType.ServerError -> {
-                val localVarError = localVarResponse as ServerError<*>
-                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
-            }
-        }
-    }
-
-    /**
-     * Finish a WebAuthn registration, initiated by a magic link.
-     * 
-     * @param appId App ID
-     * @param magicLinkLoginWebAuthnFinishRequest User Data
-     * @return ApiResponse<AuthResponse1?>
-     * @throws IllegalStateException If the request is not correctly configured
-     * @throws IOException Rethrows the OkHttp execute method exception
-     */
-    @Suppress("UNCHECKED_CAST")
-    @Throws(IllegalStateException::class, IOException::class)
-    suspend fun activateMagicLinkWebauthnLoginFinishWithHttpInfo(appId: kotlin.String, magicLinkLoginWebAuthnFinishRequest: MagicLinkLoginWebAuthnFinishRequest) : ApiResponse<AuthResponse1?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = activateMagicLinkWebauthnLoginFinishRequestConfig(appId = appId, magicLinkLoginWebAuthnFinishRequest = magicLinkLoginWebAuthnFinishRequest)
-
-        return@withContext request<MagicLinkLoginWebAuthnFinishRequest, AuthResponse1>(
-            localVariableConfig
-        )
-    }
-
-    /**
-     * To obtain the request config of the operation activateMagicLinkWebauthnLoginFinish
-     *
-     * @param appId App ID
-     * @param magicLinkLoginWebAuthnFinishRequest User Data
-     * @return RequestConfig
-     */
-    fun activateMagicLinkWebauthnLoginFinishRequestConfig(appId: kotlin.String, magicLinkLoginWebAuthnFinishRequest: MagicLinkLoginWebAuthnFinishRequest) : RequestConfig<MagicLinkLoginWebAuthnFinishRequest> {
-        val localVariableBody = magicLinkLoginWebAuthnFinishRequest
-        val localVariableQuery: MultiValueMap = mutableMapOf()
-        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        localVariableHeaders["Content-Type"] = "application/json"
-        localVariableHeaders["Accept"] = "application/json"
-
-        return RequestConfig(
-            method = RequestMethod.POST,
-            path = "/apps/{app_id}/magic-link/webauthn/login/finish".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
-            query = localVariableQuery,
-            headers = localVariableHeaders,
-            requiresAuthentication = false,
-            body = localVariableBody
-        )
-    }
-
-    /**
-     * Authenticate the user via magic link, then initiate a WebAuthn login.
-     * 
-     * @param appId App ID
-     * @param user User Data
-     * @return ApimagicLinkLoginWebAuthnStartResponse
-     * @throws IllegalStateException If the request is not correctly configured
-     * @throws IOException Rethrows the OkHttp execute method exception
-     * @throws UnsupportedOperationException If the API returns an informational or redirection response
-     * @throws ClientException If the API returns a client error response
-     * @throws ServerException If the API returns a server error response
-     */
-    @Suppress("UNCHECKED_CAST")
-    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun activateMagicLinkWebauthnLoginStart(appId: kotlin.String, user: ApiactivateMagicLinkRequest) : ApimagicLinkLoginWebAuthnStartResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = activateMagicLinkWebauthnLoginStartWithHttpInfo(appId = appId, user = user)
-
-        return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApimagicLinkLoginWebAuthnStartResponse
-            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
-            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
-            ResponseType.ClientError -> {
-                val localVarError = localVarResponse as ClientError<*>
-                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
-            }
-            ResponseType.ServerError -> {
-                val localVarError = localVarResponse as ServerError<*>
-                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
-            }
-        }
-    }
-
-    /**
-     * Authenticate the user via magic link, then initiate a WebAuthn login.
-     * 
-     * @param appId App ID
-     * @param user User Data
-     * @return ApiResponse<ApimagicLinkLoginWebAuthnStartResponse?>
-     * @throws IllegalStateException If the request is not correctly configured
-     * @throws IOException Rethrows the OkHttp execute method exception
-     */
-    @Suppress("UNCHECKED_CAST")
-    @Throws(IllegalStateException::class, IOException::class)
-    suspend fun activateMagicLinkWebauthnLoginStartWithHttpInfo(appId: kotlin.String, user: ApiactivateMagicLinkRequest) : ApiResponse<ApimagicLinkLoginWebAuthnStartResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = activateMagicLinkWebauthnLoginStartRequestConfig(appId = appId, user = user)
-
-        return@withContext request<ApiactivateMagicLinkRequest, ApimagicLinkLoginWebAuthnStartResponse>(
-            localVariableConfig
-        )
-    }
-
-    /**
-     * To obtain the request config of the operation activateMagicLinkWebauthnLoginStart
-     *
-     * @param appId App ID
-     * @param user User Data
-     * @return RequestConfig
-     */
-    fun activateMagicLinkWebauthnLoginStartRequestConfig(appId: kotlin.String, user: ApiactivateMagicLinkRequest) : RequestConfig<ApiactivateMagicLinkRequest> {
-        val localVariableBody = user
-        val localVariableQuery: MultiValueMap = mutableMapOf()
-        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        localVariableHeaders["Content-Type"] = "application/json"
-        localVariableHeaders["Accept"] = "application/json"
-
-        return RequestConfig(
-            method = RequestMethod.POST,
-            path = "/apps/{app_id}/magic-link/webauthn/login/start/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
-            query = localVariableQuery,
-            headers = localVariableHeaders,
-            requiresAuthentication = false,
-            body = localVariableBody
-        )
-    }
-
-    /**
-     * Finish WebAuthn registration that was initiated from a magic link.
-     * 
-     * @param appId App ID
-     * @param magicLinkNewDeviceWebAuthnFinishRequest User Data
-     * @return AuthResponse1
-     * @throws IllegalStateException If the request is not correctly configured
-     * @throws IOException Rethrows the OkHttp execute method exception
-     * @throws UnsupportedOperationException If the API returns an informational or redirection response
-     * @throws ClientException If the API returns a client error response
-     * @throws ServerException If the API returns a server error response
-     */
-    @Suppress("UNCHECKED_CAST")
-    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun activateMagicLinkWebauthnNewDeviceFinish(appId: kotlin.String, magicLinkNewDeviceWebAuthnFinishRequest: MagicLinkNewDeviceWebAuthnFinishRequest) : AuthResponse1 = withContext(Dispatchers.IO) {
-        val localVarResponse = activateMagicLinkWebauthnNewDeviceFinishWithHttpInfo(appId = appId, magicLinkNewDeviceWebAuthnFinishRequest = magicLinkNewDeviceWebAuthnFinishRequest)
-
-        return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as AuthResponse1
-            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
-            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
-            ResponseType.ClientError -> {
-                val localVarError = localVarResponse as ClientError<*>
-                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
-            }
-            ResponseType.ServerError -> {
-                val localVarError = localVarResponse as ServerError<*>
-                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
-            }
-        }
-    }
-
-    /**
-     * Finish WebAuthn registration that was initiated from a magic link.
-     * 
-     * @param appId App ID
-     * @param magicLinkNewDeviceWebAuthnFinishRequest User Data
-     * @return ApiResponse<AuthResponse1?>
-     * @throws IllegalStateException If the request is not correctly configured
-     * @throws IOException Rethrows the OkHttp execute method exception
-     */
-    @Suppress("UNCHECKED_CAST")
-    @Throws(IllegalStateException::class, IOException::class)
-    suspend fun activateMagicLinkWebauthnNewDeviceFinishWithHttpInfo(appId: kotlin.String, magicLinkNewDeviceWebAuthnFinishRequest: MagicLinkNewDeviceWebAuthnFinishRequest) : ApiResponse<AuthResponse1?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = activateMagicLinkWebauthnNewDeviceFinishRequestConfig(appId = appId, magicLinkNewDeviceWebAuthnFinishRequest = magicLinkNewDeviceWebAuthnFinishRequest)
-
-        return@withContext request<MagicLinkNewDeviceWebAuthnFinishRequest, AuthResponse1>(
-            localVariableConfig
-        )
-    }
-
-    /**
-     * To obtain the request config of the operation activateMagicLinkWebauthnNewDeviceFinish
-     *
-     * @param appId App ID
-     * @param magicLinkNewDeviceWebAuthnFinishRequest User Data
-     * @return RequestConfig
-     */
-    fun activateMagicLinkWebauthnNewDeviceFinishRequestConfig(appId: kotlin.String, magicLinkNewDeviceWebAuthnFinishRequest: MagicLinkNewDeviceWebAuthnFinishRequest) : RequestConfig<MagicLinkNewDeviceWebAuthnFinishRequest> {
-        val localVariableBody = magicLinkNewDeviceWebAuthnFinishRequest
-        val localVariableQuery: MultiValueMap = mutableMapOf()
-        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        localVariableHeaders["Content-Type"] = "application/json"
-        localVariableHeaders["Accept"] = "application/json"
-
-        return RequestConfig(
-            method = RequestMethod.POST,
-            path = "/apps/{app_id}/magic-link/webauthn/new/finish".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
-            query = localVariableQuery,
-            headers = localVariableHeaders,
-            requiresAuthentication = false,
-            body = localVariableBody
-        )
-    }
-
-    /**
-     * Authenticate the user via magic link, then initiate a WebAuthn registration.
-     * 
-     * @param appId App ID
-     * @param activateMagicLinkRequest User Data
-     * @return MagicLinkNewDeviceWebAuthnStartResponse
-     * @throws IllegalStateException If the request is not correctly configured
-     * @throws IOException Rethrows the OkHttp execute method exception
-     * @throws UnsupportedOperationException If the API returns an informational or redirection response
-     * @throws ClientException If the API returns a client error response
-     * @throws ServerException If the API returns a server error response
-     */
-    @Suppress("UNCHECKED_CAST")
-    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun activateMagicLinkWebauthnNewDeviceStart(appId: kotlin.String, activateMagicLinkRequest: ActivateMagicLinkRequest) : MagicLinkNewDeviceWebAuthnStartResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = activateMagicLinkWebauthnNewDeviceStartWithHttpInfo(appId = appId, activateMagicLinkRequest = activateMagicLinkRequest)
-
-        return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as MagicLinkNewDeviceWebAuthnStartResponse
-            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
-            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
-            ResponseType.ClientError -> {
-                val localVarError = localVarResponse as ClientError<*>
-                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
-            }
-            ResponseType.ServerError -> {
-                val localVarError = localVarResponse as ServerError<*>
-                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
-            }
-        }
-    }
-
-    /**
-     * Authenticate the user via magic link, then initiate a WebAuthn registration.
-     * 
-     * @param appId App ID
-     * @param activateMagicLinkRequest User Data
-     * @return ApiResponse<MagicLinkNewDeviceWebAuthnStartResponse?>
-     * @throws IllegalStateException If the request is not correctly configured
-     * @throws IOException Rethrows the OkHttp execute method exception
-     */
-    @Suppress("UNCHECKED_CAST")
-    @Throws(IllegalStateException::class, IOException::class)
-    suspend fun activateMagicLinkWebauthnNewDeviceStartWithHttpInfo(appId: kotlin.String, activateMagicLinkRequest: ActivateMagicLinkRequest) : ApiResponse<MagicLinkNewDeviceWebAuthnStartResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = activateMagicLinkWebauthnNewDeviceStartRequestConfig(appId = appId, activateMagicLinkRequest = activateMagicLinkRequest)
-
-        return@withContext request<ActivateMagicLinkRequest, MagicLinkNewDeviceWebAuthnStartResponse>(
-            localVariableConfig
-        )
-    }
-
-    /**
-     * To obtain the request config of the operation activateMagicLinkWebauthnNewDeviceStart
-     *
-     * @param appId App ID
      * @param activateMagicLinkRequest User Data
      * @return RequestConfig
      */
-    fun activateMagicLinkWebauthnNewDeviceStartRequestConfig(appId: kotlin.String, activateMagicLinkRequest: ActivateMagicLinkRequest) : RequestConfig<ActivateMagicLinkRequest> {
+    fun activateMagicLinkRequestConfig(appId: kotlin.String, activateMagicLinkRequest: ActivateMagicLinkRequest) : RequestConfig<ActivateMagicLinkRequest> {
         val localVariableBody = activateMagicLinkRequest
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
@@ -426,8 +120,8 @@ class MagicLinkAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClie
         localVariableHeaders["Accept"] = "application/json"
 
         return RequestConfig(
-            method = RequestMethod.POST,
-            path = "/apps/{app_id}/magic-link/webauthn/new/start".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            method = RequestMethod.PATCH,
+            path = "/apps/{app_id}/magic-link/activate".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -437,10 +131,10 @@ class MagicLinkAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClie
 
     /**
      * Magic Link Status
-     * Check if a magic link has been activated yet or not. Once the magic link has been activated, this endpoint will return an authentication token for the user. This endpoint can be used to initiate a login in one device and then poll and wait for the login to complete on another device.
+     * Check if a magic link has been activated yet or not. Once the magic link has been activated, this endpoint will return an authentication token for the user. This endpoint can be used to initiate a login on one device and then poll and wait for the login to complete on another device.
      * @param appId App ID
-     * @param user Magic Link ID
-     * @return ApiAuthResponse
+     * @param getMagicLinkStatusRequest Magic Link ID
+     * @return AuthResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -449,11 +143,11 @@ class MagicLinkAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClie
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun magicLinkStatus(appId: kotlin.String, user: ApigetMagicLinkStatusRequest) : ApiAuthResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = magicLinkStatusWithHttpInfo(appId = appId, user = user)
+    suspend fun magicLinkStatus(appId: kotlin.String, getMagicLinkStatusRequest: GetMagicLinkStatusRequest) : AuthResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = magicLinkStatusWithHttpInfo(appId = appId, getMagicLinkStatusRequest = getMagicLinkStatusRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiAuthResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as AuthResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -469,19 +163,19 @@ class MagicLinkAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClie
 
     /**
      * Magic Link Status
-     * Check if a magic link has been activated yet or not. Once the magic link has been activated, this endpoint will return an authentication token for the user. This endpoint can be used to initiate a login in one device and then poll and wait for the login to complete on another device.
+     * Check if a magic link has been activated yet or not. Once the magic link has been activated, this endpoint will return an authentication token for the user. This endpoint can be used to initiate a login on one device and then poll and wait for the login to complete on another device.
      * @param appId App ID
-     * @param user Magic Link ID
-     * @return ApiResponse<ApiAuthResponse?>
+     * @param getMagicLinkStatusRequest Magic Link ID
+     * @return ApiResponse<AuthResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun magicLinkStatusWithHttpInfo(appId: kotlin.String, user: ApigetMagicLinkStatusRequest) : ApiResponse<ApiAuthResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = magicLinkStatusRequestConfig(appId = appId, user = user)
+    suspend fun magicLinkStatusWithHttpInfo(appId: kotlin.String, getMagicLinkStatusRequest: GetMagicLinkStatusRequest) : ApiResponse<AuthResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = magicLinkStatusRequestConfig(appId = appId, getMagicLinkStatusRequest = getMagicLinkStatusRequest)
 
-        return@withContext request<ApigetMagicLinkStatusRequest, ApiAuthResponse>(
+        return@withContext request<GetMagicLinkStatusRequest, AuthResponse>(
             localVariableConfig
         )
     }
@@ -490,11 +184,11 @@ class MagicLinkAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClie
      * To obtain the request config of the operation magicLinkStatus
      *
      * @param appId App ID
-     * @param user Magic Link ID
+     * @param getMagicLinkStatusRequest Magic Link ID
      * @return RequestConfig
      */
-    fun magicLinkStatusRequestConfig(appId: kotlin.String, user: ApigetMagicLinkStatusRequest) : RequestConfig<ApigetMagicLinkStatusRequest> {
-        val localVariableBody = user
+    fun magicLinkStatusRequestConfig(appId: kotlin.String, getMagicLinkStatusRequest: GetMagicLinkStatusRequest) : RequestConfig<GetMagicLinkStatusRequest> {
+        val localVariableBody = getMagicLinkStatusRequest
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
         localVariableHeaders["Content-Type"] = "application/json"
@@ -502,7 +196,7 @@ class MagicLinkAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClie
 
         return RequestConfig(
             method = RequestMethod.POST,
-            path = "/apps/{app_id}/magic-link/status/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/magic-link/status".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,

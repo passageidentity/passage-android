@@ -19,9 +19,13 @@ import java.io.IOException
 import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
-import id.passage.android.model.APIError
 import id.passage.android.model.ActivateOneTimePasscodeRequest
 import id.passage.android.model.AuthResponse
+import id.passage.android.model.Model400Error
+import id.passage.android.model.Model401Error
+import id.passage.android.model.Model403Error
+import id.passage.android.model.Model404Error
+import id.passage.android.model.Model500Error
 
 import com.squareup.moshi.Json
 
@@ -45,7 +49,7 @@ class OTPAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient = A
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://auth.passage.id/v1")
         }
     }
 

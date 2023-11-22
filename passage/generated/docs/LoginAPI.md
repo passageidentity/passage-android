@@ -1,18 +1,18 @@
 # LoginAPI
 
-All URIs are relative to *https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1*
+All URIs are relative to *https://auth.passage.id/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**loginMagicLink**](LoginAPI.md#loginMagicLink) | **POST** /apps/{app_id}/login/magic-link/ | Login with Magic Link
+[**loginMagicLink**](LoginAPI.md#loginMagicLink) | **POST** /apps/{app_id}/login/magic-link | Login with Magic Link
 [**loginOneTimePasscode**](LoginAPI.md#loginOneTimePasscode) | **POST** /apps/{app_id}/login/otp | Login with OTP
 [**loginWebauthnFinish**](LoginAPI.md#loginWebauthnFinish) | **POST** /apps/{app_id}/login/webauthn/finish | Finish WebAuthn Login
-[**loginWebauthnStart**](LoginAPI.md#loginWebauthnStart) | **POST** /apps/{app_id}/login/webauthn/start/ | Start WebAuthn Login
+[**loginWebauthnStart**](LoginAPI.md#loginWebauthnStart) | **POST** /apps/{app_id}/login/webauthn/start | Start WebAuthn Login
 
 
 <a name="loginMagicLink"></a>
 # **loginMagicLink**
-> ApiloginMagicLinkResponse loginMagicLink(appId, user)
+> LoginMagicLinkResponse loginMagicLink(appId, loginMagicLinkRequest)
 
 Login with Magic Link
 
@@ -26,9 +26,9 @@ Send a login email or SMS to the user. The user will receive an email or text wi
 
 val apiInstance = LoginAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val user : ApiloginMagicLinkRequest =  // ApiloginMagicLinkRequest | User Data
+val loginMagicLinkRequest : LoginMagicLinkRequest =  // LoginMagicLinkRequest | User Data
 try {
-    val result : ApiloginMagicLinkResponse = apiInstance.loginMagicLink(appId, user)
+    val result : LoginMagicLinkResponse = apiInstance.loginMagicLink(appId, loginMagicLinkRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling LoginAPI#loginMagicLink")
@@ -44,11 +44,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **user** | [**ApiloginMagicLinkRequest**](ApiloginMagicLinkRequest.md)| User Data |
+ **loginMagicLinkRequest** | [**LoginMagicLinkRequest**](LoginMagicLinkRequest.md)| User Data |
 
 ### Return type
 
-[**ApiloginMagicLinkResponse**](ApiloginMagicLinkResponse.md)
+[**LoginMagicLinkResponse**](LoginMagicLinkResponse.md)
 
 ### Authorization
 
@@ -110,7 +110,7 @@ No authorization required
 
 <a name="loginWebauthnFinish"></a>
 # **loginWebauthnFinish**
-> AuthResponse1 loginWebauthnFinish(appId, loginWebAuthnFinishRequest)
+> AuthResponse loginWebauthnFinish(appId, loginWebAuthnFinishRequest)
 
 Finish WebAuthn Login
 
@@ -126,7 +126,7 @@ val apiInstance = LoginAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
 val loginWebAuthnFinishRequest : LoginWebAuthnFinishRequest =  // LoginWebAuthnFinishRequest | User Data
 try {
-    val result : AuthResponse1 = apiInstance.loginWebauthnFinish(appId, loginWebAuthnFinishRequest)
+    val result : AuthResponse = apiInstance.loginWebauthnFinish(appId, loginWebAuthnFinishRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling LoginAPI#loginWebauthnFinish")
@@ -146,7 +146,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**AuthResponse1**](AuthResponse1.md)
+[**AuthResponse**](AuthResponse.md)
 
 ### Authorization
 
@@ -159,7 +159,7 @@ No authorization required
 
 <a name="loginWebauthnStart"></a>
 # **loginWebauthnStart**
-> ApiloginWebAuthnStartResponse loginWebauthnStart(appId, user)
+> LoginWebAuthnStartResponse loginWebauthnStart(appId, loginWebAuthnStartRequest)
 
 Start WebAuthn Login
 
@@ -173,9 +173,9 @@ Initiate a WebAuthn login for a user. This endpoint creates a WebAuthn credentia
 
 val apiInstance = LoginAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val user : ApiloginWebAuthnStartRequest =  // ApiloginWebAuthnStartRequest | User Data
+val loginWebAuthnStartRequest : LoginWebAuthnStartRequest =  // LoginWebAuthnStartRequest | User Data
 try {
-    val result : ApiloginWebAuthnStartResponse = apiInstance.loginWebauthnStart(appId, user)
+    val result : LoginWebAuthnStartResponse = apiInstance.loginWebauthnStart(appId, loginWebAuthnStartRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling LoginAPI#loginWebauthnStart")
@@ -191,11 +191,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **user** | [**ApiloginWebAuthnStartRequest**](ApiloginWebAuthnStartRequest.md)| User Data |
+ **loginWebAuthnStartRequest** | [**LoginWebAuthnStartRequest**](LoginWebAuthnStartRequest.md)| User Data | [optional]
 
 ### Return type
 
-[**ApiloginWebAuthnStartResponse**](ApiloginWebAuthnStartResponse.md)
+[**LoginWebAuthnStartResponse**](LoginWebAuthnStartResponse.md)
 
 ### Authorization
 
@@ -203,6 +203,6 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 

@@ -96,7 +96,7 @@ public final class Passage(
      * @return PassageApp?
      * @throws AppInfoException
      */
-    public suspend fun appInfo(): PassageApp? {
+    public suspend fun appInfo(): PassageAppInfo {
         val appsAPI = AppsAPI(BASE_PATH, passageClient)
         return try {
             appsAPI.getApp(appId)

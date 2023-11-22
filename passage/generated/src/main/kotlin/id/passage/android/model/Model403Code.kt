@@ -21,13 +21,19 @@ import com.squareup.moshi.Json
 /**
  * 
  *
- * Values: identifierNotVerified
+ * Values: identifierNotVerified,operationNotAllowed,userNotActive
  */
 
 enum class Model403Code(val value: kotlin.String) {
 
     @Json(name = "identifier_not_verified")
-    identifierNotVerified("identifier_not_verified");
+    identifierNotVerified("identifier_not_verified"),
+
+    @Json(name = "operation_not_allowed")
+    operationNotAllowed("operation_not_allowed"),
+
+    @Json(name = "user_not_active")
+    userNotActive("user_not_active");
 
     /**
      * Override toString() to avoid using the enum variable name as the value, and instead use
