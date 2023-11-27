@@ -7,7 +7,7 @@ import androidx.credentials.exceptions.CreateCredentialException
 import androidx.credentials.exceptions.CreateCredentialInterruptedException
 import androidx.credentials.exceptions.CreateCredentialProviderConfigurationException
 import id.passage.android.model.Model400Code
-import id.passage.android.model.Model401Code
+import id.passage.android.model.Model403Code
 import id.passage.client.infrastructure.ClientException
 import id.passage.client.infrastructure.ServerException
 
@@ -43,7 +43,7 @@ public open class AddDevicePasskeyException(message: String): PassageException(m
                 Model400Code.request.toString() -> {
                     return AddDevicePasskeyInvalidRequestException(message)
                 }
-                Model401Code.userNotActive.toString() -> {
+                Model403Code.userNotActive.toString() -> {
                     return AddDevicePasskeyInactiveUserException(message)
                 }
             }

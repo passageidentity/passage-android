@@ -3,6 +3,7 @@
 package id.passage.android.exceptions
 
 import id.passage.android.model.Model401Code
+import id.passage.android.model.Model403Code
 import id.passage.client.infrastructure.ClientException
 import id.passage.client.infrastructure.ServerException
 
@@ -33,7 +34,7 @@ public open class MagicLinkActivateException(message: String): PassageException(
                 Model401Code.invalidMagicLink.toString() -> {
                     MagicLinkActivateInvalidException(message)
                 }
-                Model401Code.userNotActive.toString() -> {
+                Model403Code.userNotActive.toString() -> {
                     MagicLinkActivateUserNotActiveException(message)
                 }
                 else -> {
