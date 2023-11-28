@@ -56,7 +56,7 @@ data class User (
 
     /* User status: active, inactive, pending */
     @Json(name = "status")
-    val status: User.Status,
+    val status: kotlin.String,
 
     @Json(name = "user_metadata")
     val userMetadata: kotlin.Any?,
@@ -65,7 +65,7 @@ data class User (
     val webauthn: kotlin.Boolean,
 
     @Json(name = "webauthn_types")
-    val webauthnTypes: kotlin.collections.List<WebAuthnType>
+    val webauthnTypes: kotlin.collections.List<WebAuthnType>?
 
 ) {
 
