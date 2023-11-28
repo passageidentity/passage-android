@@ -1,16 +1,16 @@
 # UsersAPI
 
-All URIs are relative to *https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1*
+All URIs are relative to *https://auth.passage.id/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**checkUserIdentifier**](UsersAPI.md#checkUserIdentifier) | **GET** /apps/{app_id}/users/ | Get User
-[**createUser**](UsersAPI.md#createUser) | **POST** /apps/{app_id}/users/ | Create User
+[**checkUserIdentifier**](UsersAPI.md#checkUserIdentifier) | **GET** /apps/{app_id}/users | Get User
+[**createUser**](UsersAPI.md#createUser) | **POST** /apps/{app_id}/users | Create User
 
 
 <a name="checkUserIdentifier"></a>
 # **checkUserIdentifier**
-> ApiUserResponse checkUserIdentifier(appId, identifier)
+> UserResponse checkUserIdentifier(appId, identifier)
 
 Get User
 
@@ -26,7 +26,7 @@ val apiInstance = UsersAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
 val identifier : kotlin.String = identifier_example // kotlin.String | email or phone number
 try {
-    val result : ApiUserResponse = apiInstance.checkUserIdentifier(appId, identifier)
+    val result : UserResponse = apiInstance.checkUserIdentifier(appId, identifier)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling UsersAPI#checkUserIdentifier")
@@ -46,7 +46,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ApiUserResponse**](ApiUserResponse.md)
+[**UserResponse**](UserResponse.md)
 
 ### Authorization
 
@@ -59,7 +59,7 @@ No authorization required
 
 <a name="createUser"></a>
 # **createUser**
-> ApiUserResponse createUser(appId, user)
+> UserResponse createUser(appId, createUserParams)
 
 Create User
 
@@ -73,9 +73,9 @@ Create a user
 
 val apiInstance = UsersAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val user : ModelsCreateUserParams =  // ModelsCreateUserParams | user options
+val createUserParams : CreateUserParams =  // CreateUserParams | user options
 try {
-    val result : ApiUserResponse = apiInstance.createUser(appId, user)
+    val result : UserResponse = apiInstance.createUser(appId, createUserParams)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling UsersAPI#createUser")
@@ -91,11 +91,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **user** | [**ModelsCreateUserParams**](ModelsCreateUserParams.md)| user options |
+ **createUserParams** | [**CreateUserParams**](CreateUserParams.md)| user options |
 
 ### Return type
 
-[**ApiUserResponse**](ApiUserResponse.md)
+[**UserResponse**](UserResponse.md)
 
 ### Authorization
 
@@ -103,6 +103,6 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 

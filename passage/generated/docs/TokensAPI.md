@@ -1,16 +1,16 @@
 # TokensAPI
 
-All URIs are relative to *https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1*
+All URIs are relative to *https://auth.passage.id/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**refreshAuthToken**](TokensAPI.md#refreshAuthToken) | **POST** /apps/{app_id}/tokens/ | Creates new auth and refresh token
-[**revokeRefreshToken**](TokensAPI.md#revokeRefreshToken) | **DELETE** /apps/{app_id}/tokens/ | Revokes refresh token
+[**refreshAuthToken**](TokensAPI.md#refreshAuthToken) | **POST** /apps/{app_id}/tokens | Creates new auth and refresh token
+[**revokeRefreshToken**](TokensAPI.md#revokeRefreshToken) | **DELETE** /apps/{app_id}/tokens | Revokes refresh token
 
 
 <a name="refreshAuthToken"></a>
 # **refreshAuthToken**
-> ApiAuthResponse refreshAuthToken(appId, token)
+> AuthResponse refreshAuthToken(appId, refreshAuthTokenRequest)
 
 Creates new auth and refresh token
 
@@ -24,9 +24,9 @@ Creates and returns a new auth token and a new refresh token
 
 val apiInstance = TokensAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val token : ApirefreshAuthTokenRequest =  // ApirefreshAuthTokenRequest | Refresh token
+val refreshAuthTokenRequest : RefreshAuthTokenRequest =  // RefreshAuthTokenRequest | Refresh token
 try {
-    val result : ApiAuthResponse = apiInstance.refreshAuthToken(appId, token)
+    val result : AuthResponse = apiInstance.refreshAuthToken(appId, refreshAuthTokenRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling TokensAPI#refreshAuthToken")
@@ -42,11 +42,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **token** | [**ApirefreshAuthTokenRequest**](ApirefreshAuthTokenRequest.md)| Refresh token |
+ **refreshAuthTokenRequest** | [**RefreshAuthTokenRequest**](RefreshAuthTokenRequest.md)| Refresh token |
 
 ### Return type
 
-[**ApiAuthResponse**](ApiAuthResponse.md)
+[**AuthResponse**](AuthResponse.md)
 
 ### Authorization
 
@@ -103,5 +103,5 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 

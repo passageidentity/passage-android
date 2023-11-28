@@ -19,7 +19,7 @@ import java.io.IOException
 import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
-import id.passage.android.model.ApiOpenIdConfiguration
+import id.passage.android.model.OpenIdConfiguration
 
 import com.squareup.moshi.Json
 
@@ -43,7 +43,7 @@ class OpenIDAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://auth.passage.id/v1")
         }
     }
 
@@ -51,7 +51,7 @@ class OpenIDAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * Get OpenID Configuration
      * Get OpenID Configuration for an app.
      * @param appId App ID
-     * @return ApiOpenIdConfiguration
+     * @return OpenIdConfiguration
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -60,11 +60,11 @@ class OpenIDAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun getOpenIdConfiguration(appId: kotlin.String) : ApiOpenIdConfiguration = withContext(Dispatchers.IO) {
+    suspend fun getOpenIdConfiguration(appId: kotlin.String) : OpenIdConfiguration = withContext(Dispatchers.IO) {
         val localVarResponse = getOpenIdConfigurationWithHttpInfo(appId = appId)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiOpenIdConfiguration
+            ResponseType.Success -> (localVarResponse as Success<*>).data as OpenIdConfiguration
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -82,16 +82,16 @@ class OpenIDAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * Get OpenID Configuration
      * Get OpenID Configuration for an app.
      * @param appId App ID
-     * @return ApiResponse<ApiOpenIdConfiguration?>
+     * @return ApiResponse<OpenIdConfiguration?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun getOpenIdConfigurationWithHttpInfo(appId: kotlin.String) : ApiResponse<ApiOpenIdConfiguration?> = withContext(Dispatchers.IO) {
+    suspend fun getOpenIdConfigurationWithHttpInfo(appId: kotlin.String) : ApiResponse<OpenIdConfiguration?> = withContext(Dispatchers.IO) {
         val localVariableConfig = getOpenIdConfigurationRequestConfig(appId = appId)
 
-        return@withContext request<Unit, ApiOpenIdConfiguration>(
+        return@withContext request<Unit, OpenIdConfiguration>(
             localVariableConfig
         )
     }

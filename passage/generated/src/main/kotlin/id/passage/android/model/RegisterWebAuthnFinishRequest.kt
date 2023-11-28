@@ -15,7 +15,7 @@
 
 package id.passage.android.model
 
-import id.passage.android.model.ProtocolCredentialCreationResponse1
+import id.passage.android.model.CredentialCreationResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -35,7 +35,7 @@ data class RegisterWebAuthnFinishRequest (
     val handshakeId: kotlin.String,
 
     @Json(name = "handshake_response")
-    val handshakeResponse: ProtocolCredentialCreationResponse1,
+    val handshakeResponse: CredentialCreationResponse,
 
     @Json(name = "user_id")
     val userId: kotlin.String

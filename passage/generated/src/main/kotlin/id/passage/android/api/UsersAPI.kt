@@ -19,9 +19,11 @@ import java.io.IOException
 import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
-import id.passage.android.model.ApiUserResponse
-import id.passage.android.model.HttpErrorsHTTPError
-import id.passage.android.model.ModelsCreateUserParams
+import id.passage.android.model.CreateUserParams
+import id.passage.android.model.Model400Error
+import id.passage.android.model.Model404Error
+import id.passage.android.model.Model500Error
+import id.passage.android.model.UserResponse
 
 import com.squareup.moshi.Json
 
@@ -45,7 +47,7 @@ class UsersAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://auth.passage.id/v1")
         }
     }
 
@@ -54,7 +56,7 @@ class UsersAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * Get user information, if the user exists. This endpoint can be used to determine whether a user has an existing account and if they should login or register.
      * @param appId App ID
      * @param identifier email or phone number
-     * @return ApiUserResponse
+     * @return UserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -63,11 +65,11 @@ class UsersAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun checkUserIdentifier(appId: kotlin.String, identifier: kotlin.String) : ApiUserResponse = withContext(Dispatchers.IO) {
+    suspend fun checkUserIdentifier(appId: kotlin.String, identifier: kotlin.String) : UserResponse = withContext(Dispatchers.IO) {
         val localVarResponse = checkUserIdentifierWithHttpInfo(appId = appId, identifier = identifier)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiUserResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as UserResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -86,16 +88,16 @@ class UsersAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * Get user information, if the user exists. This endpoint can be used to determine whether a user has an existing account and if they should login or register.
      * @param appId App ID
      * @param identifier email or phone number
-     * @return ApiResponse<ApiUserResponse?>
+     * @return ApiResponse<UserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun checkUserIdentifierWithHttpInfo(appId: kotlin.String, identifier: kotlin.String) : ApiResponse<ApiUserResponse?> = withContext(Dispatchers.IO) {
+    suspend fun checkUserIdentifierWithHttpInfo(appId: kotlin.String, identifier: kotlin.String) : ApiResponse<UserResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = checkUserIdentifierRequestConfig(appId = appId, identifier = identifier)
 
-        return@withContext request<Unit, ApiUserResponse>(
+        return@withContext request<Unit, UserResponse>(
             localVariableConfig
         )
     }
@@ -118,7 +120,7 @@ class UsersAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
 
         return RequestConfig(
             method = RequestMethod.GET,
-            path = "/apps/{app_id}/users/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/users".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -130,8 +132,8 @@ class UsersAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * Create User
      * Create a user
      * @param appId App ID
-     * @param user user options
-     * @return ApiUserResponse
+     * @param createUserParams user options
+     * @return UserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -140,11 +142,11 @@ class UsersAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun createUser(appId: kotlin.String, user: ModelsCreateUserParams) : ApiUserResponse = withContext(Dispatchers.IO) {
-        val localVarResponse = createUserWithHttpInfo(appId = appId, user = user)
+    suspend fun createUser(appId: kotlin.String, createUserParams: CreateUserParams) : UserResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = createUserWithHttpInfo(appId = appId, createUserParams = createUserParams)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiUserResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as UserResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -162,17 +164,17 @@ class UsersAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * Create User
      * Create a user
      * @param appId App ID
-     * @param user user options
-     * @return ApiResponse<ApiUserResponse?>
+     * @param createUserParams user options
+     * @return ApiResponse<UserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun createUserWithHttpInfo(appId: kotlin.String, user: ModelsCreateUserParams) : ApiResponse<ApiUserResponse?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = createUserRequestConfig(appId = appId, user = user)
+    suspend fun createUserWithHttpInfo(appId: kotlin.String, createUserParams: CreateUserParams) : ApiResponse<UserResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = createUserRequestConfig(appId = appId, createUserParams = createUserParams)
 
-        return@withContext request<ModelsCreateUserParams, ApiUserResponse>(
+        return@withContext request<CreateUserParams, UserResponse>(
             localVariableConfig
         )
     }
@@ -181,18 +183,19 @@ class UsersAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * To obtain the request config of the operation createUser
      *
      * @param appId App ID
-     * @param user user options
+     * @param createUserParams user options
      * @return RequestConfig
      */
-    fun createUserRequestConfig(appId: kotlin.String, user: ModelsCreateUserParams) : RequestConfig<ModelsCreateUserParams> {
-        val localVariableBody = user
+    fun createUserRequestConfig(appId: kotlin.String, createUserParams: CreateUserParams) : RequestConfig<CreateUserParams> {
+        val localVariableBody = createUserParams
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
         localVariableHeaders["Accept"] = "application/json"
 
         return RequestConfig(
             method = RequestMethod.POST,
-            path = "/apps/{app_id}/users/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/users".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,

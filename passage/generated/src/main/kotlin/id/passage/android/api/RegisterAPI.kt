@@ -19,17 +19,15 @@ import java.io.IOException
 import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
-import id.passage.android.model.APIError
-import id.passage.android.model.ApiregisterMagicLinkRequest
-import id.passage.android.model.ApiregisterMagicLinkResponse
-import id.passage.android.model.AuthResponse1
-import id.passage.android.model.HttpErrorsHTTPError
+import id.passage.android.model.AuthResponse
 import id.passage.android.model.Model400Error
 import id.passage.android.model.Model401Error
 import id.passage.android.model.Model403Error
 import id.passage.android.model.Model404Error
 import id.passage.android.model.Model500Error
 import id.passage.android.model.OneTimePasscodeResponse
+import id.passage.android.model.RegisterMagicLinkRequest
+import id.passage.android.model.RegisterMagicLinkResponse
 import id.passage.android.model.RegisterOneTimePasscodeRequest
 import id.passage.android.model.RegisterWebAuthnFinishRequest
 import id.passage.android.model.RegisterWebAuthnStartRequest
@@ -57,7 +55,7 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://auth.passage.id/v1")
         }
     }
 
@@ -66,7 +64,7 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      * Create a user and send an registration email or SMS to the user. The user will receive an email or text with a link to complete their registration.
      * @param appId App ID
      * @param user User Data
-     * @return ApiregisterMagicLinkResponse
+     * @return RegisterMagicLinkResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -75,11 +73,11 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun registerMagicLink(appId: kotlin.String, user: ApiregisterMagicLinkRequest) : ApiregisterMagicLinkResponse = withContext(Dispatchers.IO) {
+    suspend fun registerMagicLink(appId: kotlin.String, user: RegisterMagicLinkRequest) : RegisterMagicLinkResponse = withContext(Dispatchers.IO) {
         val localVarResponse = registerMagicLinkWithHttpInfo(appId = appId, user = user)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiregisterMagicLinkResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as RegisterMagicLinkResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -98,16 +96,16 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      * Create a user and send an registration email or SMS to the user. The user will receive an email or text with a link to complete their registration.
      * @param appId App ID
      * @param user User Data
-     * @return ApiResponse<ApiregisterMagicLinkResponse?>
+     * @return ApiResponse<RegisterMagicLinkResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun registerMagicLinkWithHttpInfo(appId: kotlin.String, user: ApiregisterMagicLinkRequest) : ApiResponse<ApiregisterMagicLinkResponse?> = withContext(Dispatchers.IO) {
+    suspend fun registerMagicLinkWithHttpInfo(appId: kotlin.String, user: RegisterMagicLinkRequest) : ApiResponse<RegisterMagicLinkResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = registerMagicLinkRequestConfig(appId = appId, user = user)
 
-        return@withContext request<ApiregisterMagicLinkRequest, ApiregisterMagicLinkResponse>(
+        return@withContext request<RegisterMagicLinkRequest, RegisterMagicLinkResponse>(
             localVariableConfig
         )
     }
@@ -119,7 +117,7 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      * @param user User Data
      * @return RequestConfig
      */
-    fun registerMagicLinkRequestConfig(appId: kotlin.String, user: ApiregisterMagicLinkRequest) : RequestConfig<ApiregisterMagicLinkRequest> {
+    fun registerMagicLinkRequestConfig(appId: kotlin.String, user: RegisterMagicLinkRequest) : RequestConfig<RegisterMagicLinkRequest> {
         val localVariableBody = user
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
@@ -128,7 +126,7 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
 
         return RequestConfig(
             method = RequestMethod.POST,
-            path = "/apps/{app_id}/register/magic-link/".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            path = "/apps/{app_id}/register/magic-link".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -216,7 +214,7 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      * Complete a WebAuthn registration and authenticate the user. This endpoint accepts and verifies the response from &#x60;navigator.credential.create()&#x60; and returns an authentication token for the user.
      * @param appId App ID
      * @param registerWebAuthnFinishRequest WebAuthn Response Data
-     * @return AuthResponse1
+     * @return AuthResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -225,11 +223,11 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun registerWebauthnFinish(appId: kotlin.String, registerWebAuthnFinishRequest: RegisterWebAuthnFinishRequest) : AuthResponse1 = withContext(Dispatchers.IO) {
+    suspend fun registerWebauthnFinish(appId: kotlin.String, registerWebAuthnFinishRequest: RegisterWebAuthnFinishRequest) : AuthResponse = withContext(Dispatchers.IO) {
         val localVarResponse = registerWebauthnFinishWithHttpInfo(appId = appId, registerWebAuthnFinishRequest = registerWebAuthnFinishRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as AuthResponse1
+            ResponseType.Success -> (localVarResponse as Success<*>).data as AuthResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -248,16 +246,16 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
      * Complete a WebAuthn registration and authenticate the user. This endpoint accepts and verifies the response from &#x60;navigator.credential.create()&#x60; and returns an authentication token for the user.
      * @param appId App ID
      * @param registerWebAuthnFinishRequest WebAuthn Response Data
-     * @return ApiResponse<AuthResponse1?>
+     * @return ApiResponse<AuthResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun registerWebauthnFinishWithHttpInfo(appId: kotlin.String, registerWebAuthnFinishRequest: RegisterWebAuthnFinishRequest) : ApiResponse<AuthResponse1?> = withContext(Dispatchers.IO) {
+    suspend fun registerWebauthnFinishWithHttpInfo(appId: kotlin.String, registerWebAuthnFinishRequest: RegisterWebAuthnFinishRequest) : ApiResponse<AuthResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = registerWebauthnFinishRequestConfig(appId = appId, registerWebAuthnFinishRequest = registerWebAuthnFinishRequest)
 
-        return@withContext request<RegisterWebAuthnFinishRequest, AuthResponse1>(
+        return@withContext request<RegisterWebAuthnFinishRequest, AuthResponse>(
             localVariableConfig
         )
     }

@@ -4,12 +4,14 @@ import android.app.Activity
 import id.passage.android.api.CurrentuserAPI
 import id.passage.android.exceptions.AddDevicePasskeyException
 import id.passage.android.exceptions.PassageUserException
-import id.passage.android.model.ApiaddDeviceFinishRequest
-import id.passage.android.model.ApiupdateDeviceRequest
-import id.passage.android.model.ModelsCurrentUser
-import id.passage.android.model.ModelsUser
-import id.passage.android.model.UserUpdateUserEmailRequest
-import id.passage.android.model.UserUpdateUserPhoneRequest
+import id.passage.android.model.AddDeviceFinishRequest
+import id.passage.android.model.CurrentUser
+import id.passage.android.model.MagicLink
+import id.passage.android.model.UpdateDeviceRequest
+import id.passage.android.model.UpdateUserEmailRequest
+import id.passage.android.model.UpdateUserPhoneRequest
+import id.passage.android.model.User
+import id.passage.android.model.WebAuthnType
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 final class PassageUser private constructor(
@@ -53,7 +55,7 @@ final class PassageUser private constructor(
     val webauthnDevices: List<PassageCredential>? = null,
 
     /* List of credential types that user has created */
-    val webauthnTypes: List<String>? = null
+    val webauthnTypes: List<WebAuthnType>? = null
 
 ) {
 
@@ -70,15 +72,15 @@ final class PassageUser private constructor(
          */
         internal suspend fun getCurrentUser(): PassageUser? {
             val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-            val modelsCurrentUser = try {
-                currentUserAPI.getCurrentuser(Passage.appId).user ?: return null
+            val currentUser = try {
+                currentUserAPI.getCurrentuser(Passage.appId).user
             } catch (e: Exception) {
                 throw PassageUserException.convert(e)
             }
-            return convertToPassageUser(modelsCurrentUser)
+            return convertToPassageUser(currentUser)
         }
 
-        private fun convertToPassageUser(modelsCurrentUser: ModelsCurrentUser): PassageUser {
+        private fun convertToPassageUser(modelsCurrentUser: CurrentUser): PassageUser {
             return PassageUser(
                 createdAt = modelsCurrentUser.createdAt,
                 email = modelsCurrentUser.email,
@@ -97,7 +99,7 @@ final class PassageUser private constructor(
             )
         }
 
-        internal fun convertToPassageUser(modelsUser: ModelsUser): PassageUser {
+        internal fun convertToPassageUser(modelsUser: User): PassageUser {
             return PassageUser(
                 email = modelsUser.email,
                 emailVerified = modelsUser.emailVerified,
@@ -120,9 +122,9 @@ final class PassageUser private constructor(
      * @return MagicLink?
      * @throws PassageUserException
      */
-    public suspend fun changeEmail(newEmail: String): MagicLink? {
+    public suspend fun changeEmail(newEmail: String): MagicLink {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-        val request = UserUpdateUserEmailRequest(Passage.language, null, newEmail, null)
+        val request = UpdateUserEmailRequest(newEmail, Passage.language, null, null)
         val response = try {
             currentUserAPI.updateEmailCurrentuser(Passage.appId, request)
         } catch (e: Exception) {
@@ -139,9 +141,9 @@ final class PassageUser private constructor(
      * @return MagicLink?
      * @throws PassageUserException
      */
-    public suspend fun changePhone(newPhone: String): MagicLink? {
+    public suspend fun changePhone(newPhone: String): MagicLink {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-        val request = UserUpdateUserPhoneRequest(Passage.language, null, newPhone, null)
+        val request = UpdateUserPhoneRequest(Passage.language, null, newPhone, null)
         val response = try {
             currentUserAPI.updatePhoneCurrentuser(Passage.appId, request)
         } catch (e: Exception) {
@@ -160,7 +162,7 @@ final class PassageUser private constructor(
     public suspend fun listDevicePasskeys(): List<PassageCredential> {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         return try {
-            currentUserAPI.getCurrentuserDevices(Passage.appId).devices ?: emptyList()
+            currentUserAPI.getCurrentuserDevices(Passage.appId).devices
         } catch (e: Exception) {
             throw PassageUserException.convert(e)
         }
@@ -178,10 +180,9 @@ final class PassageUser private constructor(
      */
     public suspend fun editDevicePasskeyName(deviceId: String, newDevicePasskeyName: String): PassageCredential {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-        val request = ApiupdateDeviceRequest(friendlyName = newDevicePasskeyName)
+        val request = UpdateDeviceRequest(friendlyName = newDevicePasskeyName)
         return try {
             currentUserAPI.updateCurrentuserDevice(Passage.appId, deviceId, request).device
-                ?: throw PassageUserException("Unknown error getting updated device.")
         } catch (e: Exception) {
             throw PassageUserException.convert(e)
         }
@@ -205,13 +206,12 @@ final class PassageUser private constructor(
             val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
             // Complete registration
             val handshakeResponse = PasskeyUtils.getCreateCredentialHandshakeResponse(createCredResponse)
-            val finishRequest = ApiaddDeviceFinishRequest(
-                handshakeId = webauthnStartResponse.handshake?.id,
+            val finishRequest = AddDeviceFinishRequest(
+                handshakeId = webauthnStartResponse.handshake.id,
                 handshakeResponse = handshakeResponse,
-                userId = webauthnStartResponse.user?.id
+                userId = webauthnStartResponse.user?.id ?: ""
             )
             return currentUserAPI.postCurrentuserAddDeviceFinish(Passage.appId, finishRequest).device
-                ?: throw PassageUserException("Unknown error getting updated device.")
         } catch (e: Exception) {
             throw AddDevicePasskeyException.convert(e)
         }

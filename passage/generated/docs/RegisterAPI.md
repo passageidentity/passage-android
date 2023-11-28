@@ -1,10 +1,10 @@
 # RegisterAPI
 
-All URIs are relative to *https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1*
+All URIs are relative to *https://auth.passage.id/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**registerMagicLink**](RegisterAPI.md#registerMagicLink) | **POST** /apps/{app_id}/register/magic-link/ | Register with Magic Link
+[**registerMagicLink**](RegisterAPI.md#registerMagicLink) | **POST** /apps/{app_id}/register/magic-link | Register with Magic Link
 [**registerOneTimePasscode**](RegisterAPI.md#registerOneTimePasscode) | **POST** /apps/{app_id}/register/otp | Register with OTP
 [**registerWebauthnFinish**](RegisterAPI.md#registerWebauthnFinish) | **POST** /apps/{app_id}/register/webauthn/finish | Finish WebAuthn Registration
 [**registerWebauthnStart**](RegisterAPI.md#registerWebauthnStart) | **POST** /apps/{app_id}/register/webauthn/start | Start WebAuthn Register
@@ -12,7 +12,7 @@ Method | HTTP request | Description
 
 <a name="registerMagicLink"></a>
 # **registerMagicLink**
-> ApiregisterMagicLinkResponse registerMagicLink(appId, user)
+> RegisterMagicLinkResponse registerMagicLink(appId, user)
 
 Register with Magic Link
 
@@ -26,9 +26,9 @@ Create a user and send an registration email or SMS to the user. The user will r
 
 val apiInstance = RegisterAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
-val user : ApiregisterMagicLinkRequest =  // ApiregisterMagicLinkRequest | User Data
+val user : RegisterMagicLinkRequest =  // RegisterMagicLinkRequest | User Data
 try {
-    val result : ApiregisterMagicLinkResponse = apiInstance.registerMagicLink(appId, user)
+    val result : RegisterMagicLinkResponse = apiInstance.registerMagicLink(appId, user)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling RegisterAPI#registerMagicLink")
@@ -44,11 +44,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
- **user** | [**ApiregisterMagicLinkRequest**](ApiregisterMagicLinkRequest.md)| User Data |
+ **user** | [**RegisterMagicLinkRequest**](RegisterMagicLinkRequest.md)| User Data |
 
 ### Return type
 
-[**ApiregisterMagicLinkResponse**](ApiregisterMagicLinkResponse.md)
+[**RegisterMagicLinkResponse**](RegisterMagicLinkResponse.md)
 
 ### Authorization
 
@@ -110,7 +110,7 @@ No authorization required
 
 <a name="registerWebauthnFinish"></a>
 # **registerWebauthnFinish**
-> AuthResponse1 registerWebauthnFinish(appId, registerWebAuthnFinishRequest)
+> AuthResponse registerWebauthnFinish(appId, registerWebAuthnFinishRequest)
 
 Finish WebAuthn Registration
 
@@ -126,7 +126,7 @@ val apiInstance = RegisterAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
 val registerWebAuthnFinishRequest : RegisterWebAuthnFinishRequest =  // RegisterWebAuthnFinishRequest | WebAuthn Response Data
 try {
-    val result : AuthResponse1 = apiInstance.registerWebauthnFinish(appId, registerWebAuthnFinishRequest)
+    val result : AuthResponse = apiInstance.registerWebauthnFinish(appId, registerWebAuthnFinishRequest)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling RegisterAPI#registerWebauthnFinish")
@@ -146,7 +146,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**AuthResponse1**](AuthResponse1.md)
+[**AuthResponse**](AuthResponse.md)
 
 ### Authorization
 

@@ -15,6 +15,7 @@
 
 package id.passage.android.model
 
+import id.passage.android.model.AuthenticatorAttachment
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -23,6 +24,7 @@ import com.squareup.moshi.JsonClass
  * 
  *
  * @param identifier valid email or E164 phone number
+ * @param authenticatorAttachment 
  */
 @JsonClass(generateAdapter = true)
 
@@ -30,7 +32,10 @@ data class RegisterWebAuthnStartRequest (
 
     /* valid email or E164 phone number */
     @Json(name = "identifier")
-    val identifier: kotlin.String
+    val identifier: kotlin.String,
+
+    @Json(name = "authenticator_attachment")
+    val authenticatorAttachment: AuthenticatorAttachment? = AuthenticatorAttachment.platform
 
 )
 

@@ -16,7 +16,7 @@
 package id.passage.android.model
 
 import id.passage.android.model.CredentialCreationChallenge
-import id.passage.android.model.ModelsUser1
+import id.passage.android.model.User
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -35,7 +35,7 @@ data class RegisterWebAuthnStartResponse (
     val handshake: CredentialCreationChallenge,
 
     @Json(name = "user")
-    val user: ModelsUser1? = null
+    val user: User? = null
 
 )
 

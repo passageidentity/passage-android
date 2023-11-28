@@ -19,8 +19,9 @@ import java.io.IOException
 import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
-import id.passage.android.model.ApiJWKResponse
-import id.passage.android.model.HttpErrorsHTTPError
+import id.passage.android.model.JWKResponse
+import id.passage.android.model.Model404Error
+import id.passage.android.model.Model500Error
 
 import com.squareup.moshi.Json
 
@@ -44,7 +45,7 @@ class JWKSAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient = 
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://auth.passage.id/v1")
         }
     }
 
@@ -52,7 +53,7 @@ class JWKSAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient = 
      * Get JWKS
      * Get JWKS for an app. KIDs in the JWT can be used to match the appropriate JWK, and use the JWK&#39;s public key to verify the JWT.
      * @param appId App ID
-     * @return ApiJWKResponse
+     * @return JWKResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -61,11 +62,11 @@ class JWKSAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient = 
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun getJwks(appId: kotlin.String) : ApiJWKResponse = withContext(Dispatchers.IO) {
+    suspend fun getJwks(appId: kotlin.String) : JWKResponse = withContext(Dispatchers.IO) {
         val localVarResponse = getJwksWithHttpInfo(appId = appId)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ApiJWKResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as JWKResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -83,16 +84,16 @@ class JWKSAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient = 
      * Get JWKS
      * Get JWKS for an app. KIDs in the JWT can be used to match the appropriate JWK, and use the JWK&#39;s public key to verify the JWT.
      * @param appId App ID
-     * @return ApiResponse<ApiJWKResponse?>
+     * @return ApiResponse<JWKResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun getJwksWithHttpInfo(appId: kotlin.String) : ApiResponse<ApiJWKResponse?> = withContext(Dispatchers.IO) {
+    suspend fun getJwksWithHttpInfo(appId: kotlin.String) : ApiResponse<JWKResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = getJwksRequestConfig(appId = appId)
 
-        return@withContext request<Unit, ApiJWKResponse>(
+        return@withContext request<Unit, JWKResponse>(
             localVariableConfig
         )
     }

@@ -1,6 +1,6 @@
 # JWKSAPI
 
-All URIs are relative to *https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1*
+All URIs are relative to *https://auth.passage.id/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 <a name="getJwks"></a>
 # **getJwks**
-> ApiJWKResponse getJwks(appId)
+> JWKResponse getJwks(appId)
 
 Get JWKS
 
@@ -24,7 +24,7 @@ Get JWKS for an app. KIDs in the JWT can be used to match the appropriate JWK, a
 val apiInstance = JWKSAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
 try {
-    val result : ApiJWKResponse = apiInstance.getJwks(appId)
+    val result : JWKResponse = apiInstance.getJwks(appId)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling JWKSAPI#getJwks")
@@ -43,7 +43,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ApiJWKResponse**](ApiJWKResponse.md)
+[**JWKResponse**](JWKResponse.md)
 
 ### Authorization
 

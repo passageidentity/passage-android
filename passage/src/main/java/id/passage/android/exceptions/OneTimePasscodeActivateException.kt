@@ -3,7 +3,7 @@
 package id.passage.android.exceptions
 
 import id.passage.android.model.Model400Code
-import id.passage.android.model.Model401Code
+import id.passage.android.model.Model403Code
 import id.passage.client.infrastructure.ClientException
 import id.passage.client.infrastructure.ServerException
 
@@ -36,7 +36,7 @@ public open class OneTimePasscodeActivateException(message: String): PassageExce
                 Model400Code.request.toString() -> {
                     OneTimePasscodeActivateInvalidRequestException(message)
                 }
-                Model401Code.userNotActive.toString() -> {
+                Model403Code.userNotActive.toString() -> {
                     OneTimePasscodeActivateInactiveUserException(message)
                 }
                 "exceeded_attempts" -> {

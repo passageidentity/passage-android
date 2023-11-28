@@ -3,7 +3,7 @@
 package id.passage.android.exceptions
 
 import id.passage.android.model.Model400Code
-import id.passage.android.model.Model401Code
+import id.passage.android.model.Model403Code
 import id.passage.android.model.Model404Code
 import id.passage.client.infrastructure.ClientException
 import id.passage.client.infrastructure.ServerException
@@ -37,7 +37,7 @@ public open class PassageUserException(message: String): PassageException(messag
                 Model400Code.request.toString() -> {
                     return PassageUserRequestException(message)
                 }
-                Model401Code.userNotActive.toString() -> {
+                Model403Code.toString() -> {
                     return PassageUserInactiveUserException(message)
                 }
                 Model404Code.userNotFound.toString() -> {

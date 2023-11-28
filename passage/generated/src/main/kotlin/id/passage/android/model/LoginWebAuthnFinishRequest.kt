@@ -15,7 +15,7 @@
 
 package id.passage.android.model
 
-import id.passage.android.model.ProtocolCredentialAssertionResponse
+import id.passage.android.model.CredentialAssertionResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -35,7 +35,7 @@ data class LoginWebAuthnFinishRequest (
     val handshakeId: kotlin.String,
 
     @Json(name = "handshake_response")
-    val handshakeResponse: ProtocolCredentialAssertionResponse,
+    val handshakeResponse: CredentialAssertionResponse,
 
     @Json(name = "user_id")
     val userId: kotlin.String? = null

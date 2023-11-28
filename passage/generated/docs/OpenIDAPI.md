@@ -1,6 +1,6 @@
 # OpenIDAPI
 
-All URIs are relative to *https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1*
+All URIs are relative to *https://auth.passage.id/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 <a name="getOpenIdConfiguration"></a>
 # **getOpenIdConfiguration**
-> ApiOpenIdConfiguration getOpenIdConfiguration(appId)
+> OpenIdConfiguration getOpenIdConfiguration(appId)
 
 Get OpenID Configuration
 
@@ -24,7 +24,7 @@ Get OpenID Configuration for an app.
 val apiInstance = OpenIDAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
 try {
-    val result : ApiOpenIdConfiguration = apiInstance.getOpenIdConfiguration(appId)
+    val result : OpenIdConfiguration = apiInstance.getOpenIdConfiguration(appId)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling OpenIDAPI#getOpenIdConfiguration")
@@ -43,7 +43,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ApiOpenIdConfiguration**](ApiOpenIdConfiguration.md)
+[**OpenIdConfiguration**](OpenIdConfiguration.md)
 
 ### Authorization
 

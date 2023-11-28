@@ -1,15 +1,15 @@
 # AppsAPI
 
-All URIs are relative to *https://virtserver.swaggerhub.com/passage_swagger/auth-gw/v1*
+All URIs are relative to *https://auth.passage.id/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getApp**](AppsAPI.md#getApp) | **GET** /apps/{app_id}/ | Get App
+[**getApp**](AppsAPI.md#getApp) | **GET** /apps/{app_id} | Get App
 
 
 <a name="getApp"></a>
 # **getApp**
-> ApigetAppResponse getApp(appId)
+> GetAppResponse getApp(appId)
 
 Get App
 
@@ -24,7 +24,7 @@ Get information about an application.
 val apiInstance = AppsAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
 try {
-    val result : ApigetAppResponse = apiInstance.getApp(appId)
+    val result : GetAppResponse = apiInstance.getApp(appId)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling AppsAPI#getApp")
@@ -43,7 +43,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ApigetAppResponse**](ApigetAppResponse.md)
+[**GetAppResponse**](GetAppResponse.md)
 
 ### Authorization
 

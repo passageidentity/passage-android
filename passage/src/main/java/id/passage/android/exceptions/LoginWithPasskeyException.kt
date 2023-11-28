@@ -5,6 +5,7 @@ package id.passage.android.exceptions
 import androidx.credentials.exceptions.*
 import id.passage.android.model.Model400Code
 import id.passage.android.model.Model401Code
+import id.passage.android.model.Model403Code
 import id.passage.client.infrastructure.ClientException
 import id.passage.client.infrastructure.ServerException
 
@@ -46,11 +47,11 @@ public open class LoginWithPasskeyException(message: String): PassageException(m
                 Model401Code.discoverableLoginFailed.toString() -> {
                     LoginWithPasskeyDiscoverableLoginException(message)
                 }
-                Model401Code.userNotActive.toString() -> {
-                    LoginWithPasskeyInactiveUserException(message)
-                }
                 Model401Code.webauthnLoginFailed.toString() -> {
                     LoginWithPasskeyCredentialException(message)
+                }
+                Model403Code.userNotActive.toString() -> {
+                    LoginWithPasskeyInactiveUserException(message)
                 }
                 else -> {
                     LoginWithPasskeyException(message)
