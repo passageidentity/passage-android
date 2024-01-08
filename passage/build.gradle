@@ -102,6 +102,9 @@ dependencies {
     // Needed for credentials support from play services, for devices running
     // Android 13 (sdk 33) and below.
     implementation "androidx.credentials:credentials-play-services-auth:1.2.0"
+
+    // For oauth2 support
+    implementation 'androidx.browser:browser:1.7.0'
 }
 
 openApiGenerate {

@@ -1,31 +1,39 @@
 package id.passage.android
 
 import android.app.Activity
+import android.net.Uri
 import android.util.Log
 import android.webkit.WebSettings
+import androidx.browser.customtabs.CustomTabsIntent
 import id.passage.android.ResourceUtils.Companion.getOptionalResourceFromApp
 import id.passage.android.ResourceUtils.Companion.getRequiredResourceFromApp
 import id.passage.android.api.AppsAPI
 import id.passage.android.api.LoginAPI
 import id.passage.android.api.MagicLinkAPI
+import id.passage.android.api.OAuth2API
 import id.passage.android.api.OTPAPI
 import id.passage.android.api.RegisterAPI
 import id.passage.android.api.UsersAPI
+import id.passage.android.exceptions.*
+import id.passage.android.model.ActivateMagicLinkRequest
 import id.passage.android.model.ActivateOneTimePasscodeRequest
+import id.passage.android.model.GetMagicLinkStatusRequest
+import id.passage.android.model.LoginMagicLinkRequest
 import id.passage.android.model.LoginOneTimePasscodeRequest
 import id.passage.android.model.LoginWebAuthnFinishRequest
+import id.passage.android.model.LoginWebAuthnStartRequest
+import id.passage.android.model.MagicLink
+import id.passage.android.model.OAuth2ConnectionType
+import id.passage.android.model.RegisterMagicLinkRequest
 import id.passage.android.model.RegisterOneTimePasscodeRequest
 import id.passage.android.model.RegisterWebAuthnFinishRequest
 import id.passage.android.model.RegisterWebAuthnStartRequest
 import id.passage.client.infrastructure.ApiClient
-import id.passage.android.exceptions.*
-import id.passage.android.model.ActivateMagicLinkRequest
-import id.passage.android.model.GetMagicLinkStatusRequest
-import id.passage.android.model.LoginMagicLinkRequest
-import id.passage.android.model.LoginWebAuthnStartRequest
-import id.passage.android.model.MagicLink
-import id.passage.android.model.RegisterMagicLinkRequest
 import okhttp3.OkHttpClient
+import java.security.MessageDigest
+import java.security.SecureRandom
+import java.util.Base64
+
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class Passage(
@@ -525,6 +533,67 @@ public final class Passage(
             refreshToken = otpAuthResult.refreshToken,
             refreshTokenExpiration = otpAuthResult.refreshTokenExpiration
         )
+        handleAuthResult(authResult)
+        return authResult
+    }
+
+    // endregion
+
+    // region SOCIAL AUTH METHODS
+
+    fun getRandomString(length: Int): String {
+        val characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+        val random = SecureRandom()
+        val stringBuilder = StringBuilder(length)
+
+        for (i in 0 until length) {
+            val randomIndex = random.nextInt(characters.length)
+            stringBuilder.append(characters[randomIndex])
+        }
+        val randomString = stringBuilder.toString()
+        return randomString
+    }
+
+    fun sha256Hash(): String {
+        val randomString = getRandomString((32))
+        tempVerifier = randomString
+        val bytes = randomString.toByteArray()
+        Log.e(TAG, "bytes: ${bytes}")
+        val md = MessageDigest.getInstance("SHA-256")
+        val digest = md.digest(bytes)
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(digest)
+    }
+
+    var tempVerifier = ""
+
+    public fun authorizeWith(connection: OAuth2ConnectionType) {
+        val tempRedirectURI = "https://try-uat.passage.dev" // This will match auth origin, but not sure if that makes sense from user's perspective?
+        val codeChallengeMethod = "S256"
+        val state = getRandomString(32)
+        val codeChallenge = sha256Hash()
+        val tempParams = """
+            ?redirect_uri=${tempRedirectURI}
+            &state=${state}
+            &code_challenge=${codeChallenge}
+            &code_challenge_method=${codeChallengeMethod}
+            &connection_type=${connection.value}
+        """.trimIndent().replace("\n", "")
+
+        val url = "${BASE_PATH}/apps/${appId}/social/authorize${tempParams}"
+        val intent = CustomTabsIntent.Builder().build()
+        intent.launchUrl(activity, Uri.parse(url))
+        // TODO: How to dismiss the chrome tab?
+    }
+
+    public suspend fun finishSocialAuthentication(code: String): PassageAuthResult {
+        val oauthAPI = OAuth2API(BASE_PATH, passageClient)
+        val authResult = try {
+            oauthAPI.exchangeSocialToken(appId, code, tempVerifier).authResult
+        } catch (e: java.lang.Exception) {
+            // TODO: Handle error
+            Log.e(TAG, "error: ${e.message ?: e.toString()}")
+            throw e
+        }
         handleAuthResult(authResult)
         return authResult
     }
