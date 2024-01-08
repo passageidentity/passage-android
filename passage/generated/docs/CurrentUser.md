@@ -12,7 +12,8 @@ Name | Type | Description | Notes
 **loginCount** | **kotlin.Int** | How many times the user has successfully logged in | 
 **phone** | **kotlin.String** | The user&#39;s phone | 
 **phoneVerified** | **kotlin.Boolean** | Whether or not the user&#39;s phone has been verified | 
-**status** | **kotlin.String** | User status: active, inactive, pending | 
+**socialConnections** | [**UserSocialConnections**](UserSocialConnections.md) |  | 
+**status** | [**UserStatus**](UserStatus.md) |  | 
 **updatedAt** | **kotlin.String** | When this user was last updated | 
 **userMetadata** | [**kotlin.Any**](.md) |  | 
 **webauthn** | **kotlin.Boolean** | Whether or not the user has authenticated via webAuthn before (if len(WebAuthnDevices) &gt; 0) | 

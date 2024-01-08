@@ -15,7 +15,8 @@
 
 package id.passage.android.model
 
-import id.passage.android.model.EmailSmsAuthMethod
+import id.passage.android.model.MagicLinkAuthMethod
+import id.passage.android.model.OtpAuthMethod
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -23,7 +24,7 @@ import com.squareup.moshi.JsonClass
 /**
  * Denotes what methods this app is allowed to use for authentication with configurations
  *
- * @param passkey 
+ * @param passkeys 
  * @param otp 
  * @param magicLink 
  */
@@ -31,14 +32,14 @@ import com.squareup.moshi.JsonClass
 
 data class AuthMethods (
 
-    @Json(name = "passkey")
-    val passkey: kotlin.Any? = null,
+    @Json(name = "passkeys")
+    val passkeys: kotlin.Any? = null,
 
     @Json(name = "otp")
-    val otp: EmailSmsAuthMethod? = null,
+    val otp: OtpAuthMethod? = null,
 
     @Json(name = "magic_link")
-    val magicLink: EmailSmsAuthMethod? = null
+    val magicLink: MagicLinkAuthMethod? = null
 
 )
 

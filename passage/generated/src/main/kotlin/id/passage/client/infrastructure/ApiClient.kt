@@ -1,5 +1,6 @@
 package id.passage.client.infrastructure
 
+import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -189,7 +190,7 @@ open class ApiClient(val baseUrl: String, val client: OkHttpClient = defaultClie
         } else {
             null
         }
-
+        Log.e("GENERATED", url.toString())
         val request = when (requestConfig.method) {
             RequestMethod.DELETE -> Request.Builder().url(url).delete(requestBody(requestConfig.body, contentType))
             RequestMethod.GET -> Request.Builder().url(url)

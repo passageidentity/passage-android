@@ -35,13 +35,13 @@ import com.squareup.moshi.JsonClass
 data class ProtocolCredentialAssertionPublicKey (
 
     @Json(name = "allowCredentials")
-    val allowCredentials: kotlin.collections.List<ProtocolCredentialAssertionPublicKeyAllowCredentialsInner>?,
+    val allowCredentials: kotlin.collections.List<ProtocolCredentialAssertionPublicKeyAllowCredentialsInner>,
 
     @Json(name = "challenge")
     val challenge: kotlin.String,
 
     @Json(name = "extensions")
-    val extensions: kotlin.Any?,
+    val extensions: kotlin.Any,
 
     @Json(name = "rpId")
     val rpId: kotlin.String,

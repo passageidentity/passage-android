@@ -63,6 +63,10 @@ Class | Method | HTTP request | Description
 *LoginAPI* | [**loginWebauthnStart**](docs/LoginAPI.md#loginwebauthnstart) | **POST** /apps/{app_id}/login/webauthn/start | Start WebAuthn Login
 *MagicLinkAPI* | [**activateMagicLink**](docs/MagicLinkAPI.md#activatemagiclink) | **PATCH** /apps/{app_id}/magic-link/activate | Authenticate Magic Link
 *MagicLinkAPI* | [**magicLinkStatus**](docs/MagicLinkAPI.md#magiclinkstatus) | **POST** /apps/{app_id}/magic-link/status | Magic Link Status
+*OAuth2API* | [**currentuserSocialLinkAccount**](docs/OAuth2API.md#currentusersociallinkaccount) | **GET** /apps/{app_id}/currentuser/social/link_account | Link an existing account to an OAuth2 connection.
+*OAuth2API* | [**exchangeSocialToken**](docs/OAuth2API.md#exchangesocialtoken) | **GET** /apps/{app_id}/social/token | Exchange OAuth2 connection data for an auth token.
+*OAuth2API* | [**getAuthorize**](docs/OAuth2API.md#getauthorize) | **GET** /apps/{app_id}/social/authorize | Kick off OAuth2 flow
+*OAuth2API* | [**oauth2Callback**](docs/OAuth2API.md#oauth2callback) | **GET** /apps/{app_id}/social/oauth2_callback | Handle OAuth2 callback
 *OTPAPI* | [**activateOneTimePasscode**](docs/OTPAPI.md#activateonetimepasscode) | **POST** /apps/{app_id}/otp/activate | Authenticate OTP
 *OpenIDAPI* | [**getOpenIdConfiguration**](docs/OpenIDAPI.md#getopenidconfiguration) | **GET** /apps/{app_id}/.well-known/openid-configuration | Get OpenID Configuration
 *RegisterAPI* | [**registerMagicLink**](docs/RegisterAPI.md#registermagiclink) | **POST** /apps/{app_id}/register/magic-link | Register with Magic Link
@@ -83,6 +87,7 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.AddDeviceFinishRequest](docs/AddDeviceFinishRequest.md)
  - [id.passage.android.model.AddDeviceStartResponse](docs/AddDeviceStartResponse.md)
  - [id.passage.android.model.App](docs/App.md)
+ - [id.passage.android.model.AuthErrorCode](docs/AuthErrorCode.md)
  - [id.passage.android.model.AuthMethods](docs/AuthMethods.md)
  - [id.passage.android.model.AuthResponse](docs/AuthResponse.md)
  - [id.passage.android.model.AuthResult](docs/AuthResult.md)
@@ -108,10 +113,11 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.CurrentUserDevicesStartRequest](docs/CurrentUserDevicesStartRequest.md)
  - [id.passage.android.model.CurrentUserResponse](docs/CurrentUserResponse.md)
  - [id.passage.android.model.ElementCustomization](docs/ElementCustomization.md)
- - [id.passage.android.model.EmailSmsAuthMethod](docs/EmailSmsAuthMethod.md)
  - [id.passage.android.model.FontFamily](docs/FontFamily.md)
  - [id.passage.android.model.GetAppResponse](docs/GetAppResponse.md)
  - [id.passage.android.model.GetMagicLinkStatusRequest](docs/GetMagicLinkStatusRequest.md)
+ - [id.passage.android.model.GithubSocialConnection](docs/GithubSocialConnection.md)
+ - [id.passage.android.model.GoogleSocialConnection](docs/GoogleSocialConnection.md)
  - [id.passage.android.model.JWKResponse](docs/JWKResponse.md)
  - [id.passage.android.model.JWKResponseKeysInner](docs/JWKResponseKeysInner.md)
  - [id.passage.android.model.LayoutConfig](docs/LayoutConfig.md)
@@ -123,6 +129,7 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.LoginWebAuthnStartRequest](docs/LoginWebAuthnStartRequest.md)
  - [id.passage.android.model.LoginWebAuthnStartResponse](docs/LoginWebAuthnStartResponse.md)
  - [id.passage.android.model.MagicLink](docs/MagicLink.md)
+ - [id.passage.android.model.MagicLinkAuthMethod](docs/MagicLinkAuthMethod.md)
  - [id.passage.android.model.MagicLinkLoginWebAuthnStartResponse](docs/MagicLinkLoginWebAuthnStartResponse.md)
  - [id.passage.android.model.MagicLinkResponse](docs/MagicLinkResponse.md)
  - [id.passage.android.model.Model400Code](docs/Model400Code.md)
@@ -135,8 +142,10 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.Model404Error](docs/Model404Error.md)
  - [id.passage.android.model.Model500Code](docs/Model500Code.md)
  - [id.passage.android.model.Model500Error](docs/Model500Error.md)
+ - [id.passage.android.model.OAuth2ConnectionType](docs/OAuth2ConnectionType.md)
  - [id.passage.android.model.OneTimePasscodeResponse](docs/OneTimePasscodeResponse.md)
  - [id.passage.android.model.OpenIdConfiguration](docs/OpenIdConfiguration.md)
+ - [id.passage.android.model.OtpAuthMethod](docs/OtpAuthMethod.md)
  - [id.passage.android.model.ProtocolCredentialAssertion](docs/ProtocolCredentialAssertion.md)
  - [id.passage.android.model.ProtocolCredentialAssertionPublicKey](docs/ProtocolCredentialAssertionPublicKey.md)
  - [id.passage.android.model.ProtocolCredentialAssertionPublicKeyAllowCredentialsInner](docs/ProtocolCredentialAssertionPublicKeyAllowCredentialsInner.md)
@@ -147,6 +156,8 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.RegisterWebAuthnFinishRequest](docs/RegisterWebAuthnFinishRequest.md)
  - [id.passage.android.model.RegisterWebAuthnStartRequest](docs/RegisterWebAuthnStartRequest.md)
  - [id.passage.android.model.RegisterWebAuthnStartResponse](docs/RegisterWebAuthnStartResponse.md)
+ - [id.passage.android.model.SocialConnection](docs/SocialConnection.md)
+ - [id.passage.android.model.SocialConnections](docs/SocialConnections.md)
  - [id.passage.android.model.TtlDisplayUnit](docs/TtlDisplayUnit.md)
  - [id.passage.android.model.UpdateDeviceRequest](docs/UpdateDeviceRequest.md)
  - [id.passage.android.model.UpdateMetadataRequest](docs/UpdateMetadataRequest.md)
@@ -156,6 +167,8 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.UserMetadataField](docs/UserMetadataField.md)
  - [id.passage.android.model.UserMetadataResponse](docs/UserMetadataResponse.md)
  - [id.passage.android.model.UserResponse](docs/UserResponse.md)
+ - [id.passage.android.model.UserSocialConnections](docs/UserSocialConnections.md)
+ - [id.passage.android.model.UserStatus](docs/UserStatus.md)
  - [id.passage.android.model.WebAuthnIcons](docs/WebAuthnIcons.md)
  - [id.passage.android.model.WebAuthnType](docs/WebAuthnType.md)
 

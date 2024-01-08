@@ -9,17 +9,10 @@ Name | Type | Description | Notes
 **id** | **kotlin.String** |  | 
 **phone** | **kotlin.String** |  | 
 **phoneVerified** | **kotlin.Boolean** | Whether or not the user&#39;s phone has been verified | 
-**status** | [**inline**](#Status) | User status: active, inactive, pending | 
+**status** | [**UserStatus**](UserStatus.md) |  | 
 **userMetadata** | [**kotlin.Any**](.md) |  | 
 **webauthn** | **kotlin.Boolean** |  | 
 **webauthnTypes** | [**kotlin.collections.List&lt;WebAuthnType&gt;**](WebAuthnType.md) |  | 
-
-
-<a name="Status"></a>
-## Enum: status
-Name | Value
----- | -----
-status | active, inactive, pending
 
 
 
