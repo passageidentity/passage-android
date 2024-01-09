@@ -15,7 +15,6 @@
 
 package id.passage.android.api
 
-import android.util.Log
 import java.io.IOException
 import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
@@ -202,11 +201,10 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
             }
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
         localVariableHeaders["Accept"] = "application/json"
-        val path = "/apps/{app_id}/social/token".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString()))
-        Log.e("GENERATED", localVariableQuery.toString())
+
         return RequestConfig(
             method = RequestMethod.GET,
-            path = path,
+            path = "/apps/{app_id}/social/token".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
