@@ -1,23 +1,8 @@
 package id.passage.android
 
 import android.app.Activity
-//import android.credentials.GetCredentialResponse
-import android.net.Uri
 import android.util.Log
 import android.webkit.WebSettings
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
-import androidx.credentials.CreateCredentialRequest
-import androidx.credentials.CustomCredential
-import androidx.credentials.GetCredentialResponse
-import androidx.credentials.PasswordCredential
-import androidx.credentials.PublicKeyCredential
-import androidx.credentials.exceptions.GetCredentialException
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import id.passage.android.ResourceUtils.Companion.getOptionalResourceFromApp
 import id.passage.android.ResourceUtils.Companion.getRequiredResourceFromApp
 import id.passage.android.api.AppsAPI
@@ -42,14 +27,7 @@ import id.passage.android.model.RegisterOneTimePasscodeRequest
 import id.passage.android.model.RegisterWebAuthnFinishRequest
 import id.passage.android.model.RegisterWebAuthnStartRequest
 import id.passage.client.infrastructure.ApiClient
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
-import java.security.MessageDigest
-import java.security.SecureRandom
-import java.util.Base64
-
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class Passage(
