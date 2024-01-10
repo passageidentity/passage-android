@@ -1,10 +1,23 @@
 package id.passage.android
 
 import android.app.Activity
+//import android.credentials.GetCredentialResponse
 import android.net.Uri
 import android.util.Log
 import android.webkit.WebSettings
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.CreateCredentialRequest
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.PasswordCredential
+import androidx.credentials.PublicKeyCredential
+import androidx.credentials.exceptions.GetCredentialException
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import id.passage.android.ResourceUtils.Companion.getOptionalResourceFromApp
 import id.passage.android.ResourceUtils.Companion.getRequiredResourceFromApp
 import id.passage.android.api.AppsAPI
@@ -29,6 +42,9 @@ import id.passage.android.model.RegisterOneTimePasscodeRequest
 import id.passage.android.model.RegisterWebAuthnFinishRequest
 import id.passage.android.model.RegisterWebAuthnStartRequest
 import id.passage.client.infrastructure.ApiClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -47,6 +63,7 @@ public final class Passage(
         internal var BASE_PATH = "https://auth.passage.id/v1"
 
         internal lateinit var appId: String
+        internal lateinit var authOrigin: String
         internal var language: String? = null
 
         public fun setAuthToken(token: String?) {
@@ -84,6 +101,7 @@ public final class Passage(
     // region INITIALIZATION
 
     init {
+        authOrigin = getRequiredResourceFromApp(activity, "passage_auth_origin")
         Companion.appId = appId ?: getRequiredResourceFromApp(activity, "passage_app_id")
         language = getOptionalResourceFromApp(activity, "passage_language")
 
@@ -541,59 +559,32 @@ public final class Passage(
 
     // region SOCIAL AUTH METHODS
 
-    fun getRandomString(length: Int): String {
-        val characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-        val random = SecureRandom()
-        val stringBuilder = StringBuilder(length)
-
-        for (i in 0 until length) {
-            val randomIndex = random.nextInt(characters.length)
-            stringBuilder.append(characters[randomIndex])
+   public suspend fun authorizeWith(connection: OAuth2ConnectionType) {
+        if (connection == OAuth2ConnectionType.google) {
+            val tempClientId = "576492174487-h4tiudfsflc3rkvni1jgbc4dqd3jkbf1.apps.googleusercontent.com"
+            val credential = PassageSocial.signInWithGoogle(tempClientId, activity)
+            Log.d(TAG, "idToken: ${credential.idToken}")
+            // TODO: Exchange Google credential for Passage AuthResult
+        } else {
+            PassageSocial.openChromeTab(
+                connection,
+                authOrigin,
+                activity,
+                authUrl = "${BASE_PATH}/apps/${appId}/social/authorize"
+            )
         }
-        val randomString = stringBuilder.toString()
-        return randomString
-    }
-
-    fun sha256Hash(): String {
-        val randomString = getRandomString((32))
-        tempVerifier = randomString
-        val bytes = randomString.toByteArray()
-        Log.e(TAG, "bytes: ${bytes}")
-        val md = MessageDigest.getInstance("SHA-256")
-        val digest = md.digest(bytes)
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(digest)
-    }
-
-    var tempVerifier = ""
-
-    public fun authorizeWith(connection: OAuth2ConnectionType) {
-        val tempRedirectURI = "https://try-uat.passage.dev" // This will match auth origin, but not sure if that makes sense from user's perspective?
-        val codeChallengeMethod = "S256"
-        val state = getRandomString(32)
-        val codeChallenge = sha256Hash()
-        val tempParams = """
-            ?redirect_uri=${tempRedirectURI}
-            &state=${state}
-            &code_challenge=${codeChallenge}
-            &code_challenge_method=${codeChallengeMethod}
-            &connection_type=${connection.value}
-        """.trimIndent().replace("\n", "")
-
-        val url = "${BASE_PATH}/apps/${appId}/social/authorize${tempParams}"
-        val intent = CustomTabsIntent.Builder().build()
-        intent.launchUrl(activity, Uri.parse(url))
-        // TODO: How to dismiss the chrome tab?
     }
 
     public suspend fun finishSocialAuthentication(code: String): PassageAuthResult {
         val oauthAPI = OAuth2API(BASE_PATH, passageClient)
         val authResult = try {
-            oauthAPI.exchangeSocialToken(appId, code, tempVerifier).authResult
+            oauthAPI.exchangeSocialToken(appId, code, PassageSocial.verifier).authResult
         } catch (e: java.lang.Exception) {
             // TODO: Handle error
             Log.e(TAG, "error: ${e.message ?: e.toString()}")
             throw e
         }
+        PassageSocial.verifier = ""
         handleAuthResult(authResult)
         return authResult
     }
