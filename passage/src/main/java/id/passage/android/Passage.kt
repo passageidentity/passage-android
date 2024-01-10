@@ -539,8 +539,10 @@ public final class Passage(
 
    public suspend fun authorizeWith(connection: OAuth2ConnectionType) {
         if (connection == OAuth2ConnectionType.google) {
-            val tempClientId = "576492174487-h4tiudfsflc3rkvni1jgbc4dqd3jkbf1.apps.googleusercontent.com"
-            val credential = PassageSocial.signInWithGoogle(tempClientId, activity)
+            val appInfo = appInfo()
+            val clientId = appInfo.socialConnections.google?.clientId ?: throw Exception()
+            // TODO: Throw custom exception.
+            val credential = PassageSocial.signInWithGoogle(clientId, activity)
             Log.d(TAG, "idToken: ${credential.idToken}")
             // TODO: Exchange Google credential for Passage AuthResult
         } else {
