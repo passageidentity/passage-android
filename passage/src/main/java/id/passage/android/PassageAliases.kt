@@ -5,6 +5,7 @@ package id.passage.android
 import id.passage.android.model.App
 import id.passage.android.model.AuthResult
 import id.passage.android.model.Credential
+import id.passage.android.model.OAuth2ConnectionType
 import id.passage.android.model.OneTimePasscodeResponse
 
 public typealias PassageAuthResult = AuthResult
@@ -20,3 +21,5 @@ public typealias PassageAppInfo = App
 public typealias PassageAuthFallbackMethod = App.AuthFallbackMethod
 
 public typealias PassageCredential = Credential
+
+public typealias PassageSocialConnection = OAuth2ConnectionType

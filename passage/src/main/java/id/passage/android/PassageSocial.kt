@@ -3,13 +3,8 @@ package id.passage.android
 import android.app.Activity
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.credentials.CredentialManager
-import androidx.credentials.CustomCredential
-import androidx.credentials.GetCredentialRequest
-import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import id.passage.android.model.OAuth2ConnectionType
-import java.lang.Exception
+import java.net.URLEncoder
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Base64
@@ -22,21 +17,6 @@ internal class PassageSocial {
         private const val CODE_CHALLENGE_METHOD = "S256"
         private const val SECRET_STRING_LENGTH = 32
 
-        internal suspend fun signInWithGoogle(clientId: String, activity: Activity): GoogleIdTokenCredential {
-            val credentialManager = CredentialManager.create(activity)
-            val credOption = GetSignInWithGoogleOption.Builder(clientId).build()
-            val credRequest = GetCredentialRequest.Builder().addCredentialOption(credOption).build()
-            val credential = credentialManager.getCredential(activity, credRequest).credential
-            if (
-                credential is CustomCredential &&
-                credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-            ) {
-                return GoogleIdTokenCredential.createFrom(credential.data)
-            } else {
-                throw Exception() // TODO: Custom exception
-            }
-        }
-
         internal fun openChromeTab(
             connection: OAuth2ConnectionType,
             authOrigin: String,
@@ -48,22 +28,26 @@ internal class PassageSocial {
             val randomString = getRandomString()
             verifier = randomString
             val codeChallenge = sha256Hash(randomString)
-            val tempParams = """
-                ?redirect_uri=${redirectURI}
-                &state=${state}
-                &code_challenge=${codeChallenge}
-                &code_challenge_method=${CODE_CHALLENGE_METHOD}
-                &connection_type=${connection.value}
-            """.trimIndent().replace("\n", "")
-
-            val url = "${authUrl}${tempParams}"
+            val params = listOf(
+                "redirect_uri" to redirectURI,
+                "state" to state,
+                "code_challenge" to codeChallenge,
+                "code_challenge_method" to CODE_CHALLENGE_METHOD,
+                "connection_type" to connection.value
+            ).joinToString("&") {
+                (key, value) -> "$key=${URLEncoder.encode(value, "UTF-8")}"
+            }
+            val url = "${authUrl}?${params}"
             val intent = CustomTabsIntent.Builder().build()
             intent.launchUrl(activity, Uri.parse(url))
-            // TODO: How to dismiss the chrome tab?
         }
 
         private fun getRandomString(): String {
-            val characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+            val digits = '0'..'9'
+            val upperCaseLetters = 'A'..'Z'
+            val lowerCaseLetters = 'a'..'z'
+            val characters = (digits + upperCaseLetters + lowerCaseLetters)
+                .joinToString("")
             val random = SecureRandom()
             val stringBuilder = StringBuilder(SECRET_STRING_LENGTH)
             for (i in 0 until SECRET_STRING_LENGTH) {

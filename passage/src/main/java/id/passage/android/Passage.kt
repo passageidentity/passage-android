@@ -537,32 +537,35 @@ public final class Passage(
 
     // region SOCIAL AUTH METHODS
 
-   public suspend fun authorizeWith(connection: OAuth2ConnectionType) {
-        if (connection == OAuth2ConnectionType.google) {
-            val appInfo = appInfo()
-            val clientId = appInfo.socialConnections.google?.clientId ?: throw Exception()
-            // TODO: Throw custom exception.
-            val credential = PassageSocial.signInWithGoogle(clientId, activity)
-            Log.d(TAG, "idToken: ${credential.idToken}")
-            // TODO: Exchange Google credential for Passage AuthResult
-        } else {
-            PassageSocial.openChromeTab(
-                connection,
-                authOrigin,
-                activity,
-                authUrl = "${BASE_PATH}/apps/${appId}/social/authorize"
-            )
-        }
+    /**
+     * Authorize with Social Connection
+     *
+     * Authorizes user via a supported third-party social provider.
+     * @param connection The Social connection to use for authorization
+     */
+    public fun authorizeWith(connection: PassageSocialConnection) {
+        PassageSocial.openChromeTab(
+            connection,
+            authOrigin,
+            activity,
+            authUrl = "${BASE_PATH}/apps/${appId}/social/authorize"
+        )
     }
 
+    /**
+     * Finish Social Authentication
+     *
+     * Finishes a social login by exchanging the social login provider code for Passage tokens.
+     * @param code The code returned from the social login provider.
+     * @return PassageAuthResult
+     * @throws FinishSocialAuthenticationException
+     */
     public suspend fun finishSocialAuthentication(code: String): PassageAuthResult {
         val oauthAPI = OAuth2API(BASE_PATH, passageClient)
         val authResult = try {
             oauthAPI.exchangeSocialToken(appId, code, PassageSocial.verifier).authResult
         } catch (e: java.lang.Exception) {
-            // TODO: Handle error
-            Log.e(TAG, "error: ${e.message ?: e.toString()}")
-            throw e
+            throw FinishSocialAuthenticationException.convert(e)
         }
         PassageSocial.verifier = ""
         handleAuthResult(authResult)
