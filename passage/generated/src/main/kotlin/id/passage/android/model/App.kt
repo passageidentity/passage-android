@@ -18,6 +18,7 @@ package id.passage.android.model
 import id.passage.android.model.AuthMethods
 import id.passage.android.model.ElementCustomization
 import id.passage.android.model.Layouts
+import id.passage.android.model.SocialConnections
 import id.passage.android.model.UserMetadataField
 
 import com.squareup.moshi.Json
@@ -48,6 +49,7 @@ import com.squareup.moshi.JsonClass
  * @param requiredIdentifier 
  * @param rsaPublicKey 
  * @param sessionTimeoutLength 
+ * @param socialConnections 
  * @param userMetadataSchema 
  */
 @JsonClass(generateAdapter = true)
@@ -68,7 +70,7 @@ data class App (
     val authFallbackMethodTtl: kotlin.Int,
 
     @Json(name = "auth_methods")
-    val authMethods: AuthMethods?,
+    val authMethods: AuthMethods,
 
     @Json(name = "auth_origin")
     val authOrigin: kotlin.String,
@@ -123,6 +125,9 @@ data class App (
 
     @Json(name = "session_timeout_length")
     val sessionTimeoutLength: kotlin.Int,
+
+    @Json(name = "social_connections")
+    val socialConnections: SocialConnections,
 
     @Json(name = "user_metadata_schema")
     val userMetadataSchema: kotlin.collections.List<UserMetadataField>

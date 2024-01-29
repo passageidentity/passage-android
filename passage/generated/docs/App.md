@@ -26,6 +26,7 @@ Name | Type | Description | Notes
 **requiredIdentifier** | **kotlin.String** |  | 
 **rsaPublicKey** | **kotlin.String** |  | 
 **sessionTimeoutLength** | **kotlin.Int** |  | 
+**socialConnections** | [**SocialConnections**](SocialConnections.md) |  | 
 **userMetadataSchema** | [**kotlin.collections.List&lt;UserMetadataField&gt;**](UserMetadataField.md) |  | 
 
 

@@ -15,6 +15,7 @@
 
 package id.passage.android.model
 
+import id.passage.android.model.UserStatus
 import id.passage.android.model.WebAuthnType
 
 import com.squareup.moshi.Json
@@ -28,7 +29,7 @@ import com.squareup.moshi.JsonClass
  * @param id 
  * @param phone 
  * @param phoneVerified Whether or not the user's phone has been verified
- * @param status User status: active, inactive, pending
+ * @param status 
  * @param userMetadata 
  * @param webauthn 
  * @param webauthnTypes 
@@ -54,9 +55,8 @@ data class User (
     @Json(name = "phone_verified")
     val phoneVerified: kotlin.Boolean,
 
-    /* User status: active, inactive, pending */
     @Json(name = "status")
-    val status: kotlin.String,
+    val status: UserStatus,
 
     @Json(name = "user_metadata")
     val userMetadata: kotlin.Any?,
@@ -65,19 +65,7 @@ data class User (
     val webauthn: kotlin.Boolean,
 
     @Json(name = "webauthn_types")
-    val webauthnTypes: kotlin.collections.List<WebAuthnType>?
+    val webauthnTypes: kotlin.collections.List<WebAuthnType>
 
-) {
-
-    /**
-     * User status: active, inactive, pending
-     *
-     * Values: active,inactive,pending
-     */
-    enum class Status(val value: kotlin.String) {
-        @Json(name = "active") active("active"),
-        @Json(name = "inactive") inactive("inactive"),
-        @Json(name = "pending") pending("pending");
-    }
-}
+)
 

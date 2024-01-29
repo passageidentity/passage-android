@@ -90,7 +90,7 @@ final class PassageUser private constructor(
                 loginCount = modelsCurrentUser.loginCount,
                 phone = modelsCurrentUser.phone,
                 phoneVerified = modelsCurrentUser.phoneVerified,
-                status = modelsCurrentUser.status,
+                status = modelsCurrentUser.status.value,
                 updatedAt = modelsCurrentUser.updatedAt,
                 userMetadata= modelsCurrentUser.userMetadata,
                 webauthn = modelsCurrentUser.webauthn,
@@ -106,7 +106,7 @@ final class PassageUser private constructor(
                 id = modelsUser.id,
                 phone = modelsUser.phone,
                 phoneVerified = modelsUser.phoneVerified,
-                status = modelsUser.status,
+                status = modelsUser.status.value,
                 userMetadata= modelsUser.userMetadata,
                 webauthn = modelsUser.webauthn,
                 webauthnTypes = modelsUser.webauthnTypes

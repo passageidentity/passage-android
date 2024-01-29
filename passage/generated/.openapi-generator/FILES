@@ -16,6 +16,7 @@ docs/AddDeviceFinishRequest.md
 docs/AddDeviceStartResponse.md
 docs/App.md
 docs/AppsAPI.md
+docs/AuthErrorCode.md
 docs/AuthMethods.md
 docs/AuthResponse.md
 docs/AuthResult.md
@@ -42,10 +43,11 @@ docs/CurrentUserDevicesStartRequest.md
 docs/CurrentUserResponse.md
 docs/CurrentuserAPI.md
 docs/ElementCustomization.md
-docs/EmailSmsAuthMethod.md
 docs/FontFamily.md
 docs/GetAppResponse.md
 docs/GetMagicLinkStatusRequest.md
+docs/GithubSocialConnection.md
+docs/GoogleSocialConnection.md
 docs/JWKResponse.md
 docs/JWKResponseKeysInner.md
 docs/JWKSAPI.md
@@ -60,12 +62,16 @@ docs/LoginWebAuthnStartRequest.md
 docs/LoginWebAuthnStartResponse.md
 docs/MagicLink.md
 docs/MagicLinkAPI.md
+docs/MagicLinkAuthMethod.md
 docs/MagicLinkLoginWebAuthnStartResponse.md
 docs/MagicLinkResponse.md
+docs/OAuth2API.md
+docs/OAuth2ConnectionType.md
 docs/OTPAPI.md
 docs/OneTimePasscodeResponse.md
 docs/OpenIDAPI.md
 docs/OpenIdConfiguration.md
+docs/OtpAuthMethod.md
 docs/ProtocolCredentialAssertion.md
 docs/ProtocolCredentialAssertionPublicKey.md
 docs/ProtocolCredentialAssertionPublicKeyAllowCredentialsInner.md
@@ -77,6 +83,8 @@ docs/RegisterOneTimePasscodeRequest.md
 docs/RegisterWebAuthnFinishRequest.md
 docs/RegisterWebAuthnStartRequest.md
 docs/RegisterWebAuthnStartResponse.md
+docs/SocialConnection.md
+docs/SocialConnections.md
 docs/TokensAPI.md
 docs/TtlDisplayUnit.md
 docs/UpdateDeviceRequest.md
@@ -87,6 +95,8 @@ docs/User.md
 docs/UserMetadataField.md
 docs/UserMetadataResponse.md
 docs/UserResponse.md
+docs/UserSocialConnections.md
+docs/UserStatus.md
 docs/UsersAPI.md
 docs/WebAuthnIcons.md
 docs/WebAuthnType.md
@@ -100,6 +110,7 @@ src/main/kotlin/id/passage/android/api/CurrentuserAPI.kt
 src/main/kotlin/id/passage/android/api/JWKSAPI.kt
 src/main/kotlin/id/passage/android/api/LoginAPI.kt
 src/main/kotlin/id/passage/android/api/MagicLinkAPI.kt
+src/main/kotlin/id/passage/android/api/OAuth2API.kt
 src/main/kotlin/id/passage/android/api/OTPAPI.kt
 src/main/kotlin/id/passage/android/api/OpenIDAPI.kt
 src/main/kotlin/id/passage/android/api/RegisterAPI.kt
@@ -110,6 +121,7 @@ src/main/kotlin/id/passage/android/model/ActivateOneTimePasscodeRequest.kt
 src/main/kotlin/id/passage/android/model/AddDeviceFinishRequest.kt
 src/main/kotlin/id/passage/android/model/AddDeviceStartResponse.kt
 src/main/kotlin/id/passage/android/model/App.kt
+src/main/kotlin/id/passage/android/model/AuthErrorCode.kt
 src/main/kotlin/id/passage/android/model/AuthMethods.kt
 src/main/kotlin/id/passage/android/model/AuthResponse.kt
 src/main/kotlin/id/passage/android/model/AuthResult.kt
@@ -135,10 +147,11 @@ src/main/kotlin/id/passage/android/model/CurrentUserDevices.kt
 src/main/kotlin/id/passage/android/model/CurrentUserDevicesStartRequest.kt
 src/main/kotlin/id/passage/android/model/CurrentUserResponse.kt
 src/main/kotlin/id/passage/android/model/ElementCustomization.kt
-src/main/kotlin/id/passage/android/model/EmailSmsAuthMethod.kt
 src/main/kotlin/id/passage/android/model/FontFamily.kt
 src/main/kotlin/id/passage/android/model/GetAppResponse.kt
 src/main/kotlin/id/passage/android/model/GetMagicLinkStatusRequest.kt
+src/main/kotlin/id/passage/android/model/GithubSocialConnection.kt
+src/main/kotlin/id/passage/android/model/GoogleSocialConnection.kt
 src/main/kotlin/id/passage/android/model/JWKResponse.kt
 src/main/kotlin/id/passage/android/model/JWKResponseKeysInner.kt
 src/main/kotlin/id/passage/android/model/LayoutConfig.kt
@@ -150,6 +163,7 @@ src/main/kotlin/id/passage/android/model/LoginWebAuthnFinishRequest.kt
 src/main/kotlin/id/passage/android/model/LoginWebAuthnStartRequest.kt
 src/main/kotlin/id/passage/android/model/LoginWebAuthnStartResponse.kt
 src/main/kotlin/id/passage/android/model/MagicLink.kt
+src/main/kotlin/id/passage/android/model/MagicLinkAuthMethod.kt
 src/main/kotlin/id/passage/android/model/MagicLinkLoginWebAuthnStartResponse.kt
 src/main/kotlin/id/passage/android/model/MagicLinkResponse.kt
 src/main/kotlin/id/passage/android/model/Model400Code.kt
@@ -162,8 +176,10 @@ src/main/kotlin/id/passage/android/model/Model404Code.kt
 src/main/kotlin/id/passage/android/model/Model404Error.kt
 src/main/kotlin/id/passage/android/model/Model500Code.kt
 src/main/kotlin/id/passage/android/model/Model500Error.kt
+src/main/kotlin/id/passage/android/model/OAuth2ConnectionType.kt
 src/main/kotlin/id/passage/android/model/OneTimePasscodeResponse.kt
 src/main/kotlin/id/passage/android/model/OpenIdConfiguration.kt
+src/main/kotlin/id/passage/android/model/OtpAuthMethod.kt
 src/main/kotlin/id/passage/android/model/ProtocolCredentialAssertion.kt
 src/main/kotlin/id/passage/android/model/ProtocolCredentialAssertionPublicKey.kt
 src/main/kotlin/id/passage/android/model/ProtocolCredentialAssertionPublicKeyAllowCredentialsInner.kt
@@ -174,6 +190,8 @@ src/main/kotlin/id/passage/android/model/RegisterOneTimePasscodeRequest.kt
 src/main/kotlin/id/passage/android/model/RegisterWebAuthnFinishRequest.kt
 src/main/kotlin/id/passage/android/model/RegisterWebAuthnStartRequest.kt
 src/main/kotlin/id/passage/android/model/RegisterWebAuthnStartResponse.kt
+src/main/kotlin/id/passage/android/model/SocialConnection.kt
+src/main/kotlin/id/passage/android/model/SocialConnections.kt
 src/main/kotlin/id/passage/android/model/TtlDisplayUnit.kt
 src/main/kotlin/id/passage/android/model/UpdateDeviceRequest.kt
 src/main/kotlin/id/passage/android/model/UpdateMetadataRequest.kt
@@ -183,6 +201,8 @@ src/main/kotlin/id/passage/android/model/User.kt
 src/main/kotlin/id/passage/android/model/UserMetadataField.kt
 src/main/kotlin/id/passage/android/model/UserMetadataResponse.kt
 src/main/kotlin/id/passage/android/model/UserResponse.kt
+src/main/kotlin/id/passage/android/model/UserSocialConnections.kt
+src/main/kotlin/id/passage/android/model/UserStatus.kt
 src/main/kotlin/id/passage/android/model/WebAuthnIcons.kt
 src/main/kotlin/id/passage/android/model/WebAuthnType.kt
 src/main/kotlin/id/passage/client/infrastructure/ApiAbstractions.kt

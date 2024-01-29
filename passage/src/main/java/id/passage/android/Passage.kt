@@ -8,23 +8,25 @@ import id.passage.android.ResourceUtils.Companion.getRequiredResourceFromApp
 import id.passage.android.api.AppsAPI
 import id.passage.android.api.LoginAPI
 import id.passage.android.api.MagicLinkAPI
+import id.passage.android.api.OAuth2API
 import id.passage.android.api.OTPAPI
 import id.passage.android.api.RegisterAPI
 import id.passage.android.api.UsersAPI
+import id.passage.android.exceptions.*
+import id.passage.android.model.ActivateMagicLinkRequest
 import id.passage.android.model.ActivateOneTimePasscodeRequest
+import id.passage.android.model.GetMagicLinkStatusRequest
+import id.passage.android.model.LoginMagicLinkRequest
 import id.passage.android.model.LoginOneTimePasscodeRequest
 import id.passage.android.model.LoginWebAuthnFinishRequest
+import id.passage.android.model.LoginWebAuthnStartRequest
+import id.passage.android.model.MagicLink
+import id.passage.android.model.OAuth2ConnectionType
+import id.passage.android.model.RegisterMagicLinkRequest
 import id.passage.android.model.RegisterOneTimePasscodeRequest
 import id.passage.android.model.RegisterWebAuthnFinishRequest
 import id.passage.android.model.RegisterWebAuthnStartRequest
 import id.passage.client.infrastructure.ApiClient
-import id.passage.android.exceptions.*
-import id.passage.android.model.ActivateMagicLinkRequest
-import id.passage.android.model.GetMagicLinkStatusRequest
-import id.passage.android.model.LoginMagicLinkRequest
-import id.passage.android.model.LoginWebAuthnStartRequest
-import id.passage.android.model.MagicLink
-import id.passage.android.model.RegisterMagicLinkRequest
 import okhttp3.OkHttpClient
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
@@ -39,6 +41,7 @@ public final class Passage(
         internal var BASE_PATH = "https://auth.passage.id/v1"
 
         internal lateinit var appId: String
+        internal lateinit var authOrigin: String
         internal var language: String? = null
 
         public fun setAuthToken(token: String?) {
@@ -76,6 +79,7 @@ public final class Passage(
     // region INITIALIZATION
 
     init {
+        authOrigin = getRequiredResourceFromApp(activity, "passage_auth_origin")
         Companion.appId = appId ?: getRequiredResourceFromApp(activity, "passage_app_id")
         language = getOptionalResourceFromApp(activity, "passage_language")
 
@@ -525,6 +529,45 @@ public final class Passage(
             refreshToken = otpAuthResult.refreshToken,
             refreshTokenExpiration = otpAuthResult.refreshTokenExpiration
         )
+        handleAuthResult(authResult)
+        return authResult
+    }
+
+    // endregion
+
+    // region SOCIAL AUTH METHODS
+
+    /**
+     * Authorize with Social Connection
+     *
+     * Authorizes user via a supported third-party social provider.
+     * @param connection The Social connection to use for authorization
+     */
+    public fun authorizeWith(connection: PassageSocialConnection) {
+        PassageSocial.openChromeTab(
+            connection,
+            authOrigin,
+            activity,
+            authUrl = "${BASE_PATH}/apps/${appId}/social/authorize"
+        )
+    }
+
+    /**
+     * Finish Social Authentication
+     *
+     * Finishes a social login by exchanging the social login provider code for Passage tokens.
+     * @param code The code returned from the social login provider.
+     * @return PassageAuthResult
+     * @throws FinishSocialAuthenticationException
+     */
+    public suspend fun finishSocialAuthentication(code: String): PassageAuthResult {
+        val oauthAPI = OAuth2API(BASE_PATH, passageClient)
+        val authResult = try {
+            oauthAPI.exchangeSocialToken(appId, code, PassageSocial.verifier).authResult
+        } catch (e: java.lang.Exception) {
+            throw FinishSocialAuthenticationException.convert(e)
+        }
+        PassageSocial.verifier = ""
         handleAuthResult(authResult)
         return authResult
     }

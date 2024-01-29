@@ -16,6 +16,8 @@
 package id.passage.android.model
 
 import id.passage.android.model.Credential
+import id.passage.android.model.UserSocialConnections
+import id.passage.android.model.UserStatus
 import id.passage.android.model.WebAuthnType
 
 import com.squareup.moshi.Json
@@ -32,7 +34,8 @@ import com.squareup.moshi.JsonClass
  * @param loginCount How many times the user has successfully logged in
  * @param phone The user's phone
  * @param phoneVerified Whether or not the user's phone has been verified
- * @param status User status: active, inactive, pending
+ * @param socialConnections 
+ * @param status 
  * @param updatedAt When this user was last updated
  * @param userMetadata 
  * @param webauthn Whether or not the user has authenticated via webAuthn before (if len(WebAuthnDevices) > 0)
@@ -75,9 +78,11 @@ data class CurrentUser (
     @Json(name = "phone_verified")
     val phoneVerified: kotlin.Boolean,
 
-    /* User status: active, inactive, pending */
+    @Json(name = "social_connections")
+    val socialConnections: UserSocialConnections,
+
     @Json(name = "status")
-    val status: kotlin.String,
+    val status: UserStatus,
 
     /* When this user was last updated */
     @Json(name = "updated_at")
