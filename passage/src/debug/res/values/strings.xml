@@ -2,7 +2,6 @@
     <string name="app_name">Test App</string>
 
     <!-- Required Passage app settings -->
-    <string name="passage_app_id">ADFxfSU7wg3loThFZ9cig3SG</string>
     <string name="passage_auth_origin">try-uat.passage.dev</string>
     <string name="asset_statements">
       [{

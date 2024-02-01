@@ -4,7 +4,12 @@ import MailosaurAPIClient
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import id.passage.android.IntegrationTestConfig.Companion.apiBaseUrl
+import id.passage.android.IntegrationTestConfig.Companion.appId
+import id.passage.android.IntegrationTestConfig.Companion.emailWaitTimeMilliseconds
+import id.passage.android.IntegrationTestConfig.Companion.existingUserEmail
 import id.passage.android.exceptions.PassageUserUnauthorizedException
+import junit.framework.TestCase.fail
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -19,28 +24,24 @@ internal class TokenStoreTests {
 
     private lateinit var passage: Passage
 
-    companion object {
-        const val existingUserEmail = "authentigator+1684801767403@ncor7c1m.mailosaur.net"
-    }
-
     @Before
     fun setup(): Unit = runBlocking {
-        Passage.BASE_PATH = "https://auth-uat.passage.dev/v1"
         activityRule?.scenario?.onActivity { activity ->
             activity?.let {
-                passage = Passage(it)
+                passage = Passage(it, appId)
+                passage.overrideBasePath(apiBaseUrl)
             }
         }
         // Log in user
         val otpId = passage.newLoginOneTimePasscode(existingUserEmail).otpId
-        delay(3000)
+        delay(emailWaitTimeMilliseconds)
         val otp = MailosaurAPIClient.getMostRecentOneTimePasscode()
         passage.oneTimePasscodeActivate(otp, otpId)
     }
 
     @After
-    fun teardown() {
-
+    fun teardown(): Unit = runBlocking {
+        passage.signOutCurrentUser()
     }
 
     @get:Rule
@@ -53,8 +54,8 @@ internal class TokenStoreTests {
         try {
             val currentUser = passage.getCurrentUser()
             assertThat(currentUser).isNotNull()
-        } catch (_: Exception) {
-            assertThat(false).isTrue()
+        } catch (e: Exception) {
+            fail("Test failed due to unexpected exception: ${e.message}")
         }
     }
 
@@ -64,8 +65,8 @@ internal class TokenStoreTests {
             passage.signOutCurrentUser()
             val signedOutUser = passage.getCurrentUser()
             assertThat(signedOutUser).isNull()
-        } catch (_: Exception) {
-            assertThat(false).isTrue()
+        } catch (e: Exception) {
+            fail("Test failed due to unexpected exception: ${e.message}")
         }
     }
 
@@ -74,8 +75,8 @@ internal class TokenStoreTests {
         try {
             val authToken = passage.tokenStore.authToken
             assertThat(authToken).isNotNull()
-        } catch (_: Exception) {
-            assertThat(false).isTrue()
+        } catch (e: Exception) {
+            fail("Test failed due to unexpected exception: ${e.message}")
         }
     }
 
@@ -85,8 +86,8 @@ internal class TokenStoreTests {
             passage.signOutCurrentUser()
             val authToken = passage.tokenStore.authToken
             assertThat(authToken).isNull()
-        } catch (_: Exception) {
-            assertThat(false).isTrue()
+        } catch (e: Exception) {
+            fail("Test failed due to unexpected exception: ${e.message}")
         }
     }
 
@@ -99,8 +100,8 @@ internal class TokenStoreTests {
             assertThat(oldToken).isNotNull()
             assertThat(newToken).isNotNull()
             assertThat(oldToken).isNotEqualTo(newToken)
-        } catch (_: Exception) {
-            assertThat(false).isTrue()
+        } catch (e: Exception) {
+            fail("Test failed due to unexpected exception: ${e.message}")
         }
     }
 
@@ -110,16 +111,9 @@ internal class TokenStoreTests {
             val user = passage.getCurrentUser()
             passage.tokenStore.clearAndRevokeTokens()
             user?.listDevicePasskeys()
-            assertThat(false).isTrue()
+            fail("Test should throw PassageUserUnauthorizedException")
         } catch (e: Exception) {
-            when (e) {
-                is PassageUserUnauthorizedException -> {
-                    assertThat(true).isTrue()
-                }
-                else -> {
-                    assertThat(false).isTrue()
-                }
-            }
+            assertThat(e is PassageUserUnauthorizedException)
         }
     }
 
