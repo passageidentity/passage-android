@@ -18,6 +18,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.google.common.truth.Truth.assertThat
+import id.passage.android.IntegrationTestConfig.Companion.apiBaseUrl
+import id.passage.android.IntegrationTestConfig.Companion.appId
 import id.passage.android.exceptions.FinishSocialAuthenticationInvalidRequestException
 import junit.framework.TestCase.fail
 import org.hamcrest.CoreMatchers.allOf
@@ -27,11 +29,6 @@ import org.hamcrest.CoreMatchers.containsString
 internal class SocialTests {
 
     private lateinit var passage: Passage
-
-    companion object {
-        const val appId = "ADFxfSU7wg3loThFZ9cig3SG"
-        const val apiBaseUrl = "https://auth-uat.passage.dev/v1"
-    }
 
     @Before
     fun setup() {
