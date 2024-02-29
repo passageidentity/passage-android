@@ -82,7 +82,7 @@ data class CurrentUser (
     val socialConnections: UserSocialConnections,
 
     @Json(name = "status")
-    val status: UserStatus,
+    val status: kotlin.String,
 
     /* When this user was last updated */
     @Json(name = "updated_at")
