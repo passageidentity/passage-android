@@ -37,7 +37,9 @@ internal class PassageSocial {
             ).joinToString("&") {
                 (key, value) -> "$key=${URLEncoder.encode(value, "UTF-8")}"
             }
-            val url = "${authUrl}?${params}"
+//            val url = "${authUrl}?${params}"
+            val url = "https://bored-aqua-panda.withpassage-uat.com/authorize?client_id=0ZOAnfi5NnW6oEDw89pJ4jfR&redirect_uri=$redirectURI&state=$state&code_challenge=$codeChallenge&code_challenge_method=S256&scope=openid&response_type=code"
+            println(url)
             val intent = CustomTabsIntent.Builder().build()
             intent.launchUrl(activity, Uri.parse(url))
         }

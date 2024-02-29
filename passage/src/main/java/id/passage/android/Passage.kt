@@ -3,6 +3,8 @@ package id.passage.android
 import android.app.Activity
 import android.util.Log
 import android.webkit.WebSettings
+import com.squareup.moshi.JsonClass
+import com.squareup.moshi.Moshi
 import id.passage.android.ResourceUtils.Companion.getOptionalResourceFromApp
 import id.passage.android.ResourceUtils.Companion.getRequiredResourceFromApp
 import id.passage.android.api.AppsAPI
@@ -12,22 +14,47 @@ import id.passage.android.api.OAuth2API
 import id.passage.android.api.OTPAPI
 import id.passage.android.api.RegisterAPI
 import id.passage.android.api.UsersAPI
-import id.passage.android.exceptions.*
+import id.passage.android.exceptions.AppInfoException
+import id.passage.android.exceptions.FinishSocialAuthenticationException
+import id.passage.android.exceptions.GetMagicLinkStatusException
+import id.passage.android.exceptions.GetMagicLinkStatusNotFoundException
+import id.passage.android.exceptions.LoginException
+import id.passage.android.exceptions.LoginNoExistingUserException
+import id.passage.android.exceptions.LoginNoFallbackException
+import id.passage.android.exceptions.LoginWithPasskeyException
+import id.passage.android.exceptions.MagicLinkActivateException
+import id.passage.android.exceptions.NewLoginMagicLinkException
+import id.passage.android.exceptions.NewLoginOneTimePasscodeException
+import id.passage.android.exceptions.NewRegisterMagicLinkException
+import id.passage.android.exceptions.NewRegisterOneTimePasscodeException
+import id.passage.android.exceptions.OneTimePasscodeActivateException
+import id.passage.android.exceptions.PassageTokenException
+import id.passage.android.exceptions.RegisterException
+import id.passage.android.exceptions.RegisterNoFallbackException
+import id.passage.android.exceptions.RegisterPublicDisabledException
+import id.passage.android.exceptions.RegisterUserExistsException
+import id.passage.android.exceptions.RegisterWithPasskeyException
 import id.passage.android.model.ActivateMagicLinkRequest
 import id.passage.android.model.ActivateOneTimePasscodeRequest
+import id.passage.android.model.AuthResult
 import id.passage.android.model.GetMagicLinkStatusRequest
 import id.passage.android.model.LoginMagicLinkRequest
 import id.passage.android.model.LoginOneTimePasscodeRequest
 import id.passage.android.model.LoginWebAuthnFinishRequest
 import id.passage.android.model.LoginWebAuthnStartRequest
 import id.passage.android.model.MagicLink
-import id.passage.android.model.OAuth2ConnectionType
 import id.passage.android.model.RegisterMagicLinkRequest
 import id.passage.android.model.RegisterOneTimePasscodeRequest
 import id.passage.android.model.RegisterWebAuthnFinishRequest
 import id.passage.android.model.RegisterWebAuthnStartRequest
 import id.passage.client.infrastructure.ApiClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class Passage(
@@ -572,6 +599,42 @@ public final class Passage(
         return authResult
     }
 
+    public fun finishOIDC(code: String) {
+        val redirectUri = "https%3A%2F%2Ftry-uat.passage.dev"
+//        val tokenUrl = "https://bored-aqua-panda.withpassage-uat.com/token?code=$code"
+        val client = OkHttpClient()
+        val moshi = Moshi.Builder()
+            .build()
+        val jsonAdapter = moshi.adapter(OIDCResponse::class.java)
+
+        val mediaType = "application/json; charset=utf-8".toMediaType()
+        val requestBody = "{\"code\":\"$code\"}".toRequestBody(mediaType)
+        val request = Request.Builder()
+            .url("https://bored-aqua-panda.withpassage-uat.com/token?grant_type=authorization_code&code=$code&client_id=0ZOAnfi5NnW6oEDw89pJ4jfR&verifier=${PassageSocial.verifier}&client_secret=tpzhiuugiy4RU2oeKOzmOXCDfjiMYEWp&redirect_uri=$redirectUri")
+            .post(requestBody)
+            .build()
+        CoroutineScope(Dispatchers.IO).launch {
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) throw Exception("Unexpected code $response")
+
+                val responseBody = response.body?.string()
+                if (responseBody != null) {
+                    val apiResponse = jsonAdapter.fromJson(responseBody)!!
+                    println("Parsed JSON response: $apiResponse")
+                    val authResult = AuthResult(
+                        authToken = apiResponse.access_token,
+                        redirectUrl = "",
+                        refreshToken = apiResponse.refresh_token,
+                        refreshTokenExpiration = null
+                    )
+                    handleAuthResult(authResult)
+                    Log.d(TAG, responseBody)
+                }
+            }
+        }
+
+    }
+
     // endregion
 
     // region USER METHODS
@@ -656,3 +719,6 @@ public final class Passage(
     // endregion
 
 }
+
+@JsonClass(generateAdapter = true)
+data class OIDCResponse(val access_token: String, val refresh_token: String?)
