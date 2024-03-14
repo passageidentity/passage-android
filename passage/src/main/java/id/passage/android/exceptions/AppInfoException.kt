@@ -12,8 +12,7 @@ import id.passage.client.infrastructure.ServerException
  * @see AppInfoNotFoundException
  * @see AppInfoServerException
  */
-public open class AppInfoException(message: String): PassageException(message) {
-
+public open class AppInfoException(message: String) : PassageException(message) {
     internal companion object {
         internal fun convert(e: Exception): AppInfoException {
             val message = e.message ?: e.toString()
@@ -37,15 +36,14 @@ public open class AppInfoException(message: String): PassageException(message) {
             }
         }
     }
-
 }
 
 /**
  * Thrown when no Passage app is found with the provided app id.
  */
-public class AppInfoNotFoundException(message: String): AppInfoException(message)
+public class AppInfoNotFoundException(message: String) : AppInfoException(message)
 
 /**
  * Thrown when Passage internal server error occurs.
  */
-public class AppInfoServerException(message: String): AppInfoException(message)
+public class AppInfoServerException(message: String) : AppInfoException(message)

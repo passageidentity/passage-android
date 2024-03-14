@@ -14,10 +14,8 @@ import id.passage.client.infrastructure.ServerException
  * @see FinishSocialAuthenticationNotVerifiedException
  * @see FinishSocialAuthenticationServerException
  */
-public open class FinishSocialAuthenticationException(message: String):
-    PassageException(message)
-{
-
+public open class FinishSocialAuthenticationException(message: String) :
+    PassageException(message) {
     internal companion object {
         internal fun convert(e: Exception): FinishSocialAuthenticationException {
             val message = e.message ?: e.toString()
@@ -28,9 +26,7 @@ public open class FinishSocialAuthenticationException(message: String):
             }
         }
 
-        private fun convertClientException(e: ClientException):
-            FinishSocialAuthenticationException
-        {
+        private fun convertClientException(e: ClientException): FinishSocialAuthenticationException {
             val error = parseClientException(e)
             val message = error?.error ?: ""
             return when (error?.code) {
@@ -46,24 +42,22 @@ public open class FinishSocialAuthenticationException(message: String):
             }
         }
     }
-
 }
-
 
 /**
  * Thrown when the auth code is invalid.
  */
-public class FinishSocialAuthenticationInvalidRequestException(message: String):
+public class FinishSocialAuthenticationInvalidRequestException(message: String) :
     FinishSocialAuthenticationException(message)
 
 /**
  * Thrown when the user's identifier has not been verified.
  */
-public class FinishSocialAuthenticationNotVerifiedException(message: String):
+public class FinishSocialAuthenticationNotVerifiedException(message: String) :
     FinishSocialAuthenticationException(message)
 
 /**
  * Thrown when Passage internal server error occurs.
  */
-public class FinishSocialAuthenticationServerException(message: String):
+public class FinishSocialAuthenticationServerException(message: String) :
     FinishSocialAuthenticationException(message)

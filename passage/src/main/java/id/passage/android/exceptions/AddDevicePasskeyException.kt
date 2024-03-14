@@ -22,10 +22,8 @@ import id.passage.client.infrastructure.ServerException
  * @see AddDevicePasskeyInactiveUserException
  * @see AddDevicePasskeyServerException
  */
-public open class AddDevicePasskeyException(message: String): PassageException(message) {
-
+public open class AddDevicePasskeyException(message: String) : PassageException(message) {
     internal companion object {
-
         internal fun convert(e: Exception): AddDevicePasskeyException {
             val message = e.message ?: e.toString()
             return when (e) {
@@ -68,44 +66,41 @@ public open class AddDevicePasskeyException(message: String): PassageException(m
                 else -> AddDevicePasskeyException(message)
             }
         }
-
     }
-
 }
-
 
 /**
  * The user intentionally canceled the operation and chose not to create the credential.
  */
-public class AddDevicePasskeyCancellationException(message: String): AddDevicePasskeyException(message)
+public class AddDevicePasskeyCancellationException(message: String) : AddDevicePasskeyException(message)
 
 /**
  * Credential creation was interrupted. Consider retrying the call.
  */
-public class AddDevicePasskeyInterruptedException(message: String): AddDevicePasskeyException(message)
+public class AddDevicePasskeyInterruptedException(message: String) : AddDevicePasskeyException(message)
 
 /**
  * Your app is missing the provider configuration dependency.
  * Most likely, your app has not been properly configured for Passage.
  */
-public class AddDevicePasskeyConfigurationException(message: String): AddDevicePasskeyException(message)
+public class AddDevicePasskeyConfigurationException(message: String) : AddDevicePasskeyException(message)
 
 /**
  * Thrown because of a bad request, typically when an invalid identifier is provided.
  */
-public class AddDevicePasskeyInvalidRequestException(message: String): AddDevicePasskeyException(message)
+public class AddDevicePasskeyInvalidRequestException(message: String) : AddDevicePasskeyException(message)
 
 /**
  * Thrown when the request is not authorized, typically when the token has expired or not been set.
  */
-public class AddDevicePasskeyUnauthorizedException(message: String): AddDevicePasskeyException(message)
+public class AddDevicePasskeyUnauthorizedException(message: String) : AddDevicePasskeyException(message)
 
 /**
  * Thrown when the user is not active.
  */
-public class AddDevicePasskeyInactiveUserException(message: String): AddDevicePasskeyException(message)
+public class AddDevicePasskeyInactiveUserException(message: String) : AddDevicePasskeyException(message)
 
 /**
  * Thrown when Passage internal server error occurs.
  */
-public class AddDevicePasskeyServerException(message: String): AddDevicePasskeyException(message)
+public class AddDevicePasskeyServerException(message: String) : AddDevicePasskeyException(message)

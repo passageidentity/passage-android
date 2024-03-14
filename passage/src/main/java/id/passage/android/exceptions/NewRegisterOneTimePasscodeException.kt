@@ -12,10 +12,8 @@ import id.passage.client.infrastructure.ServerException
  * @see NewRegisterOneTimePasscodeInvalidIdentifierException
  * @see NewRegisterOneTimePasscodeServerException
  */
-public open class NewRegisterOneTimePasscodeException(message: String): PassageException(message) {
-
+public open class NewRegisterOneTimePasscodeException(message: String) : PassageException(message) {
     internal companion object {
-
         internal fun convert(e: Exception): NewRegisterOneTimePasscodeException {
             val message = e.message ?: e.toString()
             return when (e) {
@@ -33,17 +31,15 @@ public open class NewRegisterOneTimePasscodeException(message: String): PassageE
                 else -> NewRegisterOneTimePasscodeException(message)
             }
         }
-
     }
-
 }
 
 /**
  * Thrown when the provided identifier is invalid.
  */
-public class NewRegisterOneTimePasscodeInvalidIdentifierException(message: String): NewRegisterOneTimePasscodeException(message)
+public class NewRegisterOneTimePasscodeInvalidIdentifierException(message: String) : NewRegisterOneTimePasscodeException(message)
 
 /**
  * Thrown when Passage internal server error occurs.
  */
-public class NewRegisterOneTimePasscodeServerException(message: String): NewRegisterOneTimePasscodeException(message)
+public class NewRegisterOneTimePasscodeServerException(message: String) : NewRegisterOneTimePasscodeException(message)

@@ -23,10 +23,8 @@ import id.passage.client.infrastructure.ServerException
  * @see LoginWithPasskeyCredentialException
  * @see LoginWithPasskeyServerException
  */
-public open class LoginWithPasskeyException(message: String): PassageException(message) {
-
+public open class LoginWithPasskeyException(message: String) : PassageException(message) {
     internal companion object {
-
         internal fun convert(e: Exception): LoginWithPasskeyException {
             val message = e.message ?: e.toString()
             return when (e) {
@@ -80,60 +78,58 @@ public open class LoginWithPasskeyException(message: String): PassageException(m
                 else -> LoginWithPasskeyException(message)
             }
         }
-
     }
-
 }
 
 /**
  * The user intentionally canceled the operation and chose not to register the credential.
  */
-public class LoginWithPasskeyCancellationException(message: String): LoginWithPasskeyException(message)
+public class LoginWithPasskeyCancellationException(message: String) : LoginWithPasskeyException(message)
 
 /**
  * Credential creation was interrupted. Consider retrying the call.
  */
-public class LoginWithPasskeyInterruptedException(message: String): LoginWithPasskeyException(message)
+public class LoginWithPasskeyInterruptedException(message: String) : LoginWithPasskeyException(message)
 
 /**
  * Your app is missing the provider configuration dependency.
  * Most likely, your app has not been properly configured for Passage.
  */
-public class LoginWithPasskeyConfigurationException(message: String): LoginWithPasskeyException(message)
+public class LoginWithPasskeyConfigurationException(message: String) : LoginWithPasskeyException(message)
 
 /**
  * During the get credential flow, this is thrown when credential manager is unsupported, typically
  * because the device has disabled it or did not ship with this feature enabled.
  */
-public class LoginWithPasskeyUnsupportedException(message: String): LoginWithPasskeyException(message)
+public class LoginWithPasskeyUnsupportedException(message: String) : LoginWithPasskeyException(message)
 
 /**
  * During the get credential flow, this is returned when no viable credential is available for the
  * the user.
  */
-public class LoginWithPasskeyNoCredentialException(message: String): LoginWithPasskeyException(message)
+public class LoginWithPasskeyNoCredentialException(message: String) : LoginWithPasskeyException(message)
 
 /**
  * Thrown because of a bad request, typically when an invalid identifier is provided.
  */
-public class LoginWithPasskeyInvalidRequestException(message: String): LoginWithPasskeyException(message)
+public class LoginWithPasskeyInvalidRequestException(message: String) : LoginWithPasskeyException(message)
 
 /**
  * Thrown when no identifier is provided and login fails.
  */
-public class LoginWithPasskeyDiscoverableLoginException(message: String): LoginWithPasskeyException(message)
+public class LoginWithPasskeyDiscoverableLoginException(message: String) : LoginWithPasskeyException(message)
 
 /**
  * Thrown when the user is not active.
  */
-public class LoginWithPasskeyInactiveUserException(message: String): LoginWithPasskeyException(message)
+public class LoginWithPasskeyInactiveUserException(message: String) : LoginWithPasskeyException(message)
 
 /**
  * Thrown because of an issue with the passkey credential.
  */
-public class LoginWithPasskeyCredentialException(message: String): LoginWithPasskeyException(message)
+public class LoginWithPasskeyCredentialException(message: String) : LoginWithPasskeyException(message)
 
 /**
  * Thrown when Passage internal server error occurs.
  */
-public class LoginWithPasskeyServerException(message: String): LoginWithPasskeyException(message)
+public class LoginWithPasskeyServerException(message: String) : LoginWithPasskeyException(message)

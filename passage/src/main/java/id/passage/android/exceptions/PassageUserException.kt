@@ -17,10 +17,8 @@ import id.passage.client.infrastructure.ServerException
  * @see PassageUserInactiveUserException
  * @see PassageUserServerException
  */
-public open class PassageUserException(message: String): PassageException(message) {
-
+public open class PassageUserException(message: String) : PassageException(message) {
     internal companion object {
-
         internal fun convert(e: Exception): PassageUserException {
             val message = e.message ?: e.toString()
             return when (e) {
@@ -49,32 +47,30 @@ public open class PassageUserException(message: String): PassageException(messag
             }
             return PassageUserException(message)
         }
-
     }
-
 }
 
 /**
  * Thrown when invalid values are provided to the request.
  */
-public class PassageUserRequestException(message: String): PassageUserException(message)
+public class PassageUserRequestException(message: String) : PassageUserException(message)
 
 /**
  * Thrown when the request is not authorized, typically when the token has expired or not been set.
  */
-public class PassageUserUnauthorizedException(message: String): PassageUserException(message)
+public class PassageUserUnauthorizedException(message: String) : PassageUserException(message)
 
 /**
  * Thrown when the user is not found.
  */
-public class PassageUserNotFoundException(message: String): PassageUserException(message)
+public class PassageUserNotFoundException(message: String) : PassageUserException(message)
 
 /**
  * Thrown when the user is not active.
  */
-public class PassageUserInactiveUserException(message: String): PassageUserException(message)
+public class PassageUserInactiveUserException(message: String) : PassageUserException(message)
 
 /**
  * Thrown when Passage internal server error occurs.
  */
-public class PassageUserServerException(message: String): PassageUserException(message)
+public class PassageUserServerException(message: String) : PassageUserException(message)
