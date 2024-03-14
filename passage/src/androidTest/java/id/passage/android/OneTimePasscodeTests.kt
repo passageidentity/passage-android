@@ -22,7 +22,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 internal class OneTimePasscodeTests {
-
     private lateinit var passage: Passage
 
     @Before
@@ -36,87 +35,94 @@ internal class OneTimePasscodeTests {
     }
 
     @After
-    fun teardown() = runTest {
-        passage.signOutCurrentUser()
-    }
+    fun teardown() =
+        runTest {
+            passage.signOutCurrentUser()
+        }
 
     @get:Rule
-    var activityRule: ActivityScenarioRule<TestActivity?>? = ActivityScenarioRule(
-        TestActivity::class.java
-    )
+    var activityRule: ActivityScenarioRule<TestActivity?>? =
+        ActivityScenarioRule(
+            TestActivity::class.java,
+        )
 
     @Test
-    fun testRegisterOTPValid() = runTest {
-        val date = System.currentTimeMillis()
-        val identifier = "authentigator+$date@passage.id"
-        try {
-            passage.newRegisterOneTimePasscode(identifier)
-        } catch (e: Exception) {
-            fail("Test failed due to unexpected exception: ${e.message}")
-        }
-    }
-
-    @Test
-    fun testRegisterOTPNotValid() = runTest {
-        val identifier = "INVALID_IDENTIFIER"
-        try {
-            passage.newRegisterOneTimePasscode(identifier)
-            fail("Test should throw NewRegisterOneTimePasscodeInvalidIdentifierException")
-        } catch (e: Exception) {
-            assertThat(e is NewRegisterOneTimePasscodeInvalidIdentifierException)
-        }
-    }
-
-    @Test
-    fun testActivateRegisterOTPValid() = runTest {
-        runBlocking {
+    fun testRegisterOTPValid() =
+        runTest {
             val date = System.currentTimeMillis()
-            val identifier = "authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net"
+            val identifier = "authentigator+$date@passage.id"
             try {
-                val otpId = passage.newRegisterOneTimePasscode(identifier).otpId
-                delay(emailWaitTimeMilliseconds)
-                val otp = MailosaurAPIClient.getMostRecentOneTimePasscode()
-                passage.oneTimePasscodeActivate(otp, otpId)
+                passage.newRegisterOneTimePasscode(identifier)
             } catch (e: Exception) {
                 fail("Test failed due to unexpected exception: ${e.message}")
             }
         }
-    }
 
     @Test
-    fun testLoginOTPValid() = runTest {
-        val identifier = existingUserEmail
-        try {
-            passage.newLoginOneTimePasscode(identifier)
-        } catch (e: Exception) {
-            fail("Test failed due to unexpected exception: ${e.message}")
-        }
-    }
-
-    @Test
-    fun testLoginOTPNotValid() = runTest {
-        val identifier = "INVALID_IDENTIFIER"
-        try {
-            passage.newLoginOneTimePasscode(identifier)
-            fail("Test should throw NewLoginOneTimePasscodeInvalidIdentifierException")
-        } catch (e: Exception) {
-            assertThat(e is NewLoginOneTimePasscodeInvalidIdentifierException)
-        }
-    }
-
-    @Test
-    fun testActivateLoginOTPValid() = runTest {
-        val identifier = existingUserEmail
-        runBlocking {
+    fun testRegisterOTPNotValid() =
+        runTest {
+            val identifier = "INVALID_IDENTIFIER"
             try {
-                val otpId = passage.newLoginOneTimePasscode(identifier).otpId
-                delay(emailWaitTimeMilliseconds)
-                val otp = MailosaurAPIClient.getMostRecentOneTimePasscode()
-                passage.oneTimePasscodeActivate(otp, otpId)
+                passage.newRegisterOneTimePasscode(identifier)
+                fail("Test should throw NewRegisterOneTimePasscodeInvalidIdentifierException")
+            } catch (e: Exception) {
+                assertThat(e is NewRegisterOneTimePasscodeInvalidIdentifierException)
+            }
+        }
+
+    @Test
+    fun testActivateRegisterOTPValid() =
+        runTest {
+            runBlocking {
+                val date = System.currentTimeMillis()
+                val identifier = "authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net"
+                try {
+                    val otpId = passage.newRegisterOneTimePasscode(identifier).otpId
+                    delay(emailWaitTimeMilliseconds)
+                    val otp = MailosaurAPIClient.getMostRecentOneTimePasscode()
+                    passage.oneTimePasscodeActivate(otp, otpId)
+                } catch (e: Exception) {
+                    fail("Test failed due to unexpected exception: ${e.message}")
+                }
+            }
+        }
+
+    @Test
+    fun testLoginOTPValid() =
+        runTest {
+            val identifier = existingUserEmail
+            try {
+                passage.newLoginOneTimePasscode(identifier)
             } catch (e: Exception) {
                 fail("Test failed due to unexpected exception: ${e.message}")
             }
         }
-    }
 
+    @Test
+    fun testLoginOTPNotValid() =
+        runTest {
+            val identifier = "INVALID_IDENTIFIER"
+            try {
+                passage.newLoginOneTimePasscode(identifier)
+                fail("Test should throw NewLoginOneTimePasscodeInvalidIdentifierException")
+            } catch (e: Exception) {
+                assertThat(e is NewLoginOneTimePasscodeInvalidIdentifierException)
+            }
+        }
+
+    @Test
+    fun testActivateLoginOTPValid() =
+        runTest {
+            val identifier = existingUserEmail
+            runBlocking {
+                try {
+                    val otpId = passage.newLoginOneTimePasscode(identifier).otpId
+                    delay(emailWaitTimeMilliseconds)
+                    val otp = MailosaurAPIClient.getMostRecentOneTimePasscode()
+                    passage.oneTimePasscodeActivate(otp, otpId)
+                } catch (e: Exception) {
+                    fail("Test failed due to unexpected exception: ${e.message}")
+                }
+            }
+        }
 }

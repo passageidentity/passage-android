@@ -12,15 +12,13 @@ import id.passage.client.infrastructure.ServerException
  * @see NewLoginMagicLinkInvalidIdentifierException
  * @see NewLoginMagicLinkServerException
  */
-public open class NewLoginMagicLinkException(message: String): PassageException(message) {
-
+public open class NewLoginMagicLinkException(message: String) : PassageException(message) {
     internal companion object {
-
         internal fun convert(e: Exception): NewLoginMagicLinkException {
             val message = e.message ?: e.toString()
             return when (e) {
                 is ClientException -> convertClientException(e)
-                is ServerException ->NewLoginMagicLinkServerException(message)
+                is ServerException -> NewLoginMagicLinkServerException(message)
                 else -> NewLoginMagicLinkException(message)
             }
         }
@@ -33,17 +31,15 @@ public open class NewLoginMagicLinkException(message: String): PassageException(
                 else -> NewLoginMagicLinkException(message)
             }
         }
-
     }
-
 }
 
 /**
  * Thrown when the provided identifier is invalid.
  */
-public class NewLoginMagicLinkInvalidIdentifierException(message: String): NewLoginMagicLinkException(message)
+public class NewLoginMagicLinkInvalidIdentifierException(message: String) : NewLoginMagicLinkException(message)
 
 /**
  * Thrown when Passage internal server error occurs.
  */
-public class NewLoginMagicLinkServerException(message: String): NewLoginMagicLinkException(message)
+public class NewLoginMagicLinkServerException(message: String) : NewLoginMagicLinkException(message)

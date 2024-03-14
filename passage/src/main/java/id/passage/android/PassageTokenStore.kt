@@ -12,27 +12,27 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class PassageTokenStore(activity: Activity) {
-
     private companion object {
         private const val PASSAGE_SHARED_PREFERENCES = "PASSAGE_SHARED_PREFERENCES"
         private const val PASSAGE_AUTH_TOKEN = "PASSAGE_AUTH_TOKEN"
         private const val PASSAGE_REFRESH_TOKEN = "PASSAGE_REFRESH_TOKEN"
     }
 
-    private val masterKey: MasterKey = MasterKey.Builder(activity)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
+    private val masterKey: MasterKey =
+        MasterKey.Builder(activity)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
 
-    private var sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-        activity,
-        PASSAGE_SHARED_PREFERENCES,
-        masterKey,
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-    )
+    private var sharedPreferences: SharedPreferences =
+        EncryptedSharedPreferences.create(
+            activity,
+            PASSAGE_SHARED_PREFERENCES,
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
+        )
 
     public val authToken: String?
         get() = sharedPreferences.getString(PASSAGE_AUTH_TOKEN, null)
@@ -57,7 +57,7 @@ public final class PassageTokenStore(activity: Activity) {
     }
 
     private fun setAuthToken(token: String?) {
-        with (sharedPreferences.edit()) {
+        with(sharedPreferences.edit()) {
             putString(PASSAGE_AUTH_TOKEN, token)
             apply()
         }
@@ -66,7 +66,7 @@ public final class PassageTokenStore(activity: Activity) {
     }
 
     private fun setRefreshToken(token: String?) {
-        with (sharedPreferences.edit()) {
+        with(sharedPreferences.edit()) {
             putString(PASSAGE_REFRESH_TOKEN, token)
             apply()
         }
@@ -105,5 +105,4 @@ public final class PassageTokenStore(activity: Activity) {
             ApiClient.accessToken = authToken
         }
     }
-
 }

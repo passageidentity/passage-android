@@ -10,7 +10,6 @@ import androidx.credentials.GetPublicKeyCredentialOption
 import androidx.credentials.exceptions.CreateCredentialException
 import androidx.credentials.exceptions.GetCredentialException
 import com.squareup.moshi.Moshi
-import id.passage.android.model.CredentialCreationChallenge
 import id.passage.android.exceptions.*
 import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_MISSING
 import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_PARSING_FAILED
@@ -18,6 +17,7 @@ import id.passage.android.exceptions.CredentialParsingException.Companion.CREDEN
 import id.passage.android.model.CredentialAssertionChallenge
 import id.passage.android.model.CredentialAssertionResponse
 import id.passage.android.model.CredentialAssertionResponseJsonAdapter
+import id.passage.android.model.CredentialCreationChallenge
 import id.passage.android.model.CredentialCreationPublicKeyJsonAdapter
 import id.passage.android.model.CredentialCreationResponse
 import id.passage.android.model.CredentialCreationResponseJsonAdapter
@@ -26,9 +26,7 @@ import id.passage.android.model.ProtocolCredentialAssertionPublicKeyJsonAdapter
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class PasskeyUtils {
-
     public companion object {
-
         private const val REGISTRATION_RESPONSE_BUNDLE_KEY = "androidx.credentials.BUNDLE_KEY_REGISTRATION_RESPONSE_JSON"
         private const val AUTH_RESPONSE_BUNDLE_KEY = "androidx.credentials.BUNDLE_KEY_AUTHENTICATION_RESPONSE_JSON"
 
@@ -42,7 +40,10 @@ public final class PasskeyUtils {
          * @param requestJson The privileged request in JSON format in the [standard webauthn web json](https://w3c.github.io/webauthn/#dictdef-publickeycredentialcreationoptionsjson).
          * @throws CreateCredentialException If the request fails
          */
-        public suspend fun createPasskey(requestJson: String, activity: Activity): CreateCredentialResponse {
+        public suspend fun createPasskey(
+            requestJson: String,
+            activity: Activity,
+        ): CreateCredentialResponse {
             val credentialManager = CredentialManager.create(activity)
             val publicKeyCredRequest = CreatePublicKeyCredentialRequest(requestJson)
             // Show the user Credential Manager with option to create a Passkey
@@ -58,7 +59,10 @@ public final class PasskeyUtils {
          * @param requestJson The privileged request in JSON format in the [standard webauthn web json](https://w3c.github.io/webauthn/#dictdef-publickeycredentialcreationoptionsjson).
          * @throws GetCredentialException If the request fails
          */
-        public suspend fun getPasskey(requestJson: String, activity: Activity): GetCredentialResponse {
+        public suspend fun getPasskey(
+            requestJson: String,
+            activity: Activity,
+        ): GetCredentialResponse {
             val credentialManager = CredentialManager.create(activity)
             val getCredOption = GetPublicKeyCredentialOption(requestJson)
             val getCredRequest = GetCredentialRequest(listOf(getCredOption))
@@ -75,8 +79,9 @@ public final class PasskeyUtils {
          * @throws CredentialParsingException
          */
         internal fun getCreateCredentialOptionsJson(challenge: CredentialCreationChallenge?): String {
-            val publicKey = challenge?.challenge?.publicKey
-                ?: throw CredentialParsingException(CHALLENGE_MISSING)
+            val publicKey =
+                challenge?.challenge?.publicKey
+                    ?: throw CredentialParsingException(CHALLENGE_MISSING)
             val moshi = Moshi.Builder().build()
             val adapter = CredentialCreationPublicKeyJsonAdapter(moshi)
             return adapter.toJson(publicKey)
@@ -110,21 +115,23 @@ public final class PasskeyUtils {
          * @throws CredentialParsingException
          */
         internal fun getCredentialOptionsJson(challenge: CredentialAssertionChallenge?): String {
-            val credOptions = challenge?.challenge?.publicKey
-                ?: throw CredentialParsingException(CHALLENGE_MISSING)
+            val credOptions =
+                challenge?.challenge?.publicKey
+                    ?: throw CredentialParsingException(CHALLENGE_MISSING)
             val moshi = Moshi.Builder().build()
             val credOptionsAdapter = ProtocolCredentialAssertionPublicKeyJsonAdapter(moshi)
             // Passage API bug: Login API frequently returns challenge with non-url-safe characters
             // "+" and "/" that cause "Bad Base 64" exception to be thrown by the credential manager.
             val modifiedChallenge = credOptions.challenge.replace('+', '-').replace('/', '_')
-            val modifiedCredOptions = ProtocolCredentialAssertionPublicKey(
-                allowCredentials = credOptions.allowCredentials,
-                challenge = modifiedChallenge,
-                extensions = credOptions.extensions,
-                rpId = credOptions.rpId,
-                timeout = credOptions.timeout,
-                userVerification = credOptions.userVerification
-            )
+            val modifiedCredOptions =
+                ProtocolCredentialAssertionPublicKey(
+                    allowCredentials = credOptions.allowCredentials,
+                    challenge = modifiedChallenge,
+                    extensions = credOptions.extensions,
+                    rpId = credOptions.rpId,
+                    timeout = credOptions.timeout,
+                    userVerification = credOptions.userVerification,
+                )
             return credOptionsAdapter.toJson(modifiedCredOptions)
                 ?: throw CredentialParsingException(CHALLENGE_PARSING_FAILED)
         }
@@ -146,7 +153,5 @@ public final class PasskeyUtils {
             return handshakeResponseAdapter.fromJson(handshakeResponseJson)
                 ?: throw CredentialParsingException(CREDENTIAL_PARSING_FAILED)
         }
-
     }
-
 }

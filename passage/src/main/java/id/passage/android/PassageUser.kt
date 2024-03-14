@@ -15,52 +15,35 @@ import id.passage.android.model.WebAuthnType
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 final class PassageUser private constructor(
-
-    /* When this user was created */
+    // When this user was created
     val createdAt: String? = null,
-
-    /* The user's email */
+    // The user's email
     val email: String? = null,
-
-    /* Whether or not the user's email has been verified */
+    // Whether or not the user's email has been verified
     val emailVerified: Boolean? = null,
-
-    /* The userID (referred to as Handle) */
+    // The userID (referred to as Handle)
     val id: String? = null,
-
-    /* The last time this user logged in */
+    // The last time this user logged in
     val lastLoginAt: String? = null,
-
-    /* How many times the user has successfully logged in */
+    // How many times the user has successfully logged in
     val loginCount: Int? = null,
-
-    /* The user's phone */
+    // The user's phone
     val phone: String? = null,
-
-    /* Whether or not the user's phone has been verified */
+    // Whether or not the user's phone has been verified
     val phoneVerified: Boolean? = null,
-
-    /* User status: active, inactive, pending */
+    // User status: active, inactive, pending
     val status: String? = null,
-
-    /* When this user was last updated */
+    // When this user was last updated
     val updatedAt: String? = null,
-
     val userMetadata: Any? = null,
-
-    /* Whether or not the user has authenticated via webAuthn before (if len(WebAuthnDevices) > 0) */
+    // Whether or not the user has authenticated via webAuthn before (if len(WebAuthnDevices) > 0)
     val webauthn: Boolean? = null,
-
-    /* The list of devices this user has authenticated with via webAuthn */
+    // The list of devices this user has authenticated with via webAuthn
     val webauthnDevices: List<PassageCredential>? = null,
-
-    /* List of credential types that user has created */
-    val webauthnTypes: List<WebAuthnType>? = null
-
+    // List of credential types that user has created
+    val webauthnTypes: List<WebAuthnType>? = null,
 ) {
-
     internal companion object {
-
         /**
          * Get Current User
          *
@@ -72,11 +55,12 @@ final class PassageUser private constructor(
          */
         internal suspend fun getCurrentUser(): PassageUser? {
             val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-            val currentUser = try {
-                currentUserAPI.getCurrentuser(Passage.appId).user
-            } catch (e: Exception) {
-                throw PassageUserException.convert(e)
-            }
+            val currentUser =
+                try {
+                    currentUserAPI.getCurrentuser(Passage.appId).user
+                } catch (e: Exception) {
+                    throw PassageUserException.convert(e)
+                }
             return convertToPassageUser(currentUser)
         }
 
@@ -92,10 +76,10 @@ final class PassageUser private constructor(
                 phoneVerified = modelsCurrentUser.phoneVerified,
                 status = modelsCurrentUser.status,
                 updatedAt = modelsCurrentUser.updatedAt,
-                userMetadata= modelsCurrentUser.userMetadata,
+                userMetadata = modelsCurrentUser.userMetadata,
                 webauthn = modelsCurrentUser.webauthn,
                 webauthnDevices = modelsCurrentUser.webauthnDevices,
-                webauthnTypes = modelsCurrentUser.webauthnTypes
+                webauthnTypes = modelsCurrentUser.webauthnTypes,
             )
         }
 
@@ -107,9 +91,9 @@ final class PassageUser private constructor(
                 phone = modelsUser.phone,
                 phoneVerified = modelsUser.phoneVerified,
                 status = modelsUser.status,
-                userMetadata= modelsUser.userMetadata,
+                userMetadata = modelsUser.userMetadata,
                 webauthn = modelsUser.webauthn,
-                webauthnTypes = modelsUser.webauthnTypes
+                webauthnTypes = modelsUser.webauthnTypes,
             )
         }
     }
@@ -125,11 +109,12 @@ final class PassageUser private constructor(
     public suspend fun changeEmail(newEmail: String): MagicLink {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val request = UpdateUserEmailRequest(newEmail, Passage.language, null, null)
-        val response = try {
-            currentUserAPI.updateEmailCurrentuser(Passage.appId, request)
-        } catch (e: Exception) {
-            throw PassageUserException.convert(e)
-        }
+        val response =
+            try {
+                currentUserAPI.updateEmailCurrentuser(Passage.appId, request)
+            } catch (e: Exception) {
+                throw PassageUserException.convert(e)
+            }
         return response.magicLink
     }
 
@@ -144,11 +129,12 @@ final class PassageUser private constructor(
     public suspend fun changePhone(newPhone: String): MagicLink {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val request = UpdateUserPhoneRequest(Passage.language, null, newPhone, null)
-        val response = try {
-            currentUserAPI.updatePhoneCurrentuser(Passage.appId, request)
-        } catch (e: Exception) {
-            throw PassageUserException.convert(e)
-        }
+        val response =
+            try {
+                currentUserAPI.updatePhoneCurrentuser(Passage.appId, request)
+            } catch (e: Exception) {
+                throw PassageUserException.convert(e)
+            }
         return response.magicLink
     }
 
@@ -178,7 +164,10 @@ final class PassageUser private constructor(
      * @return PassageCredential
      * @throws PassageUserException
      */
-    public suspend fun editDevicePasskeyName(deviceId: String, newDevicePasskeyName: String): PassageCredential {
+    public suspend fun editDevicePasskeyName(
+        deviceId: String,
+        newDevicePasskeyName: String,
+    ): PassageCredential {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val request = UpdateDeviceRequest(friendlyName = newDevicePasskeyName)
         return try {
@@ -206,11 +195,12 @@ final class PassageUser private constructor(
             val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
             // Complete registration
             val handshakeResponse = PasskeyUtils.getCreateCredentialHandshakeResponse(createCredResponse)
-            val finishRequest = AddDeviceFinishRequest(
-                handshakeId = webauthnStartResponse.handshake.id,
-                handshakeResponse = handshakeResponse,
-                userId = webauthnStartResponse.user?.id ?: ""
-            )
+            val finishRequest =
+                AddDeviceFinishRequest(
+                    handshakeId = webauthnStartResponse.handshake.id,
+                    handshakeResponse = handshakeResponse,
+                    userId = webauthnStartResponse.user?.id ?: "",
+                )
             return currentUserAPI.postCurrentuserAddDeviceFinish(Passage.appId, finishRequest).device
         } catch (e: Exception) {
             throw AddDevicePasskeyException.convert(e)
@@ -233,5 +223,4 @@ final class PassageUser private constructor(
             PassageUserException.convert(e)
         }
     }
-
 }

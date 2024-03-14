@@ -14,10 +14,8 @@ import id.passage.client.infrastructure.ServerException
  * @see GetMagicLinkStatusNotFoundException
  * @see GetMagicLinkStatusServerException
  */
-public open class GetMagicLinkStatusException(message: String): PassageException(message) {
-
+public open class GetMagicLinkStatusException(message: String) : PassageException(message) {
     internal companion object {
-
         internal fun convert(e: Exception): GetMagicLinkStatusException {
             val message = e.message ?: e.toString()
             return when (e) {
@@ -42,22 +40,20 @@ public open class GetMagicLinkStatusException(message: String): PassageException
                 }
             }
         }
-
     }
-
 }
 
 /**
  * Thrown when provided magic link id is invalid.
  */
-public class GetMagicLinkStatusInvalidException(message: String): GetMagicLinkStatusException(message)
+public class GetMagicLinkStatusInvalidException(message: String) : GetMagicLinkStatusException(message)
 
 /**
  * Thrown when provided magic link id is not found.
  */
-public class GetMagicLinkStatusNotFoundException(message: String): GetMagicLinkStatusException(message)
+public class GetMagicLinkStatusNotFoundException(message: String) : GetMagicLinkStatusException(message)
 
 /**
  * Thrown when Passage internal server error occurs.
  */
-public class GetMagicLinkStatusServerException(message: String): GetMagicLinkStatusException(message)
+public class GetMagicLinkStatusServerException(message: String) : GetMagicLinkStatusException(message)

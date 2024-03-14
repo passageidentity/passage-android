@@ -1,0 +1,2 @@
+[passage/generated/**/*]
+ktlint = disabled

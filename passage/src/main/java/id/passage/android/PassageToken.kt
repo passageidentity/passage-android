@@ -13,7 +13,6 @@ private data class AuthTokenPayload(val exp: Long)
 
 @Suppress("unused", "RedundantVisibilityModifier")
 public object PassageToken {
-
     /**
      * Refresh Auth Token
      *
@@ -25,11 +24,12 @@ public object PassageToken {
     public suspend fun refreshAuthToken(refreshToken: String): PassageAuthResult {
         val api = TokensAPI(Passage.BASE_PATH)
         val request = RefreshAuthTokenRequest(refreshToken)
-        val apiAuthResult = try {
-            api.refreshAuthToken(Passage.appId, request).authResult
-        } catch (e: Exception) {
-            throw PassageTokenException.convert(e)
-        }
+        val apiAuthResult =
+            try {
+                api.refreshAuthToken(Passage.appId, request).authResult
+            } catch (e: Exception) {
+                throw PassageTokenException.convert(e)
+            }
         return apiAuthResult
     }
 
@@ -73,5 +73,4 @@ public object PassageToken {
             return false
         }
     }
-
 }
