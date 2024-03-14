@@ -11,18 +11,17 @@ import androidx.credentials.exceptions.CreateCredentialException
 import androidx.credentials.exceptions.GetCredentialException
 import com.squareup.moshi.Moshi
 import id.passage.android.passageflex.model.CredentialCreationChallenge
-import id.passage.android.exceptions.*
-import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_MISSING
-import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_PARSING_FAILED
-import id.passage.android.exceptions.CredentialParsingException.Companion.CREDENTIAL_PARSING_FAILED
 import id.passage.android.passageflex.model.CredentialAssertionChallenge
 import id.passage.android.passageflex.model.CredentialAssertionResponse
 import id.passage.android.passageflex.model.CredentialAssertionResponseJsonAdapter
 import id.passage.android.passageflex.model.CredentialCreationPublicKeyJsonAdapter
-import id.passage.android.passageflex.model.CredentialCreationResponse
-import id.passage.android.passageflex.model.CredentialCreationResponseJsonAdapter
+import id.passage.android.passageflex.model.CredentialCreationResponse1
+import id.passage.android.passageflex.model.CredentialCreationResponse1JsonAdapter
 import id.passage.android.passageflex.model.ProtocolCredentialAssertionPublicKey
 import id.passage.android.passageflex.model.ProtocolCredentialAssertionPublicKeyJsonAdapter
+import id.passage.passageflex.CredentialParsingException.Companion.CHALLENGE_MISSING
+import id.passage.passageflex.CredentialParsingException.Companion.CHALLENGE_PARSING_FAILED
+import id.passage.passageflex.CredentialParsingException.Companion.CREDENTIAL_PARSING_FAILED
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public object PasskeyUtils {
@@ -90,11 +89,11 @@ public object PasskeyUtils {
          * @return ProtocolCredentialCreationResponse
          * @throws CredentialParsingException
          */
-        internal fun getCreateCredentialHandshakeResponse(createCredentialResponse: CreateCredentialResponse): CredentialCreationResponse {
+        internal fun getCreateCredentialHandshakeResponse(createCredentialResponse: CreateCredentialResponse): CredentialCreationResponse1 {
             val handshakeResponseJson =
                 createCredentialResponse.data.getString(REGISTRATION_RESPONSE_BUNDLE_KEY).toString()
             val moshi = Moshi.Builder().build()
-            val handshakeResponseAdapter = CredentialCreationResponseJsonAdapter(moshi)
+            val handshakeResponseAdapter = CredentialCreationResponse1JsonAdapter(moshi)
             return handshakeResponseAdapter.fromJson(handshakeResponseJson)
                 ?: throw CredentialParsingException(CREDENTIAL_PARSING_FAILED)
         }
