@@ -1,6 +1,6 @@
 package id.passage.passageflex
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /**
