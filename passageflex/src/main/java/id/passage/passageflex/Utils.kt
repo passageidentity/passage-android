@@ -3,9 +3,7 @@ package id.passage.passageflex
 import android.app.Activity
 
 internal class Utils {
-
     internal companion object {
-
         internal fun getAppId(activity: Activity): String {
             val resourceName = "passage_app_id"
             val resource = activity.resources.getIdentifier(resourceName, "string", activity.packageName)
@@ -18,6 +16,5 @@ internal class Utils {
             }
             return resourceString
         }
-
     }
 }

@@ -1,2 +1,5 @@
 [passage/generated/**/*]
 ktlint = disabled
+
+[passageflex/generated/**/*]
+ktlint = disabled
