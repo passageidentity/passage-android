@@ -1,9 +1,9 @@
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.util.Base64
 
 @Serializable
@@ -27,7 +27,7 @@ private data class ListMessage(
     val from: List<NameEmail>,
     val to: List<NameEmail>,
     val cc: List<String>,
-    val bcc: List<String>
+    val bcc: List<String>,
 )
 
 @Serializable
@@ -43,11 +43,10 @@ private data class GetMessageResponse(
     val to: List<NameEmail>,
     val cc: List<String>,
     val bcc: List<String>,
-    val html: MessageHTML
+    val html: MessageHTML,
 )
 
 internal object MailosaurAPIClient {
-
     internal const val serverId = "ncor7c1m"
 
     private const val apiURL = "https://mailosaur.com/api/messages"
@@ -69,10 +68,11 @@ internal object MailosaurAPIClient {
     private fun buildRequest(url: String): Request {
         return try {
             val parsedUrl = url.toHttpUrlOrNull() ?: throw Exception("Bad url path")
-            val request = Request.Builder()
-                .url(parsedUrl)
-                .addHeader("Authorization", authHeader)
-                .build()
+            val request =
+                Request.Builder()
+                    .url(parsedUrl)
+                    .addHeader("Authorization", authHeader)
+                    .build()
             request
         } catch (e: Exception) {
             throw Exception("Bad url path")
@@ -86,9 +86,10 @@ internal object MailosaurAPIClient {
             val message = getMessage(messages[0].id)
             val incomingURL = message.html.links[0].href
             val components = java.net.URL(incomingURL).query
-            val magicLink = components.split("&")
-                .find { it.startsWith("psg_magic_link=") }
-                ?.substringAfter("psg_magic_link=")
+            val magicLink =
+                components.split("&")
+                    .find { it.startsWith("psg_magic_link=") }
+                    ?.substringAfter("psg_magic_link=")
             magicLink ?: ""
         } catch (e: Exception) {
             ""

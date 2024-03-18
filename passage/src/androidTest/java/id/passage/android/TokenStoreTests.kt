@@ -21,100 +21,107 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 internal class TokenStoreTests {
-
     private lateinit var passage: Passage
 
     @Before
-    fun setup(): Unit = runBlocking {
-        activityRule?.scenario?.onActivity { activity ->
-            activity?.let {
-                passage = Passage(it, appId)
-                passage.overrideBasePath(apiBaseUrl)
+    fun setup(): Unit =
+        runBlocking {
+            activityRule?.scenario?.onActivity { activity ->
+                activity?.let {
+                    passage = Passage(it, appId)
+                    passage.overrideBasePath(apiBaseUrl)
+                }
             }
+            // Log in user
+            val otpId = passage.newLoginOneTimePasscode(existingUserEmail).otpId
+            delay(emailWaitTimeMilliseconds)
+            val otp = MailosaurAPIClient.getMostRecentOneTimePasscode()
+            passage.oneTimePasscodeActivate(otp, otpId)
         }
-        // Log in user
-        val otpId = passage.newLoginOneTimePasscode(existingUserEmail).otpId
-        delay(emailWaitTimeMilliseconds)
-        val otp = MailosaurAPIClient.getMostRecentOneTimePasscode()
-        passage.oneTimePasscodeActivate(otp, otpId)
-    }
 
     @After
-    fun teardown(): Unit = runBlocking {
-        passage.signOutCurrentUser()
-    }
+    fun teardown(): Unit =
+        runBlocking {
+            passage.signOutCurrentUser()
+        }
 
     @get:Rule
-    var activityRule: ActivityScenarioRule<TestActivity?>? = ActivityScenarioRule(
-        TestActivity::class.java
-    )
+    var activityRule: ActivityScenarioRule<TestActivity?>? =
+        ActivityScenarioRule(
+            TestActivity::class.java,
+        )
 
     @Test
-    fun testCurrentUser_isNotNull() = runTest {
-        try {
-            val currentUser = passage.getCurrentUser()
-            assertThat(currentUser).isNotNull()
-        } catch (e: Exception) {
-            fail("Test failed due to unexpected exception: ${e.message}")
+    fun testCurrentUser_isNotNull() =
+        runTest {
+            try {
+                val currentUser = passage.getCurrentUser()
+                assertThat(currentUser).isNotNull()
+            } catch (e: Exception) {
+                fail("Test failed due to unexpected exception: ${e.message}")
+            }
         }
-    }
 
     @Test
-    fun testCurrentUserAfterSignOut_isNull() = runTest {
-        try {
-            passage.signOutCurrentUser()
-            val signedOutUser = passage.getCurrentUser()
-            assertThat(signedOutUser).isNull()
-        } catch (e: Exception) {
-            fail("Test failed due to unexpected exception: ${e.message}")
+    fun testCurrentUserAfterSignOut_isNull() =
+        runTest {
+            try {
+                passage.signOutCurrentUser()
+                val signedOutUser = passage.getCurrentUser()
+                assertThat(signedOutUser).isNull()
+            } catch (e: Exception) {
+                fail("Test failed due to unexpected exception: ${e.message}")
+            }
         }
-    }
 
     @Test
-    fun authToken_isNotNull() = runTest {
-        try {
-            val authToken = passage.tokenStore.authToken
-            assertThat(authToken).isNotNull()
-        } catch (e: Exception) {
-            fail("Test failed due to unexpected exception: ${e.message}")
+    fun authToken_isNotNull() =
+        runTest {
+            try {
+                val authToken = passage.tokenStore.authToken
+                assertThat(authToken).isNotNull()
+            } catch (e: Exception) {
+                fail("Test failed due to unexpected exception: ${e.message}")
+            }
         }
-    }
 
     @Test
-    fun authTokenAfterSignOut_isNull() = runTest {
-        try {
-            passage.signOutCurrentUser()
-            val authToken = passage.tokenStore.authToken
-            assertThat(authToken).isNull()
-        } catch (e: Exception) {
-            fail("Test failed due to unexpected exception: ${e.message}")
+    fun authTokenAfterSignOut_isNull() =
+        runTest {
+            try {
+                passage.signOutCurrentUser()
+                val authToken = passage.tokenStore.authToken
+                assertThat(authToken).isNull()
+            } catch (e: Exception) {
+                fail("Test failed due to unexpected exception: ${e.message}")
+            }
         }
-    }
 
     @Test
-    fun authTokenChangesAfterRefresh() = runTest {
-        try {
-            val oldToken = passage.tokenStore.authToken
-            passage.tokenStore.attemptRefreshTokenStore()
-            val newToken = passage.tokenStore.authToken
-            assertThat(oldToken).isNotNull()
-            assertThat(newToken).isNotNull()
-            assertThat(oldToken).isNotEqualTo(newToken)
-        } catch (e: Exception) {
-            fail("Test failed due to unexpected exception: ${e.message}")
+    fun authTokenChangesAfterRefresh() =
+        runTest {
+            try {
+                val oldToken = passage.tokenStore.authToken
+                passage.tokenStore.attemptRefreshTokenStore()
+                val newToken = passage.tokenStore.authToken
+                assertThat(oldToken).isNotNull()
+                assertThat(newToken).isNotNull()
+                assertThat(oldToken).isNotEqualTo(newToken)
+            } catch (e: Exception) {
+                fail("Test failed due to unexpected exception: ${e.message}")
+            }
         }
-    }
 
     @Test
-    fun authTokenThrowsErrorAfterRevoke() = runTest {
-        try {
-            val user = passage.getCurrentUser()
-            passage.tokenStore.clearAndRevokeTokens()
-            user?.listDevicePasskeys()
-            fail("Test should throw PassageUserUnauthorizedException")
-        } catch (e: Exception) {
-            assertThat(e is PassageUserUnauthorizedException)
+    fun authTokenThrowsErrorAfterRevoke() =
+        runTest {
+            try {
+                val user = passage.getCurrentUser()
+                passage.tokenStore.clearAndRevokeTokens()
+                user?.listDevicePasskeys()
+                fail("Test should throw PassageUserUnauthorizedException")
+            } catch (e: Exception) {
+                assertThat(e is PassageUserUnauthorizedException)
+            }
         }
-    }
-
 }

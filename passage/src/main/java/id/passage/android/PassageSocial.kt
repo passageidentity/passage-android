@@ -10,9 +10,7 @@ import java.security.SecureRandom
 import java.util.Base64
 
 internal class PassageSocial {
-
     internal companion object {
-
         internal var verifier = ""
         private const val CODE_CHALLENGE_METHOD = "S256"
         private const val SECRET_STRING_LENGTH = 32
@@ -21,23 +19,25 @@ internal class PassageSocial {
             connection: OAuth2ConnectionType,
             authOrigin: String,
             activity: Activity,
-            authUrl: String
+            authUrl: String,
         ) {
-            val redirectURI = "https://${authOrigin}"
+            val redirectURI = "https://$authOrigin"
             val state = getRandomString()
             val randomString = getRandomString()
             verifier = randomString
             val codeChallenge = sha256Hash(randomString)
-            val params = listOf(
-                "redirect_uri" to redirectURI,
-                "state" to state,
-                "code_challenge" to codeChallenge,
-                "code_challenge_method" to CODE_CHALLENGE_METHOD,
-                "connection_type" to connection.value
-            ).joinToString("&") {
-                (key, value) -> "$key=${URLEncoder.encode(value, "UTF-8")}"
-            }
-            val url = "${authUrl}?${params}"
+            val params =
+                listOf(
+                    "redirect_uri" to redirectURI,
+                    "state" to state,
+                    "code_challenge" to codeChallenge,
+                    "code_challenge_method" to CODE_CHALLENGE_METHOD,
+                    "connection_type" to connection.value,
+                ).joinToString("&") {
+                        (key, value) ->
+                    "$key=${URLEncoder.encode(value, "UTF-8")}"
+                }
+            val url = "$authUrl?$params"
             val intent = CustomTabsIntent.Builder().build()
             intent.launchUrl(activity, Uri.parse(url))
         }
@@ -46,8 +46,9 @@ internal class PassageSocial {
             val digits = '0'..'9'
             val upperCaseLetters = 'A'..'Z'
             val lowerCaseLetters = 'a'..'z'
-            val characters = (digits + upperCaseLetters + lowerCaseLetters)
-                .joinToString("")
+            val characters =
+                (digits + upperCaseLetters + lowerCaseLetters)
+                    .joinToString("")
             val random = SecureRandom()
             val stringBuilder = StringBuilder(SECRET_STRING_LENGTH)
             for (i in 0 until SECRET_STRING_LENGTH) {
@@ -63,7 +64,5 @@ internal class PassageSocial {
             val digest = md.digest(bytes)
             return Base64.getUrlEncoder().withoutPadding().encodeToString(digest)
         }
-
     }
-
 }

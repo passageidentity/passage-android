@@ -14,10 +14,8 @@ import id.passage.client.infrastructure.ServerException
  * @see MagicLinkActivateUserNotActiveException
  * @see MagicLinkActivateServerException
  */
-public open class MagicLinkActivateException(message: String): PassageException(message) {
-
+public open class MagicLinkActivateException(message: String) : PassageException(message) {
     internal companion object {
-
         internal fun convert(e: Exception): MagicLinkActivateException {
             val message = e.message ?: e.toString()
             return when (e) {
@@ -42,22 +40,20 @@ public open class MagicLinkActivateException(message: String): PassageException(
                 }
             }
         }
-
     }
-
 }
 
 /**
  * Thrown when the magic link is invalid
  */
-public class MagicLinkActivateInvalidException(message: String): MagicLinkActivateException(message)
+public class MagicLinkActivateInvalidException(message: String) : MagicLinkActivateException(message)
 
 /**
  * Thrown when the user is not active.
  */
-public class MagicLinkActivateUserNotActiveException(message: String): MagicLinkActivateException(message)
+public class MagicLinkActivateUserNotActiveException(message: String) : MagicLinkActivateException(message)
 
 /**
  * Thrown when Passage internal server error occurs.
  */
-public class MagicLinkActivateServerException(message: String): MagicLinkActivateException(message)
+public class MagicLinkActivateServerException(message: String) : MagicLinkActivateException(message)

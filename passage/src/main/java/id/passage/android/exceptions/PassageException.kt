@@ -8,9 +8,8 @@ import com.squareup.moshi.adapter
 import id.passage.client.infrastructure.ClientError
 import id.passage.client.infrastructure.ClientException
 
-public open class PassageException(message: String): RuntimeException(message) {
+public open class PassageException(message: String) : RuntimeException(message) {
     companion object {
-
         @OptIn(ExperimentalStdlibApi::class)
         fun parseClientException(e: ClientException): PassageClientError? {
             val errorBody = (e.response as? ClientError<*>)?.body?.toString() ?: return null
@@ -19,9 +18,7 @@ public open class PassageException(message: String): RuntimeException(message) {
             val jsonAdapter = moshi.adapter<PassageClientError?>().lenient() ?: return null
             return jsonAdapter.fromJson(errorBody)
         }
-
     }
-
 }
 
 @JsonClass(generateAdapter = true)
