@@ -1,22 +1,16 @@
 package id.passage.passageflex
 
 import android.app.Activity
-import id.passage.android.passageflex.api.AuthenticateAPI
-import id.passage.android.passageflex.api.RegisterAPI
-import id.passage.android.passageflex.model.AuthenticateWebAuthnFinishWithTransactionRequest
-import id.passage.android.passageflex.model.AuthenticateWebAuthnStartWithTransactionRequest
 import id.passage.android.passageflex.model.AuthenticatorAttachment
-import id.passage.android.passageflex.model.RegisterWebAuthnFinishWithTransactionRequest
-import id.passage.android.passageflex.model.RegisterWebAuthnStartWithTransactionRequest
 
 /**
- *  Use `PassageFlex` to easily add passkeys to your existing authentication system on Apple devices.
+ *  Use `PassageFlex` to easily add passkeys to your existing authentication system on Android devices.
  *
  *  Find out more at: https://passage.1password.com
  */
 public object PassageFlex {
     /**
-     * The base struct for utilizing Apple's native passkey APIs and Passage Flex APIs together.
+     * The base object for utilizing Android's native passkey APIs and Passage Flex APIs together.
      */
     public object Passkey {
         /**
@@ -39,48 +33,11 @@ public object PassageFlex {
             activity: Activity,
             authenticatorAttachment: AuthenticatorAttachment = AuthenticatorAttachment.platform,
         ): String {
-            try {
-                // Get Passage App ID from developer's `strings.xml` resource.
-                val appId = Utils.getAppId(activity)
-                // Request a Registration Start Handshake from Passage server
-                val registerAPI = RegisterAPI()
-                val startRequest =
-                    RegisterWebAuthnStartWithTransactionRequest(
-                        transactionId,
-                        authenticatorAttachment,
-                    )
-                val startResponse =
-                    registerAPI
-                        .registerWebauthnStartWithTransaction(
-                            appId,
-                            startRequest,
-                        )
-                // Use the Registration Start Handshake to prompt the app user to create a passkey
-                val createCredOptionsJson =
-                    PasskeyUtils
-                        .getCreateCredentialOptionsJson(startResponse.handshake)
-                val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
-                val handshakeResponse =
-                    PasskeyUtils
-                        .getCreateCredentialHandshakeResponse(createCredResponse)
-                // Send the new Credential Handshake Response to Passage server
-                val finishRequest =
-                    RegisterWebAuthnFinishWithTransactionRequest(
-                        handshakeId = startResponse.handshake.id,
-                        handshakeResponse,
-                        transactionId,
-                    )
-                val finishResponse =
-                    registerAPI
-                        .registerWebauthnFinishWithTransaction(
-                            appId,
-                            finishRequest,
-                        )
-                // If successful, Passage server will return a nonce.
-                return finishResponse.nonce
-            } catch (e: Exception) {
-                throw RegisterException.convert(e)
-            }
+            return PassagePasskeyAuthentication.register(
+                transactionId,
+                activity,
+                authenticatorAttachment,
+            )
         }
 
         /**
@@ -100,40 +57,7 @@ public object PassageFlex {
             transactionId: String? = null,
             activity: Activity,
         ): String {
-            try {
-                // Get Passage App ID from developer's `strings.xml` resource.
-                val appId = Utils.getAppId(activity)
-                // Request an Assertion Start Handshake from Passage server
-                val authenticateAPI = AuthenticateAPI()
-                val startRequest = AuthenticateWebAuthnStartWithTransactionRequest(transactionId)
-                val startResponse =
-                    authenticateAPI
-                        .authenticateWebauthnStartWithTransaction(
-                            appId,
-                            startRequest,
-                        )
-                // Use the Assertion Start Handshake to prompt the app user to select a passkey
-                val credOptionsJson = PasskeyUtils.getCredentialOptionsJson(startResponse.handshake)
-                val credResponse = PasskeyUtils.getPasskey(credOptionsJson, activity)
-                val handshakeResponse = PasskeyUtils.getCredentialHandshakeResponse(credResponse)
-                // Send the Credential Handshake Response to Passage server
-                val finishRequest =
-                    AuthenticateWebAuthnFinishWithTransactionRequest(
-                        handshakeId = startResponse.handshake.id,
-                        handshakeResponse,
-                        transactionId,
-                    )
-                val finishResponse =
-                    authenticateAPI
-                        .authenticateWebauthnFinishWithTransaction(
-                            appId,
-                            finishRequest,
-                        )
-                // If successful, Passage server will return a nonce.
-                return finishResponse.nonce
-            } catch (e: Exception) {
-                throw AuthenticateException.convert(e)
-            }
+            return PassagePasskeyAuthentication.authenticate(transactionId, activity)
         }
     }
 }
