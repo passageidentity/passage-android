@@ -2,14 +2,14 @@ name: Integration tests
 on:
   push:
     branches: [run-integration-tests-wip]
+env:
+  MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         api-level: [33] # TODO: add more api levels to test
-    env:
-      MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
