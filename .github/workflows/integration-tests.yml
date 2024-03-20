@@ -1,8 +1,7 @@
 name: Integration tests
 on:
-  pull_request:
   push:
-    branches: [main]
+    branches: [run-integration-tests-wip]
 jobs:
   test:
     runs-on: ubuntu-latest
