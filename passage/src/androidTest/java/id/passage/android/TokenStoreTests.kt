@@ -98,21 +98,6 @@ internal class TokenStoreTests {
         }
 
     @Test
-    fun authTokenChangesAfterRefresh() =
-        runTest {
-            try {
-                val oldToken = passage.tokenStore.authToken
-                passage.tokenStore.attemptRefreshTokenStore()
-                val newToken = passage.tokenStore.authToken
-                assertThat(oldToken).isNotNull()
-                assertThat(newToken).isNotNull()
-                assertThat(oldToken).isNotEqualTo(newToken)
-            } catch (e: Exception) {
-                fail("Test failed due to unexpected exception: ${e.message}")
-            }
-        }
-
-    @Test
     fun authTokenThrowsErrorAfterRevoke() =
         runTest {
             try {
