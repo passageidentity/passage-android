@@ -36,6 +36,10 @@ android {
         buildConfigField "String", "MAILOSAUR_API_KEY", "\"${System.getenv('MAILOSAUR_API_KEY') ?: ''}\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    
+    buildFeatures {
+        buildConfig = true
+    }
 
     buildTypes {
         release {
