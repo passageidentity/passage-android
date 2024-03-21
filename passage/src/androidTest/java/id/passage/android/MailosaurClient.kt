@@ -1,3 +1,4 @@
+import id.passage.android.BuildConfig
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -50,7 +51,7 @@ internal object MailosaurAPIClient {
     internal const val serverId = "ncor7c1m"
 
     private const val apiURL = "https://mailosaur.com/api/messages"
-    private const val mailosaurAPIKey = ""
+    private const val mailosaurAPIKey = BuildConfig.MAILOSAUR_API_KEY
 
     private val client = OkHttpClient()
 
