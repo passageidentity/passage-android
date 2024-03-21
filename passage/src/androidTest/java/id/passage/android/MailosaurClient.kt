@@ -51,7 +51,7 @@ internal object MailosaurAPIClient {
     internal const val serverId = "ncor7c1m"
 
     private const val apiURL = "https://mailosaur.com/api/messages"
-    private const val mailosaurAPIKey = BuildConfig.MAILOSAUR_API_KEY
+    private val mailosaurAPIKey = BuildConfig.MAILOSAUR_API_KEY
 
     private val client = OkHttpClient()
 
