@@ -33,8 +33,12 @@ android {
         versionCode 10
         versionName "1.6.1"
 
-
+        buildConfigField "String", "MAILOSAUR_API_KEY", "\"${System.getenv('MAILOSAUR_API_KEY') ?: ''}\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
