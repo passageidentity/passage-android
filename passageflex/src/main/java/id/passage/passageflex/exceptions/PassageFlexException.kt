@@ -1,6 +1,6 @@
 @file:Suppress("RedundantVisibilityModifier", "RedundantModalityModifier")
 
-package id.passage.passageflex
+package id.passage.passageflex.exceptions
 
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi

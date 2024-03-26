@@ -1,4 +1,4 @@
-package id.passage.passageflex
+package id.passage.passageflex.exceptions
 
 import androidx.credentials.exceptions.CreateCredentialCancellationException
 import androidx.credentials.exceptions.CreateCredentialException

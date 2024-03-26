@@ -8,18 +8,25 @@ import id.passage.android.passageflex.model.AuthenticateWebAuthnStartWithTransac
 import id.passage.android.passageflex.model.AuthenticatorAttachment
 import id.passage.android.passageflex.model.RegisterWebAuthnFinishWithTransactionRequest
 import id.passage.android.passageflex.model.RegisterWebAuthnStartWithTransactionRequest
+import id.passage.passageflex.exceptions.AuthenticateException
+import id.passage.passageflex.exceptions.RegisterException
 
 object PassagePasskeyAuthentication {
+
+    private const val BASE_PATH = "https://auth.passage.id/v1"
+
     public suspend fun register(
         transactionId: String,
         activity: Activity,
         authenticatorAttachment: AuthenticatorAttachment = AuthenticatorAttachment.platform,
+        passageAppId: String? = null,
+        apiBasePath: String? = null,
     ): String {
         try {
-            // Get Passage App ID from developer's `strings.xml` resource.
-            val appId = Utils.getAppId(activity)
+            // If no app id provided, get Passage App ID from developer's `strings.xml` resource.
+            val appId = passageAppId ?: Utils.getAppId(activity)
             // Request a Registration Start Handshake from Passage server
-            val registerAPI = RegisterAPI()
+            val registerAPI = RegisterAPI(apiBasePath ?: BASE_PATH)
             val startRequest =
                 RegisterWebAuthnStartWithTransactionRequest(
                     transactionId,
@@ -62,12 +69,14 @@ object PassagePasskeyAuthentication {
     public suspend fun authenticate(
         transactionId: String? = null,
         activity: Activity,
+        passageAppId: String? = null,
+        apiBasePath: String? = null,
     ): String {
         try {
-            // Get Passage App ID from developer's `strings.xml` resource.
-            val appId = Utils.getAppId(activity)
+            // If no app id provided, get Passage App ID from developer's `strings.xml` resource.
+            val appId = passageAppId ?: Utils.getAppId(activity)
             // Request an Assertion Start Handshake from Passage server
-            val authenticateAPI = AuthenticateAPI()
+            val authenticateAPI = AuthenticateAPI(apiBasePath ?: BASE_PATH)
             val startRequest = AuthenticateWebAuthnStartWithTransactionRequest(transactionId)
             val startResponse =
                 authenticateAPI

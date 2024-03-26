@@ -15,7 +15,7 @@
 
 package id.passage.android.passageflex.model
 
-import id.passage.android.passageflex.model.CredentialCreationResponse
+import id.passage.android.passageflex.model.ProtocolCredentialAssertion1
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -23,22 +23,18 @@ import com.squareup.moshi.JsonClass
 /**
  * 
  *
- * @param handshakeId 
- * @param handshakeResponse 
- * @param userId 
+ * @param challenge 
+ * @param id 
  */
 @JsonClass(generateAdapter = true)
 
-data class RegisterWebAuthnFinishRequest (
+data class CredentialAssertionChallenge1 (
 
-    @Json(name = "handshake_id")
-    val handshakeId: kotlin.String,
+    @Json(name = "challenge")
+    val challenge: ProtocolCredentialAssertion1,
 
-    @Json(name = "handshake_response")
-    val handshakeResponse: CredentialCreationResponse,
-
-    @Json(name = "user_id")
-    val userId: kotlin.String
+    @Json(name = "id")
+    val id: kotlin.String
 
 )
 

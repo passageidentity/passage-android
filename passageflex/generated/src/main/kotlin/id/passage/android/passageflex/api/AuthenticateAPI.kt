@@ -26,6 +26,7 @@ import id.passage.android.passageflex.model.Model400Error
 import id.passage.android.passageflex.model.Model401Error
 import id.passage.android.passageflex.model.Model403Error
 import id.passage.android.passageflex.model.Model404Error
+import id.passage.android.passageflex.model.Model409Error
 import id.passage.android.passageflex.model.Model500Error
 import id.passage.android.passageflex.model.Nonce
 
@@ -53,79 +54,6 @@ class AuthenticateAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpC
         val defaultBasePath: String by lazy {
             System.getProperties().getProperty(ApiClient.baseUrlKey, "https://auth.passage.id/v1")
         }
-    }
-
-    /**
-     * Verify the nonce received from a WebAuthn ceremony
-     * Verify the nonce received from a WebAuthn registration or authentication ceremony. This endpoint checks that the nonce for the given application is valid, then returns a success or error message to the caller.
-     * @param appId App ID
-     * @param body User Data
-     * @return void
-     * @throws IllegalStateException If the request is not correctly configured
-     * @throws IOException Rethrows the OkHttp execute method exception
-     * @throws UnsupportedOperationException If the API returns an informational or redirection response
-     * @throws ClientException If the API returns a client error response
-     * @throws ServerException If the API returns a server error response
-     */
-    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun authenticateVerifyNonce(appId: kotlin.String, body: Nonce) : Unit = withContext(Dispatchers.IO) {
-        val localVarResponse = authenticateVerifyNonceWithHttpInfo(appId = appId, body = body)
-
-        return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> Unit
-            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
-            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
-            ResponseType.ClientError -> {
-                val localVarError = localVarResponse as ClientError<*>
-                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
-            }
-            ResponseType.ServerError -> {
-                val localVarError = localVarResponse as ServerError<*>
-                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
-            }
-        }
-    }
-
-    /**
-     * Verify the nonce received from a WebAuthn ceremony
-     * Verify the nonce received from a WebAuthn registration or authentication ceremony. This endpoint checks that the nonce for the given application is valid, then returns a success or error message to the caller.
-     * @param appId App ID
-     * @param body User Data
-     * @return ApiResponse<Unit?>
-     * @throws IllegalStateException If the request is not correctly configured
-     * @throws IOException Rethrows the OkHttp execute method exception
-     */
-    @Throws(IllegalStateException::class, IOException::class)
-    suspend fun authenticateVerifyNonceWithHttpInfo(appId: kotlin.String, body: Nonce) : ApiResponse<Unit?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = authenticateVerifyNonceRequestConfig(appId = appId, body = body)
-
-        return@withContext request<Nonce, Unit>(
-            localVariableConfig
-        )
-    }
-
-    /**
-     * To obtain the request config of the operation authenticateVerifyNonce
-     *
-     * @param appId App ID
-     * @param body User Data
-     * @return RequestConfig
-     */
-    fun authenticateVerifyNonceRequestConfig(appId: kotlin.String, body: Nonce) : RequestConfig<Nonce> {
-        val localVariableBody = body
-        val localVariableQuery: MultiValueMap = mutableMapOf()
-        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        localVariableHeaders["Content-Type"] = "application/json"
-        localVariableHeaders["Accept"] = "application/json"
-
-        return RequestConfig(
-            method = RequestMethod.POST,
-            path = "/apps/{app_id}/authenticate/verify".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
-            query = localVariableQuery,
-            headers = localVariableHeaders,
-            requiresAuthentication = false,
-            body = localVariableBody
-        )
     }
 
     /**
