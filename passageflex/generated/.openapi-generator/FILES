@@ -1,4 +1,3 @@
-.openapi-generator-ignore
 README.md
 build.gradle
 docs/400Code.md
@@ -9,6 +8,8 @@ docs/403Code.md
 docs/403Error.md
 docs/404Code.md
 docs/404Error.md
+docs/409Code.md
+docs/409Error.md
 docs/500Code.md
 docs/500Error.md
 docs/ActivateMagicLinkRequest.md
@@ -29,6 +30,7 @@ docs/AuthenticatorAttachment.md
 docs/CreateUserParams.md
 docs/Credential.md
 docs/CredentialAssertionChallenge.md
+docs/CredentialAssertionChallenge1.md
 docs/CredentialAssertionResponse.md
 docs/CredentialAssertionResponseResponse.md
 docs/CredentialCreation.md
@@ -40,7 +42,6 @@ docs/CredentialCreationPublicKeyPubKeyCredParamsInner.md
 docs/CredentialCreationPublicKeyRp.md
 docs/CredentialCreationPublicKeyUser.md
 docs/CredentialCreationResponse.md
-docs/CredentialCreationResponse1.md
 docs/CredentialCreationResponseResponse.md
 docs/CurrentUser.md
 docs/CurrentUserDevice.md
@@ -79,6 +80,9 @@ docs/OpenIDAPI.md
 docs/OpenIdConfiguration.md
 docs/OtpAuthMethod.md
 docs/ProtocolCredentialAssertion.md
+docs/ProtocolCredentialAssertion1.md
+docs/ProtocolCredentialAssertion1PublicKey.md
+docs/ProtocolCredentialAssertion1PublicKeyAllowCredentialsInner.md
 docs/ProtocolCredentialAssertionPublicKey.md
 docs/ProtocolCredentialAssertionPublicKeyAllowCredentialsInner.md
 docs/RefreshAuthTokenRequest.md
@@ -142,6 +146,7 @@ src/main/kotlin/id/passage/android/passageflex/model/AuthenticatorAttachment.kt
 src/main/kotlin/id/passage/android/passageflex/model/CreateUserParams.kt
 src/main/kotlin/id/passage/android/passageflex/model/Credential.kt
 src/main/kotlin/id/passage/android/passageflex/model/CredentialAssertionChallenge.kt
+src/main/kotlin/id/passage/android/passageflex/model/CredentialAssertionChallenge1.kt
 src/main/kotlin/id/passage/android/passageflex/model/CredentialAssertionResponse.kt
 src/main/kotlin/id/passage/android/passageflex/model/CredentialAssertionResponseResponse.kt
 src/main/kotlin/id/passage/android/passageflex/model/CredentialCreation.kt
@@ -153,7 +158,6 @@ src/main/kotlin/id/passage/android/passageflex/model/CredentialCreationPublicKey
 src/main/kotlin/id/passage/android/passageflex/model/CredentialCreationPublicKeyRp.kt
 src/main/kotlin/id/passage/android/passageflex/model/CredentialCreationPublicKeyUser.kt
 src/main/kotlin/id/passage/android/passageflex/model/CredentialCreationResponse.kt
-src/main/kotlin/id/passage/android/passageflex/model/CredentialCreationResponse1.kt
 src/main/kotlin/id/passage/android/passageflex/model/CredentialCreationResponseResponse.kt
 src/main/kotlin/id/passage/android/passageflex/model/CurrentUser.kt
 src/main/kotlin/id/passage/android/passageflex/model/CurrentUserDevice.kt
@@ -188,6 +192,8 @@ src/main/kotlin/id/passage/android/passageflex/model/Model403Code.kt
 src/main/kotlin/id/passage/android/passageflex/model/Model403Error.kt
 src/main/kotlin/id/passage/android/passageflex/model/Model404Code.kt
 src/main/kotlin/id/passage/android/passageflex/model/Model404Error.kt
+src/main/kotlin/id/passage/android/passageflex/model/Model409Code.kt
+src/main/kotlin/id/passage/android/passageflex/model/Model409Error.kt
 src/main/kotlin/id/passage/android/passageflex/model/Model500Code.kt
 src/main/kotlin/id/passage/android/passageflex/model/Model500Error.kt
 src/main/kotlin/id/passage/android/passageflex/model/Nonce.kt
@@ -195,6 +201,9 @@ src/main/kotlin/id/passage/android/passageflex/model/OneTimePasscodeResponse.kt
 src/main/kotlin/id/passage/android/passageflex/model/OpenIdConfiguration.kt
 src/main/kotlin/id/passage/android/passageflex/model/OtpAuthMethod.kt
 src/main/kotlin/id/passage/android/passageflex/model/ProtocolCredentialAssertion.kt
+src/main/kotlin/id/passage/android/passageflex/model/ProtocolCredentialAssertion1.kt
+src/main/kotlin/id/passage/android/passageflex/model/ProtocolCredentialAssertion1PublicKey.kt
+src/main/kotlin/id/passage/android/passageflex/model/ProtocolCredentialAssertion1PublicKeyAllowCredentialsInner.kt
 src/main/kotlin/id/passage/android/passageflex/model/ProtocolCredentialAssertionPublicKey.kt
 src/main/kotlin/id/passage/android/passageflex/model/ProtocolCredentialAssertionPublicKeyAllowCredentialsInner.kt
 src/main/kotlin/id/passage/android/passageflex/model/RefreshAuthTokenRequest.kt

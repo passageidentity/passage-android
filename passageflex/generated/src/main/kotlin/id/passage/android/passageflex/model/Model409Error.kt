@@ -15,7 +15,7 @@
 
 package id.passage.android.passageflex.model
 
-import id.passage.android.passageflex.model.CredentialCreationResponse
+import id.passage.android.passageflex.model.Model409Code
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -23,22 +23,18 @@ import com.squareup.moshi.JsonClass
 /**
  * 
  *
- * @param handshakeId 
- * @param handshakeResponse 
- * @param userId 
+ * @param code 
+ * @param error 
  */
 @JsonClass(generateAdapter = true)
 
-data class RegisterWebAuthnFinishRequest (
+data class Model409Error (
 
-    @Json(name = "handshake_id")
-    val handshakeId: kotlin.String,
+    @Json(name = "code")
+    val code: Model409Code,
 
-    @Json(name = "handshake_response")
-    val handshakeResponse: CredentialCreationResponse,
-
-    @Json(name = "user_id")
-    val userId: kotlin.String
+    @Json(name = "error")
+    val error: kotlin.String
 
 )
 

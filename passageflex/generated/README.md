@@ -46,7 +46,6 @@ All URIs are relative to *https://auth.passage.id/v1*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *AppsAPI* | [**getApp**](docs/AppsAPI.md#getapp) | **GET** /apps/{app_id} | Get App
-*AuthenticateAPI* | [**authenticateVerifyNonce**](docs/AuthenticateAPI.md#authenticateverifynonce) | **POST** /apps/{app_id}/authenticate/verify | Verify the nonce received from a WebAuthn ceremony
 *AuthenticateAPI* | [**authenticateWebauthnFinishWithTransaction**](docs/AuthenticateAPI.md#authenticatewebauthnfinishwithtransaction) | **POST** /apps/{app_id}/authenticate/transactions/webauthn/finish | Finish WebAuthn authentication with an optional transaction
 *AuthenticateAPI* | [**authenticateWebauthnStartWithTransaction**](docs/AuthenticateAPI.md#authenticatewebauthnstartwithtransaction) | **POST** /apps/{app_id}/authenticate/transactions/webauthn/start | Start WebAuthn authentication with an optional transaction
 *CurrentuserAPI* | [**deleteCurrentuserDevice**](docs/CurrentuserAPI.md#deletecurrentuserdevice) | **DELETE** /apps/{app_id}/currentuser/devices/{device_id} | Revoke Device
@@ -109,6 +108,7 @@ Class | Method | HTTP request | Description
  - [id.passage.android.passageflex.model.CreateUserParams](docs/CreateUserParams.md)
  - [id.passage.android.passageflex.model.Credential](docs/Credential.md)
  - [id.passage.android.passageflex.model.CredentialAssertionChallenge](docs/CredentialAssertionChallenge.md)
+ - [id.passage.android.passageflex.model.CredentialAssertionChallenge1](docs/CredentialAssertionChallenge1.md)
  - [id.passage.android.passageflex.model.CredentialAssertionResponse](docs/CredentialAssertionResponse.md)
  - [id.passage.android.passageflex.model.CredentialAssertionResponseResponse](docs/CredentialAssertionResponseResponse.md)
  - [id.passage.android.passageflex.model.CredentialCreation](docs/CredentialCreation.md)
@@ -120,7 +120,6 @@ Class | Method | HTTP request | Description
  - [id.passage.android.passageflex.model.CredentialCreationPublicKeyRp](docs/CredentialCreationPublicKeyRp.md)
  - [id.passage.android.passageflex.model.CredentialCreationPublicKeyUser](docs/CredentialCreationPublicKeyUser.md)
  - [id.passage.android.passageflex.model.CredentialCreationResponse](docs/CredentialCreationResponse.md)
- - [id.passage.android.passageflex.model.CredentialCreationResponse1](docs/CredentialCreationResponse1.md)
  - [id.passage.android.passageflex.model.CredentialCreationResponseResponse](docs/CredentialCreationResponseResponse.md)
  - [id.passage.android.passageflex.model.CurrentUser](docs/CurrentUser.md)
  - [id.passage.android.passageflex.model.CurrentUserDevice](docs/CurrentUserDevice.md)
@@ -155,6 +154,8 @@ Class | Method | HTTP request | Description
  - [id.passage.android.passageflex.model.Model403Error](docs/Model403Error.md)
  - [id.passage.android.passageflex.model.Model404Code](docs/Model404Code.md)
  - [id.passage.android.passageflex.model.Model404Error](docs/Model404Error.md)
+ - [id.passage.android.passageflex.model.Model409Code](docs/Model409Code.md)
+ - [id.passage.android.passageflex.model.Model409Error](docs/Model409Error.md)
  - [id.passage.android.passageflex.model.Model500Code](docs/Model500Code.md)
  - [id.passage.android.passageflex.model.Model500Error](docs/Model500Error.md)
  - [id.passage.android.passageflex.model.Nonce](docs/Nonce.md)
@@ -162,6 +163,9 @@ Class | Method | HTTP request | Description
  - [id.passage.android.passageflex.model.OpenIdConfiguration](docs/OpenIdConfiguration.md)
  - [id.passage.android.passageflex.model.OtpAuthMethod](docs/OtpAuthMethod.md)
  - [id.passage.android.passageflex.model.ProtocolCredentialAssertion](docs/ProtocolCredentialAssertion.md)
+ - [id.passage.android.passageflex.model.ProtocolCredentialAssertion1](docs/ProtocolCredentialAssertion1.md)
+ - [id.passage.android.passageflex.model.ProtocolCredentialAssertion1PublicKey](docs/ProtocolCredentialAssertion1PublicKey.md)
+ - [id.passage.android.passageflex.model.ProtocolCredentialAssertion1PublicKeyAllowCredentialsInner](docs/ProtocolCredentialAssertion1PublicKeyAllowCredentialsInner.md)
  - [id.passage.android.passageflex.model.ProtocolCredentialAssertionPublicKey](docs/ProtocolCredentialAssertionPublicKey.md)
  - [id.passage.android.passageflex.model.ProtocolCredentialAssertionPublicKeyAllowCredentialsInner](docs/ProtocolCredentialAssertionPublicKeyAllowCredentialsInner.md)
  - [id.passage.android.passageflex.model.RefreshAuthTokenRequest](docs/RefreshAuthTokenRequest.md)
