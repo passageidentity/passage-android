@@ -33,11 +33,17 @@ android {
         versionCode 10
         versionName "1.6.1"
 
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
+        debug {
+            buildConfigField "String", "MAILOSAUR_API_KEY", "\"${System.getenv('MAILOSAUR_API_KEY') ?: ''}\""
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
