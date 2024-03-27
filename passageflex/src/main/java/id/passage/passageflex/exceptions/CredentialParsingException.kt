@@ -1,7 +1,5 @@
 package id.passage.passageflex.exceptions
 
-import id.passage.passageflex.exceptions.PassageFlexException
-
 /**
  * Thrown when parsing of WebAuthn credentials fails.
  */

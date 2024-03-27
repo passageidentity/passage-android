@@ -12,7 +12,6 @@ import id.passage.passageflex.exceptions.AuthenticateException
 import id.passage.passageflex.exceptions.RegisterException
 
 object PassagePasskeyAuthentication {
-
     private const val BASE_PATH = "https://auth.passage.id/v1"
 
     internal suspend fun register(
