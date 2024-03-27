@@ -15,16 +15,15 @@ object PassagePasskeyAuthentication {
 
     private const val BASE_PATH = "https://auth.passage.id/v1"
 
-    public suspend fun register(
+    internal suspend fun register(
         transactionId: String,
         activity: Activity,
         authenticatorAttachment: AuthenticatorAttachment = AuthenticatorAttachment.platform,
-        passageAppId: String? = null,
         apiBasePath: String? = null,
     ): String {
         try {
-            // If no app id provided, get Passage App ID from developer's `strings.xml` resource.
-            val appId = passageAppId ?: Utils.getAppId(activity)
+            // Get Passage App ID from developer's `strings.xml` resource.
+            val appId = Utils.getAppId(activity)
             // Request a Registration Start Handshake from Passage server
             val registerAPI = RegisterAPI(apiBasePath ?: BASE_PATH)
             val startRequest =
@@ -66,15 +65,14 @@ object PassagePasskeyAuthentication {
         }
     }
 
-    public suspend fun authenticate(
+    internal suspend fun authenticate(
         transactionId: String? = null,
         activity: Activity,
-        passageAppId: String? = null,
         apiBasePath: String? = null,
     ): String {
         try {
-            // If no app id provided, get Passage App ID from developer's `strings.xml` resource.
-            val appId = passageAppId ?: Utils.getAppId(activity)
+            // Get Passage App ID from developer's `strings.xml` resource.
+            val appId = Utils.getAppId(activity)
             // Request an Assertion Start Handshake from Passage server
             val authenticateAPI = AuthenticateAPI(apiBasePath ?: BASE_PATH)
             val startRequest = AuthenticateWebAuthnStartWithTransactionRequest(transactionId)
