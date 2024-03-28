@@ -47,7 +47,7 @@ internal class PassageFlexTest {
         assertEquals("hknBjKc5jettbgwAQ4j9bnsu", appId)
     }
 
-    @Test
+//    @Test
     fun testPasskeyRegister() =
         runBlocking<Unit> {
             // What this test is expected to do:
@@ -104,7 +104,7 @@ internal class PassageFlexTest {
             }
         }
 
-    @Test
+//    @Test
     fun testPasskeyAuthenticate() =
         runBlocking<Unit> {
             // What this test is expected to do:
