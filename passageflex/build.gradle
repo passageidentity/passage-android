@@ -12,7 +12,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-group = "id.passage.passageflex"
+group = "id.passage.android"
 version = "0.1.0"
 
 def localProperties = new Properties()
@@ -29,6 +29,9 @@ android {
 
     defaultConfig {
         minSdk 30
+        targetSdk 34
+        versionCode 1
+        versionName "0.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -120,4 +123,59 @@ openApiGenerate {
             "packageName": "id.passage.passageflex.client",
             "moshiCodeGen": "true"
     ]
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.name
+            version project.version
+
+            afterEvaluate {
+                from components.release
+            }
+
+            pom {
+                name = "PassageFlex"
+                description = 'Native passkey authentication for your Android app'
+                url = 'https://github.com/passageidentity/passage-android'
+                licenses {
+                    license {
+                        name = 'MIT'
+                        url = 'https://github.com/passageidentity/passage-android/blob/main/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'rickycpadilla'
+                        name = 'Ricky Padilla'
+                        email = 'ricky.padilla@passage.id'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:github.com/passageidentity/passage-android.git'
+                    developerConnection = 'scm:git:ssh://github.com/passageidentity/passage-android.git'
+                    url = 'https://github.com/passageidentity/passage-android'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "OSSRH"
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username localProperties.getProperty('ossrhUsername')
+                password localProperties.getProperty('ossrhPassword')
+            }
+        }
+        mavenLocal()
+    }
+}
+
+signing {
+    useGpgCmd()
+    sign publishing.publications.mavenJava
 }
