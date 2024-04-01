@@ -4,58 +4,9 @@ All URIs are relative to *https://auth.passage.id/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**authenticateVerifyNonce**](AuthenticateAPI.md#authenticateVerifyNonce) | **POST** /apps/{app_id}/authenticate/verify | Verify the nonce received from a WebAuthn ceremony
 [**authenticateWebauthnFinishWithTransaction**](AuthenticateAPI.md#authenticateWebauthnFinishWithTransaction) | **POST** /apps/{app_id}/authenticate/transactions/webauthn/finish | Finish WebAuthn authentication with an optional transaction
 [**authenticateWebauthnStartWithTransaction**](AuthenticateAPI.md#authenticateWebauthnStartWithTransaction) | **POST** /apps/{app_id}/authenticate/transactions/webauthn/start | Start WebAuthn authentication with an optional transaction
 
-
-<a name="authenticateVerifyNonce"></a>
-# **authenticateVerifyNonce**
-> authenticateVerifyNonce(appId, body)
-
-Verify the nonce received from a WebAuthn ceremony
-
-Verify the nonce received from a WebAuthn registration or authentication ceremony. This endpoint checks that the nonce for the given application is valid, then returns a success or error message to the caller.
-
-### Example
-```kotlin
-// Import classes:
-//import id.passage.passageflex.client.infrastructure.*
-//import id.passage.android.passageflex.model.*
-
-val apiInstance = AuthenticateAPI()
-val appId : kotlin.String = appId_example // kotlin.String | App ID
-val body : Nonce =  // Nonce | User Data
-try {
-    apiInstance.authenticateVerifyNonce(appId, body)
-} catch (e: ClientException) {
-    println("4xx response calling AuthenticateAPI#authenticateVerifyNonce")
-    e.printStackTrace()
-} catch (e: ServerException) {
-    println("5xx response calling AuthenticateAPI#authenticateVerifyNonce")
-    e.printStackTrace()
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **appId** | **kotlin.String**| App ID |
- **body** | **Nonce**| User Data |
-
-### Return type
-
-null (empty response body)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
 
 <a name="authenticateWebauthnFinishWithTransaction"></a>
 # **authenticateWebauthnFinishWithTransaction**

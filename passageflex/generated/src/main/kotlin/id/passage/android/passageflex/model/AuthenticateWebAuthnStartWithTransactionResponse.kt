@@ -15,7 +15,7 @@
 
 package id.passage.android.passageflex.model
 
-import id.passage.android.passageflex.model.CredentialAssertionChallenge
+import id.passage.android.passageflex.model.CredentialAssertionChallenge1
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -31,7 +31,7 @@ import com.squareup.moshi.JsonClass
 data class AuthenticateWebAuthnStartWithTransactionResponse (
 
     @Json(name = "handshake")
-    val handshake: CredentialAssertionChallenge,
+    val handshake: CredentialAssertionChallenge1,
 
     /* the transaction ID provided for this authentication attempt, null if not provided */
     @Json(name = "transaction_id")

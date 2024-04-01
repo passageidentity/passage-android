@@ -1,4 +1,4 @@
-package id.passage.passageflex
+package id.passage.passageflex.exceptions
 
 /**
  * Thrown when parsing of WebAuthn credentials fails.
