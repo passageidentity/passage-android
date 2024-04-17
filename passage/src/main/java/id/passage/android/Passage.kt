@@ -15,6 +15,7 @@ import id.passage.android.api.UsersAPI
 import id.passage.android.exceptions.*
 import id.passage.android.model.ActivateMagicLinkRequest
 import id.passage.android.model.ActivateOneTimePasscodeRequest
+import id.passage.android.model.AuthenticatorAttachment
 import id.passage.android.model.GetMagicLinkStatusRequest
 import id.passage.android.model.LoginMagicLinkRequest
 import id.passage.android.model.LoginOneTimePasscodeRequest
@@ -246,7 +247,7 @@ public final class Passage(
      *
      * Create a user, prompt the user to create a passkey, and register the user.
      * @param identifier valid email or E164 phone number
-     * @return PassageAuthResult?
+     * @return PassageAuthResult
      * @throws RegisterWithPasskeyException
      */
     public suspend fun registerWithPasskey(identifier: String): PassageAuthResult {
@@ -280,11 +281,10 @@ public final class Passage(
      *
      * Prompt the user to select a passkey to login with and authenticate the user.
      * @param identifier valid email or E164 phone number
-     * @return PassageAuthResult?
+     * @return PassageAuthResult
      * @throws LoginWithPasskeyException
      */
-    @Deprecated("Use loginWithPasskey() instead.", replaceWith = ReplaceWith("loginWithPasskey()"))
-    public suspend fun loginWithPasskey(identifier: String): PassageAuthResult {
+    public suspend fun loginWithPasskey(identifier: String? = null): PassageAuthResult {
         try {
             val loginAPI = LoginAPI(BASE_PATH, passageClient)
             // Get Credential challenge from Passage
@@ -311,17 +311,55 @@ public final class Passage(
     }
 
     /**
+     * Register user with passkey
+     *
+     * Create a user, prompt the user to create a passkey, and register the user.
+     * @param identifier valid email or E164 phone number
+     * @return PassageAuthResult
+     * @throws RegisterWithPasskeyException
+     */
+    public suspend fun registerWithSecurityKey(identifier: String): PassageAuthResult {
+        try {
+            val registerAPI = RegisterAPI(BASE_PATH, passageClient)
+            // Get Create Credential challenge from Passage
+            val webauthnStartRequest = RegisterWebAuthnStartRequest(
+                identifier,
+                AuthenticatorAttachment.crossMinusPlatform
+            )
+            val webauthnStartResponse = registerAPI.registerWebauthnStart(appId, webauthnStartRequest)
+            // Use Create Credential challenge to prompt user to create a passkey
+            val createCredOptionsJson = PasskeyUtils.getCreateCredentialOptionsJson(webauthnStartResponse.handshake)
+            val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
+            // Complete registration and authenticate the user
+            val handshakeResponse = PasskeyUtils.getCreateCredentialHandshakeResponse(createCredResponse)
+            val webauthnFinishRequest =
+                RegisterWebAuthnFinishRequest(
+                    handshakeId = webauthnStartResponse.handshake.id,
+                    handshakeResponse = handshakeResponse,
+                    userId = webauthnStartResponse.user?.id ?: "",
+                )
+            val authResponse = registerAPI.registerWebauthnFinish(appId, webauthnFinishRequest)
+            // Handle and return auth result
+            handleAuthResult(authResponse.authResult)
+            return authResponse.authResult
+        } catch (e: Exception) {
+            throw RegisterWithPasskeyException.convert(e)
+        }
+    }
+
+    /**
      * Log in user with passkey
      *
-     * Prompt the user to select an existing passkey to login with and authenticate the user.
-     * @return PassageAuthResult?
+     * Prompt the user to select a passkey to login with and authenticate the user.
+     * @param identifier valid email or E164 phone number
+     * @return PassageAuthResult
      * @throws LoginWithPasskeyException
      */
-    public suspend fun loginWithPasskey(): PassageAuthResult {
+    public suspend fun loginWithSecurityKey(identifier: String? = null): PassageAuthResult {
         try {
             val loginAPI = LoginAPI(BASE_PATH, passageClient)
             // Get Credential challenge from Passage
-            val webauthnStartRequest = LoginWebAuthnStartRequest()
+            val webauthnStartRequest = LoginWebAuthnStartRequest(identifier)
             val webauthnStartResponse = loginAPI.loginWebauthnStart(appId, webauthnStartRequest)
             // Use Credential challenge to prompt user to login with a passkey
             val credOptionsJson = PasskeyUtils.getCredentialOptionsJson(webauthnStartResponse.handshake)
@@ -342,7 +380,6 @@ public final class Passage(
             throw LoginWithPasskeyException.convert(e)
         }
     }
-
     // endregion
 
     // region MAGIC LINK AUTH METHODS
