@@ -11,8 +11,10 @@ Integrating passkey technology can be really hard. That's why we built the Passa
 
 ## Usage
 
+### Passkey Complete
+
 You can import the Passage library by including this in your app's `build.gradle` file dependencies:
-```
+```gradle
 implementation 'id.passage.android:passage:1.6.1'
 ```
 
@@ -20,6 +22,19 @@ And you can use it like this:
 ```kotlin
 val passage = Passage(activity, "YOUR_APP_ID")
 passage.loginWithPasskey()
+```
+<br>
+
+### Passkey Flex
+
+You can import the PassageFlex library by including this in your app's `build.gradle` file dependencies:
+```gradle
+implementation 'id.passage.android:passageflex:0.1.0'
+```
+
+And you can use it like this:
+```kotlin
+val nonce = PassageFlex.Passkey.authenticate()
 ```
 
 
