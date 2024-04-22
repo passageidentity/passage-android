@@ -4,10 +4,10 @@ import MailosaurAPIClient
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import id.passage.android.IntegrationTestConfig.Companion.apiBaseUrl
-import id.passage.android.IntegrationTestConfig.Companion.appId
-import id.passage.android.IntegrationTestConfig.Companion.emailWaitTimeMilliseconds
-import id.passage.android.IntegrationTestConfig.Companion.existingUserEmail
+import id.passage.android.IntegrationTestConfig.Companion.API_BASE_URL
+import id.passage.android.IntegrationTestConfig.Companion.APP_ID
+import id.passage.android.IntegrationTestConfig.Companion.EMAIL_WAIT_TIME_MILLISECONDS
+import id.passage.android.IntegrationTestConfig.Companion.EXISTING_USER_EMAIL
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.delay
@@ -28,13 +28,13 @@ internal class TokenStoreTests {
         runBlocking {
             activityRule?.scenario?.onActivity { activity ->
                 activity?.let {
-                    passage = Passage(it, appId)
-                    passage.overrideBasePath(apiBaseUrl)
+                    passage = Passage(it, APP_ID)
+                    passage.overrideBasePath(API_BASE_URL)
                 }
             }
             // Log in user
-            val otpId = passage.newLoginOneTimePasscode(existingUserEmail).otpId
-            delay(emailWaitTimeMilliseconds)
+            val otpId = passage.newLoginOneTimePasscode(EXISTING_USER_EMAIL).otpId
+            delay(EMAIL_WAIT_TIME_MILLISECONDS)
             val otp = MailosaurAPIClient.getMostRecentOneTimePasscode()
             passage.oneTimePasscodeActivate(otp, otpId)
         }

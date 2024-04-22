@@ -121,7 +121,8 @@ public final class PasskeyUtils {
             // Passage API bug: Login API frequently returns challenge with non-url-safe characters
             // "+" and "/" that cause "Bad Base 64" exception to be thrown by the credential manager.
             val modifiedChallenge = credOptions.challenge.replace('+', '-').replace('/', '_')
-            val modifiedCredOptions = ProtocolCredentialAssertion1PublicKey(
+            val modifiedCredOptions =
+                ProtocolCredentialAssertion1PublicKey(
                     allowCredentials = credOptions.allowCredentials,
                     challenge = modifiedChallenge,
                     extensions = credOptions.extensions,

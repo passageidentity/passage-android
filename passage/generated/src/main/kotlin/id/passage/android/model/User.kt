@@ -65,7 +65,7 @@ data class User (
     val webauthn: kotlin.Boolean,
 
     @Json(name = "webauthn_types")
-    val webauthnTypes: kotlin.collections.List<WebAuthnType>
+    val webauthnTypes: kotlin.collections.List<WebAuthnType>?
 
 )
 
