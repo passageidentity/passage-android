@@ -115,9 +115,7 @@ public final class PasskeyUtils {
          * @throws CredentialParsingException
          */
         internal fun getCredentialOptionsJson(challenge: CredentialAssertionChallenge1): String {
-            val credOptions =
-                challenge?.challenge?.publicKey
-                    ?: throw CredentialParsingException(CHALLENGE_MISSING)
+            val credOptions = challenge.challenge.publicKey
             val moshi = Moshi.Builder().build()
             val credOptionsAdapter = ProtocolCredentialAssertion1PublicKeyJsonAdapter(moshi)
             // Passage API bug: Login API frequently returns challenge with non-url-safe characters
