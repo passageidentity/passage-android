@@ -21,7 +21,7 @@ import com.squareup.moshi.Json
 /**
  * selects the type of authentication that will be used in this WebAuthN flow request
  *
- * Values: platform,crossMinusPlatform,any
+ * Values: platform,crossPlatform,any
  */
 
 enum class AuthenticatorAttachment(val value: kotlin.String) {
@@ -30,7 +30,7 @@ enum class AuthenticatorAttachment(val value: kotlin.String) {
     platform("platform"),
 
     @Json(name = "cross-platform")
-    crossMinusPlatform("cross-platform"),
+    crossPlatform("cross-platform"),
 
     @Json(name = "any")
     any("any");
