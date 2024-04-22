@@ -11,6 +11,7 @@ import id.passage.android.model.UpdateDeviceRequest
 import id.passage.android.model.UpdateUserEmailRequest
 import id.passage.android.model.UpdateUserPhoneRequest
 import id.passage.android.model.User
+import id.passage.android.model.UserStatus
 import id.passage.android.model.WebAuthnType
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
@@ -32,7 +33,7 @@ final class PassageUser private constructor(
     // Whether or not the user's phone has been verified
     val phoneVerified: Boolean? = null,
     // User status: active, inactive, pending
-    val status: String? = null,
+    val status: UserStatus? = null,
     // When this user was last updated
     val updatedAt: String? = null,
     val userMetadata: Any? = null,
