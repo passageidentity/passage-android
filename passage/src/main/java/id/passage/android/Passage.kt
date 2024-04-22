@@ -250,11 +250,17 @@ public final class Passage(
      * @return PassageAuthResult
      * @throws RegisterWithPasskeyException
      */
-    public suspend fun registerWithPasskey(identifier: String): PassageAuthResult {
+    public suspend fun registerWithPasskey(
+        identifier: String,
+        options: PasskeyCreationOptions? = null,
+    ): PassageAuthResult {
         try {
             val registerAPI = RegisterAPI(BASE_PATH, passageClient)
             // Get Create Credential challenge from Passage
-            val webauthnStartRequest = RegisterWebAuthnStartRequest(identifier)
+            val authenticatorAttachment =
+                options?.authenticatorAttachment
+                    ?: AuthenticatorAttachment.platform
+            val webauthnStartRequest = RegisterWebAuthnStartRequest(identifier, authenticatorAttachment)
             val webauthnStartResponse = registerAPI.registerWebauthnStart(appId, webauthnStartRequest)
             // Use Create Credential challenge to prompt user to create a passkey
             val createCredOptionsJson = PasskeyUtils.getCreateCredentialOptionsJson(webauthnStartResponse.handshake)
@@ -285,77 +291,6 @@ public final class Passage(
      * @throws LoginWithPasskeyException
      */
     public suspend fun loginWithPasskey(identifier: String? = null): PassageAuthResult {
-        try {
-            val loginAPI = LoginAPI(BASE_PATH, passageClient)
-            // Get Credential challenge from Passage
-            val webauthnStartRequest = LoginWebAuthnStartRequest(identifier)
-            val webauthnStartResponse = loginAPI.loginWebauthnStart(appId, webauthnStartRequest)
-            // Use Credential challenge to prompt user to login with a passkey
-            val credOptionsJson = PasskeyUtils.getCredentialOptionsJson(webauthnStartResponse.handshake)
-            val credResponse = PasskeyUtils.getPasskey(credOptionsJson, activity)
-            // Complete login and authenticate the user
-            val handshakeResponse = PasskeyUtils.getCredentialHandshakeResponse(credResponse)
-            val webauthnFinishRequest =
-                LoginWebAuthnFinishRequest(
-                    handshakeId = webauthnStartResponse.handshake.id,
-                    handshakeResponse = handshakeResponse,
-                    userId = webauthnStartResponse.user?.id,
-                )
-            val authResponse = loginAPI.loginWebauthnFinish(appId, webauthnFinishRequest)
-            handleAuthResult(authResponse.authResult)
-            // Return auth result
-            return authResponse.authResult
-        } catch (e: Exception) {
-            throw LoginWithPasskeyException.convert(e)
-        }
-    }
-
-    /**
-     * Register user with passkey
-     *
-     * Create a user, prompt the user to create a passkey, and register the user.
-     * @param identifier valid email or E164 phone number
-     * @return PassageAuthResult
-     * @throws RegisterWithPasskeyException
-     */
-    public suspend fun registerWithSecurityKey(identifier: String): PassageAuthResult {
-        try {
-            val registerAPI = RegisterAPI(BASE_PATH, passageClient)
-            // Get Create Credential challenge from Passage
-            val webauthnStartRequest = RegisterWebAuthnStartRequest(
-                identifier,
-                AuthenticatorAttachment.crossMinusPlatform
-            )
-            val webauthnStartResponse = registerAPI.registerWebauthnStart(appId, webauthnStartRequest)
-            // Use Create Credential challenge to prompt user to create a passkey
-            val createCredOptionsJson = PasskeyUtils.getCreateCredentialOptionsJson(webauthnStartResponse.handshake)
-            val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)
-            // Complete registration and authenticate the user
-            val handshakeResponse = PasskeyUtils.getCreateCredentialHandshakeResponse(createCredResponse)
-            val webauthnFinishRequest =
-                RegisterWebAuthnFinishRequest(
-                    handshakeId = webauthnStartResponse.handshake.id,
-                    handshakeResponse = handshakeResponse,
-                    userId = webauthnStartResponse.user?.id ?: "",
-                )
-            val authResponse = registerAPI.registerWebauthnFinish(appId, webauthnFinishRequest)
-            // Handle and return auth result
-            handleAuthResult(authResponse.authResult)
-            return authResponse.authResult
-        } catch (e: Exception) {
-            throw RegisterWithPasskeyException.convert(e)
-        }
-    }
-
-    /**
-     * Log in user with passkey
-     *
-     * Prompt the user to select a passkey to login with and authenticate the user.
-     * @param identifier valid email or E164 phone number
-     * @return PassageAuthResult
-     * @throws LoginWithPasskeyException
-     */
-    public suspend fun loginWithSecurityKey(identifier: String? = null): PassageAuthResult {
         try {
             val loginAPI = LoginAPI(BASE_PATH, passageClient)
             // Get Credential challenge from Passage
