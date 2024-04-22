@@ -132,7 +132,7 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
             "id_token" to PartConfig(body = idToken, headers = mutableMapOf()),
             "state" to PartConfig(body = state, headers = mutableMapOf()),
             "user" to PartConfig(body = user, headers = mutableMapOf()),
-            "error" to PartConfig(body = error?.value, headers = mutableMapOf()),)
+            "error" to PartConfig(body = error.value, headers = mutableMapOf()),)
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf("Content-Type" to "application/x-www-form-urlencoded")
         localVariableHeaders["Accept"] = "application/json"
@@ -225,7 +225,7 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
             "id_token" to PartConfig(body = idToken, headers = mutableMapOf()),
             "state" to PartConfig(body = state, headers = mutableMapOf()),
             "user" to PartConfig(body = user, headers = mutableMapOf()),
-            "error" to PartConfig(body = error?.value, headers = mutableMapOf()),)
+            "error" to PartConfig(body = error.value, headers = mutableMapOf()),)
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf("Content-Type" to "application/x-www-form-urlencoded")
         localVariableHeaders["Accept"] = "application/json"

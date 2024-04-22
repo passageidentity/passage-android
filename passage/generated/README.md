@@ -46,10 +46,14 @@ All URIs are relative to *https://auth.passage.id/v1*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *AppsAPI* | [**getApp**](docs/AppsAPI.md#getapp) | **GET** /apps/{app_id} | Get App
+*AuthenticateAPI* | [**authenticateWebauthnFinishWithTransaction**](docs/AuthenticateAPI.md#authenticatewebauthnfinishwithtransaction) | **POST** /apps/{app_id}/authenticate/transactions/webauthn/finish | Finish WebAuthn authentication with an optional transaction
+*AuthenticateAPI* | [**authenticateWebauthnStartWithTransaction**](docs/AuthenticateAPI.md#authenticatewebauthnstartwithtransaction) | **POST** /apps/{app_id}/authenticate/transactions/webauthn/start | Start WebAuthn authentication with an optional transaction
 *CurrentuserAPI* | [**deleteCurrentuserDevice**](docs/CurrentuserAPI.md#deletecurrentuserdevice) | **DELETE** /apps/{app_id}/currentuser/devices/{device_id} | Revoke Device
+*CurrentuserAPI* | [**deleteCurrentuserSocialConnection**](docs/CurrentuserAPI.md#deletecurrentusersocialconnection) | **DELETE** /apps/{app_id}/currentuser/social-connections/{social_connection_type} | Delete Social Connection
 *CurrentuserAPI* | [**getCurrentuser**](docs/CurrentuserAPI.md#getcurrentuser) | **GET** /apps/{app_id}/currentuser | Get Current User
 *CurrentuserAPI* | [**getCurrentuserDevices**](docs/CurrentuserAPI.md#getcurrentuserdevices) | **GET** /apps/{app_id}/currentuser/devices | List Devices
 *CurrentuserAPI* | [**getCurrentuserMetadata**](docs/CurrentuserAPI.md#getcurrentusermetadata) | **GET** /apps/{app_id}/currentuser/user-metadata | Get user's metadata
+*CurrentuserAPI* | [**getCurrentuserSocialConnections**](docs/CurrentuserAPI.md#getcurrentusersocialconnections) | **GET** /apps/{app_id}/currentuser/social-connections | Get Social Connections
 *CurrentuserAPI* | [**postCurrentuserAddDeviceFinish**](docs/CurrentuserAPI.md#postcurrentuseradddevicefinish) | **POST** /apps/{app_id}/currentuser/devices/finish | Finish WebAuthn Add Device
 *CurrentuserAPI* | [**postCurrentuserAddDeviceStart**](docs/CurrentuserAPI.md#postcurrentuseradddevicestart) | **POST** /apps/{app_id}/currentuser/devices/start | Start WebAuthn Add Device
 *CurrentuserAPI* | [**updateCurrentuserDevice**](docs/CurrentuserAPI.md#updatecurrentuserdevice) | **PATCH** /apps/{app_id}/currentuser/devices/{device_id} | Update Device
@@ -63,16 +67,22 @@ Class | Method | HTTP request | Description
 *LoginAPI* | [**loginWebauthnStart**](docs/LoginAPI.md#loginwebauthnstart) | **POST** /apps/{app_id}/login/webauthn/start | Start WebAuthn Login
 *MagicLinkAPI* | [**activateMagicLink**](docs/MagicLinkAPI.md#activatemagiclink) | **PATCH** /apps/{app_id}/magic-link/activate | Authenticate Magic Link
 *MagicLinkAPI* | [**magicLinkStatus**](docs/MagicLinkAPI.md#magiclinkstatus) | **POST** /apps/{app_id}/magic-link/status | Magic Link Status
+*OAuth2API* | [**appleOauth2Callback**](docs/OAuth2API.md#appleoauth2callback) | **POST** /apps/{app_id}/social/oauth2_callback | Handle Apple's OAuth2 callback
+*OAuth2API* | [**appleOauth2CallbackDefaultDev**](docs/OAuth2API.md#appleoauth2callbackdefaultdev) | **POST** /social/oauth2_callback | Handle Apple's OAuth2 callback for the default developer credentials
 *OAuth2API* | [**currentuserSocialLinkAccount**](docs/OAuth2API.md#currentusersociallinkaccount) | **GET** /apps/{app_id}/currentuser/social/link_account | Link an existing account to an OAuth2 connection.
+*OAuth2API* | [**exchangeSocialIdToken**](docs/OAuth2API.md#exchangesocialidtoken) | **POST** /apps/{app_id}/social/id_token | Exchange native mobile identity token for an auth token.
 *OAuth2API* | [**exchangeSocialToken**](docs/OAuth2API.md#exchangesocialtoken) | **GET** /apps/{app_id}/social/token | Exchange OAuth2 connection data for an auth token.
 *OAuth2API* | [**getAuthorize**](docs/OAuth2API.md#getauthorize) | **GET** /apps/{app_id}/social/authorize | Kick off OAuth2 flow
 *OAuth2API* | [**oauth2Callback**](docs/OAuth2API.md#oauth2callback) | **GET** /apps/{app_id}/social/oauth2_callback | Handle OAuth2 callback
+*OAuth2API* | [**oauth2CallbackDefaultDev**](docs/OAuth2API.md#oauth2callbackdefaultdev) | **GET** /social/oauth2_callback | Handle OAuth2 callback for the default developer credentials
 *OTPAPI* | [**activateOneTimePasscode**](docs/OTPAPI.md#activateonetimepasscode) | **POST** /apps/{app_id}/otp/activate | Authenticate OTP
 *OpenIDAPI* | [**getOpenIdConfiguration**](docs/OpenIDAPI.md#getopenidconfiguration) | **GET** /apps/{app_id}/.well-known/openid-configuration | Get OpenID Configuration
 *RegisterAPI* | [**registerMagicLink**](docs/RegisterAPI.md#registermagiclink) | **POST** /apps/{app_id}/register/magic-link | Register with Magic Link
 *RegisterAPI* | [**registerOneTimePasscode**](docs/RegisterAPI.md#registeronetimepasscode) | **POST** /apps/{app_id}/register/otp | Register with OTP
 *RegisterAPI* | [**registerWebauthnFinish**](docs/RegisterAPI.md#registerwebauthnfinish) | **POST** /apps/{app_id}/register/webauthn/finish | Finish WebAuthn Registration
+*RegisterAPI* | [**registerWebauthnFinishWithTransaction**](docs/RegisterAPI.md#registerwebauthnfinishwithtransaction) | **POST** /apps/{app_id}/register/transactions/webauthn/finish | Finish WebAuthn registration with a transaction
 *RegisterAPI* | [**registerWebauthnStart**](docs/RegisterAPI.md#registerwebauthnstart) | **POST** /apps/{app_id}/register/webauthn/start | Start WebAuthn Register
+*RegisterAPI* | [**registerWebauthnStartWithTransaction**](docs/RegisterAPI.md#registerwebauthnstartwithtransaction) | **POST** /apps/{app_id}/register/transactions/webauthn/start | Start WebAuthn registration with a transaction
 *TokensAPI* | [**refreshAuthToken**](docs/TokensAPI.md#refreshauthtoken) | **POST** /apps/{app_id}/tokens | Creates new auth and refresh token
 *TokensAPI* | [**revokeRefreshToken**](docs/TokensAPI.md#revokerefreshtoken) | **DELETE** /apps/{app_id}/tokens | Revokes refresh token
 *UsersAPI* | [**checkUserIdentifier**](docs/UsersAPI.md#checkuseridentifier) | **GET** /apps/{app_id}/users | Get User
@@ -87,14 +97,18 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.AddDeviceFinishRequest](docs/AddDeviceFinishRequest.md)
  - [id.passage.android.model.AddDeviceStartResponse](docs/AddDeviceStartResponse.md)
  - [id.passage.android.model.App](docs/App.md)
- - [id.passage.android.model.AuthErrorCode](docs/AuthErrorCode.md)
+ - [id.passage.android.model.AppleSocialConnection](docs/AppleSocialConnection.md)
  - [id.passage.android.model.AuthMethods](docs/AuthMethods.md)
  - [id.passage.android.model.AuthResponse](docs/AuthResponse.md)
  - [id.passage.android.model.AuthResult](docs/AuthResult.md)
+ - [id.passage.android.model.AuthenticateWebAuthnFinishWithTransactionRequest](docs/AuthenticateWebAuthnFinishWithTransactionRequest.md)
+ - [id.passage.android.model.AuthenticateWebAuthnStartWithTransactionRequest](docs/AuthenticateWebAuthnStartWithTransactionRequest.md)
+ - [id.passage.android.model.AuthenticateWebAuthnStartWithTransactionResponse](docs/AuthenticateWebAuthnStartWithTransactionResponse.md)
  - [id.passage.android.model.AuthenticatorAttachment](docs/AuthenticatorAttachment.md)
  - [id.passage.android.model.CreateUserParams](docs/CreateUserParams.md)
  - [id.passage.android.model.Credential](docs/Credential.md)
  - [id.passage.android.model.CredentialAssertionChallenge](docs/CredentialAssertionChallenge.md)
+ - [id.passage.android.model.CredentialAssertionChallenge1](docs/CredentialAssertionChallenge1.md)
  - [id.passage.android.model.CredentialAssertionResponse](docs/CredentialAssertionResponse.md)
  - [id.passage.android.model.CredentialAssertionResponseResponse](docs/CredentialAssertionResponseResponse.md)
  - [id.passage.android.model.CredentialCreation](docs/CredentialCreation.md)
@@ -118,6 +132,7 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.GetMagicLinkStatusRequest](docs/GetMagicLinkStatusRequest.md)
  - [id.passage.android.model.GithubSocialConnection](docs/GithubSocialConnection.md)
  - [id.passage.android.model.GoogleSocialConnection](docs/GoogleSocialConnection.md)
+ - [id.passage.android.model.IdTokenRequest](docs/IdTokenRequest.md)
  - [id.passage.android.model.JWKResponse](docs/JWKResponse.md)
  - [id.passage.android.model.JWKResponseKeysInner](docs/JWKResponseKeysInner.md)
  - [id.passage.android.model.LayoutConfig](docs/LayoutConfig.md)
@@ -130,7 +145,6 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.LoginWebAuthnStartResponse](docs/LoginWebAuthnStartResponse.md)
  - [id.passage.android.model.MagicLink](docs/MagicLink.md)
  - [id.passage.android.model.MagicLinkAuthMethod](docs/MagicLinkAuthMethod.md)
- - [id.passage.android.model.MagicLinkLoginWebAuthnStartResponse](docs/MagicLinkLoginWebAuthnStartResponse.md)
  - [id.passage.android.model.MagicLinkResponse](docs/MagicLinkResponse.md)
  - [id.passage.android.model.Model400Code](docs/Model400Code.md)
  - [id.passage.android.model.Model400Error](docs/Model400Error.md)
@@ -140,13 +154,18 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.Model403Error](docs/Model403Error.md)
  - [id.passage.android.model.Model404Code](docs/Model404Code.md)
  - [id.passage.android.model.Model404Error](docs/Model404Error.md)
+ - [id.passage.android.model.Model409Code](docs/Model409Code.md)
+ - [id.passage.android.model.Model409Error](docs/Model409Error.md)
  - [id.passage.android.model.Model500Code](docs/Model500Code.md)
  - [id.passage.android.model.Model500Error](docs/Model500Error.md)
- - [id.passage.android.model.OAuth2ConnectionType](docs/OAuth2ConnectionType.md)
+ - [id.passage.android.model.Nonce](docs/Nonce.md)
  - [id.passage.android.model.OneTimePasscodeResponse](docs/OneTimePasscodeResponse.md)
  - [id.passage.android.model.OpenIdConfiguration](docs/OpenIdConfiguration.md)
  - [id.passage.android.model.OtpAuthMethod](docs/OtpAuthMethod.md)
  - [id.passage.android.model.ProtocolCredentialAssertion](docs/ProtocolCredentialAssertion.md)
+ - [id.passage.android.model.ProtocolCredentialAssertion1](docs/ProtocolCredentialAssertion1.md)
+ - [id.passage.android.model.ProtocolCredentialAssertion1PublicKey](docs/ProtocolCredentialAssertion1PublicKey.md)
+ - [id.passage.android.model.ProtocolCredentialAssertion1PublicKeyAllowCredentialsInner](docs/ProtocolCredentialAssertion1PublicKeyAllowCredentialsInner.md)
  - [id.passage.android.model.ProtocolCredentialAssertionPublicKey](docs/ProtocolCredentialAssertionPublicKey.md)
  - [id.passage.android.model.ProtocolCredentialAssertionPublicKeyAllowCredentialsInner](docs/ProtocolCredentialAssertionPublicKeyAllowCredentialsInner.md)
  - [id.passage.android.model.RefreshAuthTokenRequest](docs/RefreshAuthTokenRequest.md)
@@ -154,10 +173,13 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.RegisterMagicLinkResponse](docs/RegisterMagicLinkResponse.md)
  - [id.passage.android.model.RegisterOneTimePasscodeRequest](docs/RegisterOneTimePasscodeRequest.md)
  - [id.passage.android.model.RegisterWebAuthnFinishRequest](docs/RegisterWebAuthnFinishRequest.md)
+ - [id.passage.android.model.RegisterWebAuthnFinishWithTransactionRequest](docs/RegisterWebAuthnFinishWithTransactionRequest.md)
  - [id.passage.android.model.RegisterWebAuthnStartRequest](docs/RegisterWebAuthnStartRequest.md)
  - [id.passage.android.model.RegisterWebAuthnStartResponse](docs/RegisterWebAuthnStartResponse.md)
- - [id.passage.android.model.SocialConnection](docs/SocialConnection.md)
+ - [id.passage.android.model.RegisterWebAuthnStartWithTransactionRequest](docs/RegisterWebAuthnStartWithTransactionRequest.md)
+ - [id.passage.android.model.RegisterWebAuthnStartWithTransactionResponse](docs/RegisterWebAuthnStartWithTransactionResponse.md)
  - [id.passage.android.model.SocialConnections](docs/SocialConnections.md)
+ - [id.passage.android.model.SocialConnectionsResponse](docs/SocialConnectionsResponse.md)
  - [id.passage.android.model.TtlDisplayUnit](docs/TtlDisplayUnit.md)
  - [id.passage.android.model.UpdateDeviceRequest](docs/UpdateDeviceRequest.md)
  - [id.passage.android.model.UpdateMetadataRequest](docs/UpdateMetadataRequest.md)

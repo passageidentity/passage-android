@@ -19,12 +19,11 @@ import java.io.IOException
 import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
-import id.passage.android.model.AuthErrorCode
 import id.passage.android.model.AuthResponse
+import id.passage.android.model.IdTokenRequest
 import id.passage.android.model.Model400Error
 import id.passage.android.model.Model403Error
 import id.passage.android.model.Model500Error
-import id.passage.android.model.OAuth2ConnectionType
 
 import com.squareup.moshi.Json
 
@@ -50,6 +49,195 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
         val defaultBasePath: String by lazy {
             System.getProperties().getProperty(ApiClient.baseUrlKey, "https://auth.passage.id/v1")
         }
+    }
+
+    /**
+     * enum for parameter error
+     */
+     enum class Error_appleOauth2Callback(val value: kotlin.String) {
+         @Json(name = "user_cancelled_authorize") userCancelledAuthorize("user_cancelled_authorize")
+     }
+
+    /**
+     * Handle Apple&#39;s OAuth2 callback
+     * 
+     * @param appId App ID
+     * @param state The state contained in the authorization request.
+     * @param code A single-use authorization grant code that’s valid for five minutes. (optional)
+     * @param idToken A JWT containing the user’s identity information. (optional)
+     * @param user A JSON string containing the data requested in the scope property. (optional)
+     * @param error The error returned by Apple. (optional)
+     * @return void
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    suspend fun appleOauth2Callback(appId: kotlin.String, state: kotlin.String, code: kotlin.String? = null, idToken: kotlin.String? = null, user: kotlin.String? = null, error: Error_appleOauth2Callback? = null) : Unit = withContext(Dispatchers.IO) {
+        val localVarResponse = appleOauth2CallbackWithHttpInfo(appId = appId, state = state, code = code, idToken = idToken, user = user, error = error)
+
+        return@withContext when (localVarResponse.responseType) {
+            ResponseType.Success -> Unit
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * Handle Apple&#39;s OAuth2 callback
+     * 
+     * @param appId App ID
+     * @param state The state contained in the authorization request.
+     * @param code A single-use authorization grant code that’s valid for five minutes. (optional)
+     * @param idToken A JWT containing the user’s identity information. (optional)
+     * @param user A JSON string containing the data requested in the scope property. (optional)
+     * @param error The error returned by Apple. (optional)
+     * @return ApiResponse<Unit?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Throws(IllegalStateException::class, IOException::class)
+    suspend fun appleOauth2CallbackWithHttpInfo(appId: kotlin.String, state: kotlin.String, code: kotlin.String?, idToken: kotlin.String?, user: kotlin.String?, error: Error_appleOauth2Callback?) : ApiResponse<Unit?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = appleOauth2CallbackRequestConfig(appId = appId, state = state, code = code, idToken = idToken, user = user, error = error)
+
+        return@withContext request<Map<String, PartConfig<*>>, Unit>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation appleOauth2Callback
+     *
+     * @param appId App ID
+     * @param state The state contained in the authorization request.
+     * @param code A single-use authorization grant code that’s valid for five minutes. (optional)
+     * @param idToken A JWT containing the user’s identity information. (optional)
+     * @param user A JSON string containing the data requested in the scope property. (optional)
+     * @param error The error returned by Apple. (optional)
+     * @return RequestConfig
+     */
+    fun appleOauth2CallbackRequestConfig(appId: kotlin.String, state: kotlin.String, code: kotlin.String?, idToken: kotlin.String?, user: kotlin.String?, error: Error_appleOauth2Callback?) : RequestConfig<Map<String, PartConfig<*>>> {
+        val localVariableBody = mapOf(
+            "code" to PartConfig(body = code, headers = mutableMapOf()),
+            "id_token" to PartConfig(body = idToken, headers = mutableMapOf()),
+            "state" to PartConfig(body = state, headers = mutableMapOf()),
+            "user" to PartConfig(body = user, headers = mutableMapOf()),
+            "error" to PartConfig(body = error.value, headers = mutableMapOf()),)
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf("Content-Type" to "application/x-www-form-urlencoded")
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.POST,
+            path = "/apps/{app_id}/social/oauth2_callback".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
+    }
+
+    /**
+     * enum for parameter error
+     */
+     enum class Error_appleOauth2CallbackDefaultDev(val value: kotlin.String) {
+         @Json(name = "user_cancelled_authorize") userCancelledAuthorize("user_cancelled_authorize")
+     }
+
+    /**
+     * Handle Apple&#39;s OAuth2 callback for the default developer credentials
+     * 
+     * @param state The state contained in the authorization request.
+     * @param code A single-use authorization grant code that’s valid for five minutes. (optional)
+     * @param idToken A JWT containing the user’s identity information. (optional)
+     * @param user A JSON string containing the data requested in the scope property. (optional)
+     * @param error The error returned by Apple. (optional)
+     * @return void
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    suspend fun appleOauth2CallbackDefaultDev(state: kotlin.String, code: kotlin.String? = null, idToken: kotlin.String? = null, user: kotlin.String? = null, error: Error_appleOauth2CallbackDefaultDev? = null) : Unit = withContext(Dispatchers.IO) {
+        val localVarResponse = appleOauth2CallbackDefaultDevWithHttpInfo(state = state, code = code, idToken = idToken, user = user, error = error)
+
+        return@withContext when (localVarResponse.responseType) {
+            ResponseType.Success -> Unit
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * Handle Apple&#39;s OAuth2 callback for the default developer credentials
+     * 
+     * @param state The state contained in the authorization request.
+     * @param code A single-use authorization grant code that’s valid for five minutes. (optional)
+     * @param idToken A JWT containing the user’s identity information. (optional)
+     * @param user A JSON string containing the data requested in the scope property. (optional)
+     * @param error The error returned by Apple. (optional)
+     * @return ApiResponse<Unit?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Throws(IllegalStateException::class, IOException::class)
+    suspend fun appleOauth2CallbackDefaultDevWithHttpInfo(state: kotlin.String, code: kotlin.String?, idToken: kotlin.String?, user: kotlin.String?, error: Error_appleOauth2CallbackDefaultDev?) : ApiResponse<Unit?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = appleOauth2CallbackDefaultDevRequestConfig(state = state, code = code, idToken = idToken, user = user, error = error)
+
+        return@withContext request<Map<String, PartConfig<*>>, Unit>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation appleOauth2CallbackDefaultDev
+     *
+     * @param state The state contained in the authorization request.
+     * @param code A single-use authorization grant code that’s valid for five minutes. (optional)
+     * @param idToken A JWT containing the user’s identity information. (optional)
+     * @param user A JSON string containing the data requested in the scope property. (optional)
+     * @param error The error returned by Apple. (optional)
+     * @return RequestConfig
+     */
+    fun appleOauth2CallbackDefaultDevRequestConfig(state: kotlin.String, code: kotlin.String?, idToken: kotlin.String?, user: kotlin.String?, error: Error_appleOauth2CallbackDefaultDev?) : RequestConfig<Map<String, PartConfig<*>>> {
+        val localVariableBody = mapOf(
+            "code" to PartConfig(body = code, headers = mutableMapOf()),
+            "id_token" to PartConfig(body = idToken, headers = mutableMapOf()),
+            "state" to PartConfig(body = state, headers = mutableMapOf()),
+            "user" to PartConfig(body = user, headers = mutableMapOf()),
+            "error" to PartConfig(body = error.value, headers = mutableMapOf()),)
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf("Content-Type" to "application/x-www-form-urlencoded")
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.POST,
+            path = "/social/oauth2_callback",
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
     }
 
     /**
@@ -127,6 +315,81 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = true,
+            body = localVariableBody
+        )
+    }
+
+    /**
+     * Exchange native mobile identity token for an auth token.
+     * 
+     * @param appId App ID
+     * @param idTokenRequest 
+     * @return AuthResponse
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    suspend fun exchangeSocialIdToken(appId: kotlin.String, idTokenRequest: IdTokenRequest) : AuthResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = exchangeSocialIdTokenWithHttpInfo(appId = appId, idTokenRequest = idTokenRequest)
+
+        return@withContext when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as AuthResponse
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * Exchange native mobile identity token for an auth token.
+     * 
+     * @param appId App ID
+     * @param idTokenRequest 
+     * @return ApiResponse<AuthResponse?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    suspend fun exchangeSocialIdTokenWithHttpInfo(appId: kotlin.String, idTokenRequest: IdTokenRequest) : ApiResponse<AuthResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = exchangeSocialIdTokenRequestConfig(appId = appId, idTokenRequest = idTokenRequest)
+
+        return@withContext request<IdTokenRequest, AuthResponse>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation exchangeSocialIdToken
+     *
+     * @param appId App ID
+     * @param idTokenRequest 
+     * @return RequestConfig
+     */
+    fun exchangeSocialIdTokenRequestConfig(appId: kotlin.String, idTokenRequest: IdTokenRequest) : RequestConfig<IdTokenRequest> {
+        val localVariableBody = idTokenRequest
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.POST,
+            path = "/apps/{app_id}/social/id_token".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
             body = localVariableBody
         )
     }
@@ -213,6 +476,16 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
     }
 
     /**
+     * enum for parameter connectionType
+     */
+     enum class ConnectionType_getAuthorize(val value: kotlin.String) {
+         @Json(name = "apple") apple("apple"),
+         @Json(name = "github") github("github"),
+         @Json(name = "google") google("google"),
+         @Json(name = "passage") passage("passage")
+     }
+
+    /**
      * Kick off OAuth2 flow
      * Kick off OAuth2 flow with connection provider request params described in https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest
      * @param appId App ID
@@ -229,7 +502,7 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * @throws ServerException If the API returns a server error response
      */
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun getAuthorize(appId: kotlin.String, redirectUri: kotlin.String, codeChallenge: kotlin.String, codeChallengeMethod: kotlin.String, connectionType: OAuth2ConnectionType, state: kotlin.String? = null) : Unit = withContext(Dispatchers.IO) {
+    suspend fun getAuthorize(appId: kotlin.String, redirectUri: kotlin.String, codeChallenge: kotlin.String, codeChallengeMethod: kotlin.String, connectionType: ConnectionType_getAuthorize, state: kotlin.String? = null) : Unit = withContext(Dispatchers.IO) {
         val localVarResponse = getAuthorizeWithHttpInfo(appId = appId, redirectUri = redirectUri, codeChallenge = codeChallenge, codeChallengeMethod = codeChallengeMethod, connectionType = connectionType, state = state)
 
         return@withContext when (localVarResponse.responseType) {
@@ -261,7 +534,7 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun getAuthorizeWithHttpInfo(appId: kotlin.String, redirectUri: kotlin.String, codeChallenge: kotlin.String, codeChallengeMethod: kotlin.String, connectionType: OAuth2ConnectionType, state: kotlin.String?) : ApiResponse<Unit?> = withContext(Dispatchers.IO) {
+    suspend fun getAuthorizeWithHttpInfo(appId: kotlin.String, redirectUri: kotlin.String, codeChallenge: kotlin.String, codeChallengeMethod: kotlin.String, connectionType: ConnectionType_getAuthorize, state: kotlin.String?) : ApiResponse<Unit?> = withContext(Dispatchers.IO) {
         val localVariableConfig = getAuthorizeRequestConfig(appId = appId, redirectUri = redirectUri, codeChallenge = codeChallenge, codeChallengeMethod = codeChallengeMethod, connectionType = connectionType, state = state)
 
         return@withContext request<Unit, Unit>(
@@ -280,7 +553,7 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * @param state The state to pass through to the redirect URI. (optional)
      * @return RequestConfig
      */
-    fun getAuthorizeRequestConfig(appId: kotlin.String, redirectUri: kotlin.String, codeChallenge: kotlin.String, codeChallengeMethod: kotlin.String, connectionType: OAuth2ConnectionType, state: kotlin.String?) : RequestConfig<Unit> {
+    fun getAuthorizeRequestConfig(appId: kotlin.String, redirectUri: kotlin.String, codeChallenge: kotlin.String, codeChallengeMethod: kotlin.String, connectionType: ConnectionType_getAuthorize, state: kotlin.String?) : RequestConfig<Unit> {
         val localVariableBody = null
         val localVariableQuery: MultiValueMap = mutableMapOf<kotlin.String, kotlin.collections.List<kotlin.String>>()
             .apply {
@@ -306,6 +579,21 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
     }
 
     /**
+     * enum for parameter error
+     */
+     enum class Error_oauth2Callback(val value: kotlin.String) {
+         @Json(name = "interaction_required") interactionRequired("interaction_required"),
+         @Json(name = "login_required") loginRequired("login_required"),
+         @Json(name = "account_selection_required") accountSelectionRequired("account_selection_required"),
+         @Json(name = "consent_required") consentRequired("consent_required"),
+         @Json(name = "invalid_request_uri") invalidRequestUri("invalid_request_uri"),
+         @Json(name = "invalid_request_object") invalidRequestObject("invalid_request_object"),
+         @Json(name = "request_not_supported") requestNotSupported("request_not_supported"),
+         @Json(name = "request_uri_not_supported") requestUriNotSupported("request_uri_not_supported"),
+         @Json(name = "registration_not_supported") registrationNotSupported("registration_not_supported")
+     }
+
+    /**
      * Handle OAuth2 callback
      * 
      * @param appId App ID
@@ -321,7 +609,7 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * @throws ServerException If the API returns a server error response
      */
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun oauth2Callback(appId: kotlin.String, code: kotlin.String, state: kotlin.String? = null, error: AuthErrorCode? = null, errorDescription: kotlin.String? = null) : Unit = withContext(Dispatchers.IO) {
+    suspend fun oauth2Callback(appId: kotlin.String, code: kotlin.String, state: kotlin.String? = null, error: Error_oauth2Callback? = null, errorDescription: kotlin.String? = null) : Unit = withContext(Dispatchers.IO) {
         val localVarResponse = oauth2CallbackWithHttpInfo(appId = appId, code = code, state = state, error = error, errorDescription = errorDescription)
 
         return@withContext when (localVarResponse.responseType) {
@@ -352,7 +640,7 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun oauth2CallbackWithHttpInfo(appId: kotlin.String, code: kotlin.String, state: kotlin.String?, error: AuthErrorCode?, errorDescription: kotlin.String?) : ApiResponse<Unit?> = withContext(Dispatchers.IO) {
+    suspend fun oauth2CallbackWithHttpInfo(appId: kotlin.String, code: kotlin.String, state: kotlin.String?, error: Error_oauth2Callback?, errorDescription: kotlin.String?) : ApiResponse<Unit?> = withContext(Dispatchers.IO) {
         val localVariableConfig = oauth2CallbackRequestConfig(appId = appId, code = code, state = state, error = error, errorDescription = errorDescription)
 
         return@withContext request<Unit, Unit>(
@@ -370,7 +658,7 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * @param errorDescription The error description returned by the OAuth2 provider. (optional)
      * @return RequestConfig
      */
-    fun oauth2CallbackRequestConfig(appId: kotlin.String, code: kotlin.String, state: kotlin.String?, error: AuthErrorCode?, errorDescription: kotlin.String?) : RequestConfig<Unit> {
+    fun oauth2CallbackRequestConfig(appId: kotlin.String, code: kotlin.String, state: kotlin.String?, error: Error_oauth2Callback?, errorDescription: kotlin.String?) : RequestConfig<Unit> {
         val localVariableBody = null
         val localVariableQuery: MultiValueMap = mutableMapOf<kotlin.String, kotlin.collections.List<kotlin.String>>()
             .apply {
@@ -391,6 +679,111 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
         return RequestConfig(
             method = RequestMethod.GET,
             path = "/apps/{app_id}/social/oauth2_callback".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
+    }
+
+    /**
+     * enum for parameter error
+     */
+     enum class Error_oauth2CallbackDefaultDev(val value: kotlin.String) {
+         @Json(name = "interaction_required") interactionRequired("interaction_required"),
+         @Json(name = "login_required") loginRequired("login_required"),
+         @Json(name = "account_selection_required") accountSelectionRequired("account_selection_required"),
+         @Json(name = "consent_required") consentRequired("consent_required"),
+         @Json(name = "invalid_request_uri") invalidRequestUri("invalid_request_uri"),
+         @Json(name = "invalid_request_object") invalidRequestObject("invalid_request_object"),
+         @Json(name = "request_not_supported") requestNotSupported("request_not_supported"),
+         @Json(name = "request_uri_not_supported") requestUriNotSupported("request_uri_not_supported"),
+         @Json(name = "registration_not_supported") registrationNotSupported("registration_not_supported")
+     }
+
+    /**
+     * Handle OAuth2 callback for the default developer credentials
+     * 
+     * @param code The authorization code returned by the OAuth2 provider.
+     * @param state The state returned by the OAuth2 provider. (optional)
+     * @param error The error returned by the OAuth2 provider. (optional)
+     * @param errorDescription The error description returned by the OAuth2 provider. (optional)
+     * @return void
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    suspend fun oauth2CallbackDefaultDev(code: kotlin.String, state: kotlin.String? = null, error: Error_oauth2CallbackDefaultDev? = null, errorDescription: kotlin.String? = null) : Unit = withContext(Dispatchers.IO) {
+        val localVarResponse = oauth2CallbackDefaultDevWithHttpInfo(code = code, state = state, error = error, errorDescription = errorDescription)
+
+        return@withContext when (localVarResponse.responseType) {
+            ResponseType.Success -> Unit
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * Handle OAuth2 callback for the default developer credentials
+     * 
+     * @param code The authorization code returned by the OAuth2 provider.
+     * @param state The state returned by the OAuth2 provider. (optional)
+     * @param error The error returned by the OAuth2 provider. (optional)
+     * @param errorDescription The error description returned by the OAuth2 provider. (optional)
+     * @return ApiResponse<Unit?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Throws(IllegalStateException::class, IOException::class)
+    suspend fun oauth2CallbackDefaultDevWithHttpInfo(code: kotlin.String, state: kotlin.String?, error: Error_oauth2CallbackDefaultDev?, errorDescription: kotlin.String?) : ApiResponse<Unit?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = oauth2CallbackDefaultDevRequestConfig(code = code, state = state, error = error, errorDescription = errorDescription)
+
+        return@withContext request<Unit, Unit>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation oauth2CallbackDefaultDev
+     *
+     * @param code The authorization code returned by the OAuth2 provider.
+     * @param state The state returned by the OAuth2 provider. (optional)
+     * @param error The error returned by the OAuth2 provider. (optional)
+     * @param errorDescription The error description returned by the OAuth2 provider. (optional)
+     * @return RequestConfig
+     */
+    fun oauth2CallbackDefaultDevRequestConfig(code: kotlin.String, state: kotlin.String?, error: Error_oauth2CallbackDefaultDev?, errorDescription: kotlin.String?) : RequestConfig<Unit> {
+        val localVariableBody = null
+        val localVariableQuery: MultiValueMap = mutableMapOf<kotlin.String, kotlin.collections.List<kotlin.String>>()
+            .apply {
+                put("code", listOf(code.toString()))
+                if (state != null) {
+                    put("state", listOf(state.toString()))
+                }
+                if (error != null) {
+                    put("error", listOf(error.toString()))
+                }
+                if (errorDescription != null) {
+                    put("error_description", listOf(errorDescription.toString()))
+                }
+            }
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.GET,
+            path = "/social/oauth2_callback",
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,

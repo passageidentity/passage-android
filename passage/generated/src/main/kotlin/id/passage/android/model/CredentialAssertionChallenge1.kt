@@ -15,6 +15,7 @@
 
 package id.passage.android.model
 
+import id.passage.android.model.ProtocolCredentialAssertion1
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -22,22 +23,18 @@ import com.squareup.moshi.JsonClass
 /**
  * 
  *
- * @param apple 
- * @param google 
- * @param github 
+ * @param challenge 
+ * @param id 
  */
 @JsonClass(generateAdapter = true)
 
-data class SocialConnections (
+data class CredentialAssertionChallenge1 (
 
-    @Json(name = "apple")
-    val apple: kotlin.Any? = null,
+    @Json(name = "challenge")
+    val challenge: ProtocolCredentialAssertion1,
 
-    @Json(name = "google")
-    val google: kotlin.Any? = null,
-
-    @Json(name = "github")
-    val github: kotlin.Any? = null
+    @Json(name = "id")
+    val id: kotlin.String
 
 )
 

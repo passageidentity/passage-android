@@ -31,6 +31,7 @@ import id.passage.android.model.Model401Error
 import id.passage.android.model.Model403Error
 import id.passage.android.model.Model404Error
 import id.passage.android.model.Model500Error
+import id.passage.android.model.SocialConnectionsResponse
 import id.passage.android.model.UpdateDeviceRequest
 import id.passage.android.model.UpdateMetadataRequest
 import id.passage.android.model.UpdateUserEmailRequest
@@ -128,6 +129,87 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
         return RequestConfig(
             method = RequestMethod.DELETE,
             path = "/apps/{app_id}/currentuser/devices/{device_id}".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())).replace("{"+"device_id"+"}", encodeURIComponent(deviceId.toString())),
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = true,
+            body = localVariableBody
+        )
+    }
+
+    /**
+     * enum for parameter socialConnectionType
+     */
+     enum class SocialConnectionType_deleteCurrentuserSocialConnection(val value: kotlin.String) {
+         @Json(name = "apple") apple("apple"),
+         @Json(name = "github") github("github"),
+         @Json(name = "google") google("google")
+     }
+
+    /**
+     * Delete Social Connection
+     * Deletes a social connection for the current user. User must be authenticated via a bearer token.
+     * @param appId App ID
+     * @param socialConnectionType The type of social connection
+     * @return void
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    suspend fun deleteCurrentuserSocialConnection(appId: kotlin.String, socialConnectionType: SocialConnectionType_deleteCurrentuserSocialConnection) : Unit = withContext(Dispatchers.IO) {
+        val localVarResponse = deleteCurrentuserSocialConnectionWithHttpInfo(appId = appId, socialConnectionType = socialConnectionType)
+
+        return@withContext when (localVarResponse.responseType) {
+            ResponseType.Success -> Unit
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * Delete Social Connection
+     * Deletes a social connection for the current user. User must be authenticated via a bearer token.
+     * @param appId App ID
+     * @param socialConnectionType The type of social connection
+     * @return ApiResponse<Unit?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Throws(IllegalStateException::class, IOException::class)
+    suspend fun deleteCurrentuserSocialConnectionWithHttpInfo(appId: kotlin.String, socialConnectionType: SocialConnectionType_deleteCurrentuserSocialConnection) : ApiResponse<Unit?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = deleteCurrentuserSocialConnectionRequestConfig(appId = appId, socialConnectionType = socialConnectionType)
+
+        return@withContext request<Unit, Unit>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation deleteCurrentuserSocialConnection
+     *
+     * @param appId App ID
+     * @param socialConnectionType The type of social connection
+     * @return RequestConfig
+     */
+    fun deleteCurrentuserSocialConnectionRequestConfig(appId: kotlin.String, socialConnectionType: SocialConnectionType_deleteCurrentuserSocialConnection) : RequestConfig<Unit> {
+        val localVariableBody = null
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.DELETE,
+            path = "/apps/{app_id}/currentuser/social-connections/{social_connection_type}".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())).replace("{"+"social_connection_type"+"}", encodeURIComponent(socialConnectionType.value.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = true,
@@ -341,6 +423,77 @@ class CurrentuserAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
         return RequestConfig(
             method = RequestMethod.GET,
             path = "/apps/{app_id}/currentuser/user-metadata".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = true,
+            body = localVariableBody
+        )
+    }
+
+    /**
+     * Get Social Connections
+     * Gets social connections for the current user. User must be authenticated via a bearer token.
+     * @param appId App ID
+     * @return SocialConnectionsResponse
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    suspend fun getCurrentuserSocialConnections(appId: kotlin.String) : SocialConnectionsResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = getCurrentuserSocialConnectionsWithHttpInfo(appId = appId)
+
+        return@withContext when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as SocialConnectionsResponse
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * Get Social Connections
+     * Gets social connections for the current user. User must be authenticated via a bearer token.
+     * @param appId App ID
+     * @return ApiResponse<SocialConnectionsResponse?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    suspend fun getCurrentuserSocialConnectionsWithHttpInfo(appId: kotlin.String) : ApiResponse<SocialConnectionsResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = getCurrentuserSocialConnectionsRequestConfig(appId = appId)
+
+        return@withContext request<Unit, SocialConnectionsResponse>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation getCurrentuserSocialConnections
+     *
+     * @param appId App ID
+     * @return RequestConfig
+     */
+    fun getCurrentuserSocialConnectionsRequestConfig(appId: kotlin.String) : RequestConfig<Unit> {
+        val localVariableBody = null
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.GET,
+            path = "/apps/{app_id}/currentuser/social-connections".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = true,

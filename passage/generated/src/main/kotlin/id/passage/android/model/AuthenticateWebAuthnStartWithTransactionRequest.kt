@@ -22,22 +22,15 @@ import com.squareup.moshi.JsonClass
 /**
  * 
  *
- * @param apple 
- * @param google 
- * @param github 
+ * @param transactionId the transaction ID to associate with this authentication attempt (optional)
  */
 @JsonClass(generateAdapter = true)
 
-data class SocialConnections (
+data class AuthenticateWebAuthnStartWithTransactionRequest (
 
-    @Json(name = "apple")
-    val apple: kotlin.Any? = null,
-
-    @Json(name = "google")
-    val google: kotlin.Any? = null,
-
-    @Json(name = "github")
-    val github: kotlin.Any? = null
+    /* the transaction ID to associate with this authentication attempt (optional) */
+    @Json(name = "transaction_id")
+    val transactionId: kotlin.String? = null
 
 )
 

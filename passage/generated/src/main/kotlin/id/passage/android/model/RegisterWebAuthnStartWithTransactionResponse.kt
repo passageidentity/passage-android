@@ -15,8 +15,7 @@
 
 package id.passage.android.model
 
-import id.passage.android.model.CredentialAssertionChallenge1
-import id.passage.android.model.User
+import id.passage.android.model.CredentialCreationChallenge
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -25,17 +24,18 @@ import com.squareup.moshi.JsonClass
  * 
  *
  * @param handshake 
- * @param user 
+ * @param transactionId the transaction ID used to start this webauthn registration
  */
 @JsonClass(generateAdapter = true)
 
-data class LoginWebAuthnStartResponse (
+data class RegisterWebAuthnStartWithTransactionResponse (
 
     @Json(name = "handshake")
-    val handshake: CredentialAssertionChallenge1,
+    val handshake: CredentialCreationChallenge,
 
-    @Json(name = "user")
-    val user: User? = null
+    /* the transaction ID used to start this webauthn registration */
+    @Json(name = "transaction_id")
+    val transactionId: kotlin.String? = null
 
 )
 

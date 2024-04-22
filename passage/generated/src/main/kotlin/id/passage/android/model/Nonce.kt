@@ -20,24 +20,16 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
- * 
+ * the nonce to exchange for an authentication token
  *
- * @param apple 
- * @param google 
- * @param github 
+ * @param nonce 
  */
 @JsonClass(generateAdapter = true)
 
-data class SocialConnections (
+data class Nonce (
 
-    @Json(name = "apple")
-    val apple: kotlin.Any? = null,
-
-    @Json(name = "google")
-    val google: kotlin.Any? = null,
-
-    @Json(name = "github")
-    val github: kotlin.Any? = null
+    @Json(name = "nonce")
+    val nonce: kotlin.String
 
 )
 

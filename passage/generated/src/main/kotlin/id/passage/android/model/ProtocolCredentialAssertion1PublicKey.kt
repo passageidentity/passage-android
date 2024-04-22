@@ -15,7 +15,7 @@
 
 package id.passage.android.model
 
-import id.passage.android.model.ProtocolCredentialAssertionPublicKeyAllowCredentialsInner
+import id.passage.android.model.ProtocolCredentialAssertion1PublicKeyAllowCredentialsInner
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -32,13 +32,13 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 
-data class ProtocolCredentialAssertionPublicKey (
+data class ProtocolCredentialAssertion1PublicKey (
 
     @Json(name = "challenge")
     val challenge: kotlin.String,
 
     @Json(name = "allowCredentials")
-    val allowCredentials: kotlin.collections.List<ProtocolCredentialAssertionPublicKeyAllowCredentialsInner>? = null,
+    val allowCredentials: kotlin.collections.List<ProtocolCredentialAssertion1PublicKeyAllowCredentialsInner>? = null,
 
     @Json(name = "extensions")
     val extensions: kotlin.Any? = null,

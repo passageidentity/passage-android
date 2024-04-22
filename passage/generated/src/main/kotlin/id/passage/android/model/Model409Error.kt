@@ -15,6 +15,7 @@
 
 package id.passage.android.model
 
+import id.passage.android.model.Model409Code
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -22,22 +23,18 @@ import com.squareup.moshi.JsonClass
 /**
  * 
  *
- * @param apple 
- * @param google 
- * @param github 
+ * @param code 
+ * @param error 
  */
 @JsonClass(generateAdapter = true)
 
-data class SocialConnections (
+data class Model409Error (
 
-    @Json(name = "apple")
-    val apple: kotlin.Any? = null,
+    @Json(name = "code")
+    val code: Model409Code,
 
-    @Json(name = "google")
-    val google: kotlin.Any? = null,
-
-    @Json(name = "github")
-    val github: kotlin.Any? = null
+    @Json(name = "error")
+    val error: kotlin.String
 
 )
 

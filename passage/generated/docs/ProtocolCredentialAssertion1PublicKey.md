@@ -1,11 +1,11 @@
 
-# ProtocolCredentialAssertionPublicKey
+# ProtocolCredentialAssertion1PublicKey
 
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **challenge** | **kotlin.String** |  | 
-**allowCredentials** | [**kotlin.collections.List&lt;ProtocolCredentialAssertionPublicKeyAllowCredentialsInner&gt;**](ProtocolCredentialAssertionPublicKeyAllowCredentialsInner.md) |  |  [optional]
+**allowCredentials** | [**kotlin.collections.List&lt;ProtocolCredentialAssertion1PublicKeyAllowCredentialsInner&gt;**](ProtocolCredentialAssertion1PublicKeyAllowCredentialsInner.md) |  |  [optional]
 **extensions** | [**kotlin.Any**](.md) |  |  [optional]
 **rpId** | **kotlin.String** |  |  [optional]
 **timeout** | **kotlin.Int** |  |  [optional]
