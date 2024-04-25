@@ -12,8 +12,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.google.common.truth.Truth.assertThat
-import id.passage.android.IntegrationTestConfig.Companion.apiBaseUrl
-import id.passage.android.IntegrationTestConfig.Companion.appId
+import id.passage.android.IntegrationTestConfig.Companion.API_BASE_URL
+import id.passage.android.IntegrationTestConfig.Companion.APP_ID
 import id.passage.android.exceptions.FinishSocialAuthenticationInvalidRequestException
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.test.runTest
@@ -34,8 +34,8 @@ internal class SocialTests {
         Intents.init()
         activityRule?.scenario?.onActivity { activity ->
             activity?.let {
-                passage = Passage(it, appId)
-                passage.overrideBasePath(apiBaseUrl)
+                passage = Passage(it, APP_ID)
+                passage.overrideBasePath(API_BASE_URL)
             }
         }
     }
@@ -56,7 +56,7 @@ internal class SocialTests {
     fun testAuthorizeWith() =
         runTest {
             try {
-                val expectedBasePath = "$apiBaseUrl/apps/$appId/social/authorize"
+                val expectedBasePath = "$API_BASE_URL/apps/$APP_ID/social/authorize"
                 val expectedRedirectUri = "redirect_uri=https%3A%2F%2Ftry-uat.passage.dev"
                 val expectedCodeChallengeMethod = "code_challenge_method=S256"
                 val expectedConnectionType = "connection_type=github"

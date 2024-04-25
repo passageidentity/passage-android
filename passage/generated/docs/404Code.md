@@ -10,5 +10,9 @@
 
     * `magicLinkNotFound` (value: `"magic_link_not_found"`)
 
+    * `socialConnectionNotFound` (value: `"social_connection_not_found"`)
+
+    * `transactionNotFound` (value: `"transaction_not_found"`)
+
 
 

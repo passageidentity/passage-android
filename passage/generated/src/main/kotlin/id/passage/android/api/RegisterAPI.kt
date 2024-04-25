@@ -25,13 +25,17 @@ import id.passage.android.model.Model401Error
 import id.passage.android.model.Model403Error
 import id.passage.android.model.Model404Error
 import id.passage.android.model.Model500Error
+import id.passage.android.model.Nonce
 import id.passage.android.model.OneTimePasscodeResponse
 import id.passage.android.model.RegisterMagicLinkRequest
 import id.passage.android.model.RegisterMagicLinkResponse
 import id.passage.android.model.RegisterOneTimePasscodeRequest
 import id.passage.android.model.RegisterWebAuthnFinishRequest
+import id.passage.android.model.RegisterWebAuthnFinishWithTransactionRequest
 import id.passage.android.model.RegisterWebAuthnStartRequest
 import id.passage.android.model.RegisterWebAuthnStartResponse
+import id.passage.android.model.RegisterWebAuthnStartWithTransactionRequest
+import id.passage.android.model.RegisterWebAuthnStartWithTransactionResponse
 
 import com.squareup.moshi.Json
 
@@ -285,6 +289,81 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
     }
 
     /**
+     * Finish WebAuthn registration with a transaction
+     * Complete a WebAuthn registration and authenticate the user via a transaction. This endpoint accepts and verifies the response from &#x60;navigator.credential.create()&#x60; and returns a nonce meant to be exchanged for an authentication token for the user.
+     * @param appId App ID
+     * @param registerWebAuthnFinishWithTransactionRequest 
+     * @return Nonce
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    suspend fun registerWebauthnFinishWithTransaction(appId: kotlin.String, registerWebAuthnFinishWithTransactionRequest: RegisterWebAuthnFinishWithTransactionRequest) : Nonce = withContext(Dispatchers.IO) {
+        val localVarResponse = registerWebauthnFinishWithTransactionWithHttpInfo(appId = appId, registerWebAuthnFinishWithTransactionRequest = registerWebAuthnFinishWithTransactionRequest)
+
+        return@withContext when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as Nonce
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * Finish WebAuthn registration with a transaction
+     * Complete a WebAuthn registration and authenticate the user via a transaction. This endpoint accepts and verifies the response from &#x60;navigator.credential.create()&#x60; and returns a nonce meant to be exchanged for an authentication token for the user.
+     * @param appId App ID
+     * @param registerWebAuthnFinishWithTransactionRequest 
+     * @return ApiResponse<Nonce?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    suspend fun registerWebauthnFinishWithTransactionWithHttpInfo(appId: kotlin.String, registerWebAuthnFinishWithTransactionRequest: RegisterWebAuthnFinishWithTransactionRequest) : ApiResponse<Nonce?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = registerWebauthnFinishWithTransactionRequestConfig(appId = appId, registerWebAuthnFinishWithTransactionRequest = registerWebAuthnFinishWithTransactionRequest)
+
+        return@withContext request<RegisterWebAuthnFinishWithTransactionRequest, Nonce>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation registerWebauthnFinishWithTransaction
+     *
+     * @param appId App ID
+     * @param registerWebAuthnFinishWithTransactionRequest 
+     * @return RequestConfig
+     */
+    fun registerWebauthnFinishWithTransactionRequestConfig(appId: kotlin.String, registerWebAuthnFinishWithTransactionRequest: RegisterWebAuthnFinishWithTransactionRequest) : RequestConfig<RegisterWebAuthnFinishWithTransactionRequest> {
+        val localVariableBody = registerWebAuthnFinishWithTransactionRequest
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.POST,
+            path = "/apps/{app_id}/register/transactions/webauthn/finish".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
+    }
+
+    /**
      * Start WebAuthn Register
      * Initiate a WebAuthn registration and create the user. This endpoint creates a WebAuthn credential creation challenge that is used to perform the registration ceremony from the browser.
      * @param appId App ID
@@ -352,6 +431,81 @@ class RegisterAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClien
         return RequestConfig(
             method = RequestMethod.POST,
             path = "/apps/{app_id}/register/webauthn/start".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
+    }
+
+    /**
+     * Start WebAuthn registration with a transaction
+     * Initiate a WebAuthn registration and create the user via a transaction. This endpoint creates a WebAuthn credential creation challenge that is used to perform the registration ceremony from the browser.
+     * @param appId App ID
+     * @param registerWebAuthnStartWithTransactionRequest 
+     * @return RegisterWebAuthnStartWithTransactionResponse
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    suspend fun registerWebauthnStartWithTransaction(appId: kotlin.String, registerWebAuthnStartWithTransactionRequest: RegisterWebAuthnStartWithTransactionRequest) : RegisterWebAuthnStartWithTransactionResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = registerWebauthnStartWithTransactionWithHttpInfo(appId = appId, registerWebAuthnStartWithTransactionRequest = registerWebAuthnStartWithTransactionRequest)
+
+        return@withContext when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as RegisterWebAuthnStartWithTransactionResponse
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * Start WebAuthn registration with a transaction
+     * Initiate a WebAuthn registration and create the user via a transaction. This endpoint creates a WebAuthn credential creation challenge that is used to perform the registration ceremony from the browser.
+     * @param appId App ID
+     * @param registerWebAuthnStartWithTransactionRequest 
+     * @return ApiResponse<RegisterWebAuthnStartWithTransactionResponse?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    suspend fun registerWebauthnStartWithTransactionWithHttpInfo(appId: kotlin.String, registerWebAuthnStartWithTransactionRequest: RegisterWebAuthnStartWithTransactionRequest) : ApiResponse<RegisterWebAuthnStartWithTransactionResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = registerWebauthnStartWithTransactionRequestConfig(appId = appId, registerWebAuthnStartWithTransactionRequest = registerWebAuthnStartWithTransactionRequest)
+
+        return@withContext request<RegisterWebAuthnStartWithTransactionRequest, RegisterWebAuthnStartWithTransactionResponse>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation registerWebauthnStartWithTransaction
+     *
+     * @param appId App ID
+     * @param registerWebAuthnStartWithTransactionRequest 
+     * @return RequestConfig
+     */
+    fun registerWebauthnStartWithTransactionRequestConfig(appId: kotlin.String, registerWebAuthnStartWithTransactionRequest: RegisterWebAuthnStartWithTransactionRequest) : RequestConfig<RegisterWebAuthnStartWithTransactionRequest> {
+        val localVariableBody = registerWebAuthnStartWithTransactionRequest
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.POST,
+            path = "/apps/{app_id}/register/transactions/webauthn/start".replace("{"+"app_id"+"}", encodeURIComponent(appId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,

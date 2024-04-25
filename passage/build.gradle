@@ -123,11 +123,21 @@ openApiGenerate {
     apiPackage = "id.passage.android.api"
     modelPackage = "id.passage.android.model"
     configOptions = [
-            useCoroutines: "true",
             "apiSuffix": "API",
+            "enumPropertyNaming": "camelCase",
+            "moshiCodeGen": "true",
             "packageName": "id.passage.client",
-            "moshiCodeGen": "true"
+            "useCoroutines": "true",
     ]
+}
+
+tasks.register('updateGeneratedCode', Exec) {
+    dependsOn 'openApiGenerate'
+    workingDir "$projectDir"
+    commandLine "python3", "fix_generated_code.py"
+    doLast {
+        println 'updateGeneratedCode script executed successfully.'
+    }
 }
 
 publishing {

@@ -4,10 +4,10 @@ import MailosaurAPIClient
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import id.passage.android.IntegrationTestConfig.Companion.apiBaseUrl
-import id.passage.android.IntegrationTestConfig.Companion.appId
-import id.passage.android.IntegrationTestConfig.Companion.emailWaitTimeMilliseconds
-import id.passage.android.IntegrationTestConfig.Companion.existingUserEmail
+import id.passage.android.IntegrationTestConfig.Companion.API_BASE_URL
+import id.passage.android.IntegrationTestConfig.Companion.APP_ID
+import id.passage.android.IntegrationTestConfig.Companion.EMAIL_WAIT_TIME_MILLISECONDS
+import id.passage.android.IntegrationTestConfig.Companion.EXISTING_USER_EMAIL
 import id.passage.android.exceptions.NewLoginOneTimePasscodeInvalidIdentifierException
 import id.passage.android.exceptions.NewRegisterOneTimePasscodeInvalidIdentifierException
 import junit.framework.TestCase.fail
@@ -28,8 +28,8 @@ internal class OneTimePasscodeTests {
     fun setup() {
         activityRule?.scenario?.onActivity { activity ->
             activity?.let {
-                passage = Passage(it, appId)
-                passage.overrideBasePath(apiBaseUrl)
+                passage = Passage(it, APP_ID)
+                passage.overrideBasePath(API_BASE_URL)
             }
         }
     }
@@ -78,7 +78,7 @@ internal class OneTimePasscodeTests {
                 val identifier = "authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net"
                 try {
                     val otpId = passage.newRegisterOneTimePasscode(identifier).otpId
-                    delay(emailWaitTimeMilliseconds)
+                    delay(EMAIL_WAIT_TIME_MILLISECONDS)
                     val otp = MailosaurAPIClient.getMostRecentOneTimePasscode()
                     passage.oneTimePasscodeActivate(otp, otpId)
                 } catch (e: Exception) {
@@ -90,7 +90,7 @@ internal class OneTimePasscodeTests {
     @Test
     fun testLoginOTPValid() =
         runTest {
-            val identifier = existingUserEmail
+            val identifier = EXISTING_USER_EMAIL
             try {
                 passage.newLoginOneTimePasscode(identifier)
             } catch (e: Exception) {
@@ -113,11 +113,11 @@ internal class OneTimePasscodeTests {
     @Test
     fun testActivateLoginOTPValid() =
         runTest {
-            val identifier = existingUserEmail
+            val identifier = EXISTING_USER_EMAIL
             runBlocking {
                 try {
                     val otpId = passage.newLoginOneTimePasscode(identifier).otpId
-                    delay(emailWaitTimeMilliseconds)
+                    delay(EMAIL_WAIT_TIME_MILLISECONDS)
                     val otp = MailosaurAPIClient.getMostRecentOneTimePasscode()
                     passage.oneTimePasscodeActivate(otp, otpId)
                 } catch (e: Exception) {

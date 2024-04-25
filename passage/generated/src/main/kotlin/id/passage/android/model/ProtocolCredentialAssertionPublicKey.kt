@@ -23,8 +23,8 @@ import com.squareup.moshi.JsonClass
 /**
  * 
  *
- * @param allowCredentials 
  * @param challenge 
+ * @param allowCredentials 
  * @param extensions 
  * @param rpId 
  * @param timeout 
@@ -34,24 +34,24 @@ import com.squareup.moshi.JsonClass
 
 data class ProtocolCredentialAssertionPublicKey (
 
-    @Json(name = "allowCredentials")
-    val allowCredentials: kotlin.collections.List<ProtocolCredentialAssertionPublicKeyAllowCredentialsInner>?,
-
     @Json(name = "challenge")
     val challenge: kotlin.String,
 
+    @Json(name = "allowCredentials")
+    val allowCredentials: kotlin.collections.List<ProtocolCredentialAssertionPublicKeyAllowCredentialsInner>? = null,
+
     @Json(name = "extensions")
-    val extensions: kotlin.Any?,
+    val extensions: kotlin.Any? = null,
 
     @Json(name = "rpId")
-    val rpId: kotlin.String,
+    val rpId: kotlin.String? = null,
 
     @Json(name = "timeout")
-    val timeout: kotlin.Int,
+    val timeout: kotlin.Int? = null,
 
     /* UserVerification This member describes the Relying Party's requirements regarding user verification for the create() operation. Eligible authenticators are filtered to only those capable of satisfying this requirement. */
     @Json(name = "userVerification")
-    val userVerification: kotlin.String
+    val userVerification: kotlin.String? = null
 
 )
 

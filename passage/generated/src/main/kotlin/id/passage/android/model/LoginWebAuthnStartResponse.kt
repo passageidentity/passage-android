@@ -15,7 +15,7 @@
 
 package id.passage.android.model
 
-import id.passage.android.model.CredentialAssertionChallenge
+import id.passage.android.model.CredentialAssertionChallenge1
 import id.passage.android.model.User
 
 import com.squareup.moshi.Json
@@ -32,7 +32,7 @@ import com.squareup.moshi.JsonClass
 data class LoginWebAuthnStartResponse (
 
     @Json(name = "handshake")
-    val handshake: CredentialAssertionChallenge,
+    val handshake: CredentialAssertionChallenge1,
 
     @Json(name = "user")
     val user: User? = null

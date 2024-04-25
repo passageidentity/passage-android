@@ -14,15 +14,15 @@ import id.passage.android.exceptions.*
 import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_MISSING
 import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_PARSING_FAILED
 import id.passage.android.exceptions.CredentialParsingException.Companion.CREDENTIAL_PARSING_FAILED
-import id.passage.android.model.CredentialAssertionChallenge
+import id.passage.android.model.CredentialAssertionChallenge1
 import id.passage.android.model.CredentialAssertionResponse
 import id.passage.android.model.CredentialAssertionResponseJsonAdapter
 import id.passage.android.model.CredentialCreationChallenge
 import id.passage.android.model.CredentialCreationPublicKeyJsonAdapter
 import id.passage.android.model.CredentialCreationResponse
 import id.passage.android.model.CredentialCreationResponseJsonAdapter
-import id.passage.android.model.ProtocolCredentialAssertionPublicKey
-import id.passage.android.model.ProtocolCredentialAssertionPublicKeyJsonAdapter
+import id.passage.android.model.ProtocolCredentialAssertion1PublicKey
+import id.passage.android.model.ProtocolCredentialAssertion1PublicKeyJsonAdapter
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
 public final class PasskeyUtils {
@@ -114,17 +114,15 @@ public final class PasskeyUtils {
          * @return String
          * @throws CredentialParsingException
          */
-        internal fun getCredentialOptionsJson(challenge: CredentialAssertionChallenge?): String {
-            val credOptions =
-                challenge?.challenge?.publicKey
-                    ?: throw CredentialParsingException(CHALLENGE_MISSING)
+        internal fun getCredentialOptionsJson(challenge: CredentialAssertionChallenge1): String {
+            val credOptions = challenge.challenge.publicKey
             val moshi = Moshi.Builder().build()
-            val credOptionsAdapter = ProtocolCredentialAssertionPublicKeyJsonAdapter(moshi)
+            val credOptionsAdapter = ProtocolCredentialAssertion1PublicKeyJsonAdapter(moshi)
             // Passage API bug: Login API frequently returns challenge with non-url-safe characters
             // "+" and "/" that cause "Bad Base 64" exception to be thrown by the credential manager.
             val modifiedChallenge = credOptions.challenge.replace('+', '-').replace('/', '_')
             val modifiedCredOptions =
-                ProtocolCredentialAssertionPublicKey(
+                ProtocolCredentialAssertion1PublicKey(
                     allowCredentials = credOptions.allowCredentials,
                     challenge = modifiedChallenge,
                     extensions = credOptions.extensions,

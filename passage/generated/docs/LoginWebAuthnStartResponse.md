@@ -4,7 +4,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**handshake** | [**CredentialAssertionChallenge**](CredentialAssertionChallenge.md) |  | 
+**handshake** | [**CredentialAssertionChallenge1**](CredentialAssertionChallenge1.md) |  | 
 **user** | [**User**](User.md) |  |  [optional]
 
 

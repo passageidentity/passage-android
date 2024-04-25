@@ -56,7 +56,7 @@ data class User (
     val phoneVerified: kotlin.Boolean,
 
     @Json(name = "status")
-    val status: kotlin.String,
+    val status: UserStatus,
 
     @Json(name = "user_metadata")
     val userMetadata: kotlin.Any?,

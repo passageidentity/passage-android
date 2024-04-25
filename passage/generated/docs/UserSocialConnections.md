@@ -4,8 +4,9 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**google** | [**GoogleSocialConnection**](GoogleSocialConnection.md) |  |  [optional]
+**apple** | [**AppleSocialConnection**](AppleSocialConnection.md) |  |  [optional]
 **github** | [**GithubSocialConnection**](GithubSocialConnection.md) |  |  [optional]
+**google** | [**GoogleSocialConnection**](GoogleSocialConnection.md) |  |  [optional]
 
 
 

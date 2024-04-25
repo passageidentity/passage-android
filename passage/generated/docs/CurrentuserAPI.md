@@ -5,9 +5,11 @@ All URIs are relative to *https://auth.passage.id/v1*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**deleteCurrentuserDevice**](CurrentuserAPI.md#deleteCurrentuserDevice) | **DELETE** /apps/{app_id}/currentuser/devices/{device_id} | Revoke Device
+[**deleteCurrentuserSocialConnection**](CurrentuserAPI.md#deleteCurrentuserSocialConnection) | **DELETE** /apps/{app_id}/currentuser/social-connections/{social_connection_type} | Delete Social Connection
 [**getCurrentuser**](CurrentuserAPI.md#getCurrentuser) | **GET** /apps/{app_id}/currentuser | Get Current User
 [**getCurrentuserDevices**](CurrentuserAPI.md#getCurrentuserDevices) | **GET** /apps/{app_id}/currentuser/devices | List Devices
 [**getCurrentuserMetadata**](CurrentuserAPI.md#getCurrentuserMetadata) | **GET** /apps/{app_id}/currentuser/user-metadata | Get user&#39;s metadata
+[**getCurrentuserSocialConnections**](CurrentuserAPI.md#getCurrentuserSocialConnections) | **GET** /apps/{app_id}/currentuser/social-connections | Get Social Connections
 [**postCurrentuserAddDeviceFinish**](CurrentuserAPI.md#postCurrentuserAddDeviceFinish) | **POST** /apps/{app_id}/currentuser/devices/finish | Finish WebAuthn Add Device
 [**postCurrentuserAddDeviceStart**](CurrentuserAPI.md#postCurrentuserAddDeviceStart) | **POST** /apps/{app_id}/currentuser/devices/start | Start WebAuthn Add Device
 [**updateCurrentuserDevice**](CurrentuserAPI.md#updateCurrentuserDevice) | **PATCH** /apps/{app_id}/currentuser/devices/{device_id} | Update Device
@@ -50,6 +52,56 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **appId** | **kotlin.String**| App ID |
  **deviceId** | **kotlin.String**| Device ID |
+
+### Return type
+
+null (empty response body)
+
+### Authorization
+
+
+Configure bearerAuth:
+    ApiClient.accessToken = ""
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+<a name="deleteCurrentuserSocialConnection"></a>
+# **deleteCurrentuserSocialConnection**
+> deleteCurrentuserSocialConnection(appId, socialConnectionType)
+
+Delete Social Connection
+
+Deletes a social connection for the current user. User must be authenticated via a bearer token.
+
+### Example
+```kotlin
+// Import classes:
+//import id.passage.client.infrastructure.*
+//import id.passage.android.model.*
+
+val apiInstance = CurrentuserAPI()
+val appId : kotlin.String = appId_example // kotlin.String | App ID
+val socialConnectionType : kotlin.String = socialConnectionType_example // kotlin.String | The type of social connection
+try {
+    apiInstance.deleteCurrentuserSocialConnection(appId, socialConnectionType)
+} catch (e: ClientException) {
+    println("4xx response calling CurrentuserAPI#deleteCurrentuserSocialConnection")
+    e.printStackTrace()
+} catch (e: ServerException) {
+    println("5xx response calling CurrentuserAPI#deleteCurrentuserSocialConnection")
+    e.printStackTrace()
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **appId** | **kotlin.String**| App ID |
+ **socialConnectionType** | **kotlin.String**| The type of social connection | [enum: apple, github, google]
 
 ### Return type
 
@@ -201,6 +253,55 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**UserMetadataResponse**](UserMetadataResponse.md)
+
+### Authorization
+
+
+Configure bearerAuth:
+    ApiClient.accessToken = ""
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+<a name="getCurrentuserSocialConnections"></a>
+# **getCurrentuserSocialConnections**
+> SocialConnectionsResponse getCurrentuserSocialConnections(appId)
+
+Get Social Connections
+
+Gets social connections for the current user. User must be authenticated via a bearer token.
+
+### Example
+```kotlin
+// Import classes:
+//import id.passage.client.infrastructure.*
+//import id.passage.android.model.*
+
+val apiInstance = CurrentuserAPI()
+val appId : kotlin.String = appId_example // kotlin.String | App ID
+try {
+    val result : SocialConnectionsResponse = apiInstance.getCurrentuserSocialConnections(appId)
+    println(result)
+} catch (e: ClientException) {
+    println("4xx response calling CurrentuserAPI#getCurrentuserSocialConnections")
+    e.printStackTrace()
+} catch (e: ServerException) {
+    println("5xx response calling CurrentuserAPI#getCurrentuserSocialConnections")
+    e.printStackTrace()
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **appId** | **kotlin.String**| App ID |
+
+### Return type
+
+[**SocialConnectionsResponse**](SocialConnectionsResponse.md)
 
 ### Authorization
 

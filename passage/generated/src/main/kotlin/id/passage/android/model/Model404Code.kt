@@ -21,7 +21,7 @@ import com.squareup.moshi.Json
 /**
  * 
  *
- * Values: appNotFound,userNotFound,magicLinkNotFound
+ * Values: appNotFound,userNotFound,magicLinkNotFound,socialConnectionNotFound,transactionNotFound
  */
 
 enum class Model404Code(val value: kotlin.String) {
@@ -33,7 +33,13 @@ enum class Model404Code(val value: kotlin.String) {
     userNotFound("user_not_found"),
 
     @Json(name = "magic_link_not_found")
-    magicLinkNotFound("magic_link_not_found");
+    magicLinkNotFound("magic_link_not_found"),
+
+    @Json(name = "social_connection_not_found")
+    socialConnectionNotFound("social_connection_not_found"),
+
+    @Json(name = "transaction_not_found")
+    transactionNotFound("transaction_not_found");
 
     /**
      * Override toString() to avoid using the enum variable name as the value, and instead use
