@@ -189,7 +189,10 @@ final class PassageUser private constructor(
      * @return PassageCredential
      * @throws AddDevicePasskeyException
      */
-    public suspend fun addDevicePasskey(activity: Activity, options: PasskeyCreationOptions? = null): PassageCredential {
+    public suspend fun addDevicePasskey(
+        activity: Activity,
+        options: PasskeyCreationOptions? = null,
+    ): PassageCredential {
         try {
             val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
             // Get Create Credential challenge from Passage
