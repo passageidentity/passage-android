@@ -33,8 +33,11 @@ enum class UserStatus(val value: kotlin.String) {
     inactive("inactive"),
 
     @Json(name = "pending")
-    pending("pending");
+    pending("pending"),
 
+    @Json(name = "")
+    statusUnavailable("");
+    
     /**
      * Override toString() to avoid using the enum variable name as the value, and instead use
      * the actual value defined in the API spec file.

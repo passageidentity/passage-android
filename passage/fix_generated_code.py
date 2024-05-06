@@ -20,8 +20,26 @@ replacements = [
   # User model requires `webauthn_types` property, but webauthn start returns user WITHOUT it, so we must make it optional.
   (
     './generated/src/main/kotlin/id/passage/android/model/User.kt',
-    'val webauthnTypes: kotlin.collections.List<WebAuthnType>',
-    'val webauthnTypes: kotlin.collections.List<WebAuthnType>?'
+    '''val webauthnTypes: kotlin.collections.List<WebAuthnType>
+
+''',
+    '''val webauthnTypes: kotlin.collections.List<WebAuthnType>?
+
+'''
+  ),
+
+  # Some endpoints return a user with a status set to "". This is incompatible with the spec, so we have to add the statusUnavailable option.
+  (
+    './generated/src/main/kotlin/id/passage/android/model/UserStatus.kt',
+    '''@Json(name = "pending")
+    pending("pending");
+''',
+    '''@Json(name = "pending")
+    pending("pending"),
+
+    @Json(name = "")
+    statusUnavailable("");
+    '''
   ),
 
   # Add more replacements here as needed
