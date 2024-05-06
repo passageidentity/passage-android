@@ -5,7 +5,9 @@ import id.passage.android.api.CurrentuserAPI
 import id.passage.android.exceptions.AddDevicePasskeyException
 import id.passage.android.exceptions.PassageUserException
 import id.passage.android.model.AddDeviceFinishRequest
+import id.passage.android.model.AuthenticatorAttachment
 import id.passage.android.model.CurrentUser
+import id.passage.android.model.CurrentUserDevicesStartRequest
 import id.passage.android.model.MagicLink
 import id.passage.android.model.UpdateDeviceRequest
 import id.passage.android.model.UpdateUserEmailRequest
@@ -183,14 +185,19 @@ final class PassageUser private constructor(
      *
      * Returns the created device for the user. User must be authenticated via a bearer token.
      * @param activity Activity to surface the Credentials Manager prompt within
+     * @param options optional configuration for passkey creation
      * @return PassageCredential
      * @throws AddDevicePasskeyException
      */
-    public suspend fun addDevicePasskey(activity: Activity): PassageCredential {
+    public suspend fun addDevicePasskey(activity: Activity, options: PasskeyCreationOptions? = null): PassageCredential {
         try {
             val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
             // Get Create Credential challenge from Passage
-            val webauthnStartResponse = currentUserAPI.postCurrentuserAddDeviceStart(Passage.appId)
+            val authenticatorAttachment =
+                options?.authenticatorAttachment
+                    ?: AuthenticatorAttachment.platform
+            val request = CurrentUserDevicesStartRequest(authenticatorAttachment)
+            val webauthnStartResponse = currentUserAPI.postCurrentuserAddDeviceStart(Passage.appId, request)
             // Use Create Credential challenge to prompt user to create a passkey
             val createCredOptionsJson = PasskeyUtils.getCreateCredentialOptionsJson(webauthnStartResponse.handshake)
             val createCredResponse = PasskeyUtils.createPasskey(createCredOptionsJson, activity)

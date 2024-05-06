@@ -247,6 +247,7 @@ public final class Passage(
      *
      * Create a user, prompt the user to create a passkey, and register the user.
      * @param identifier valid email or E164 phone number
+     * @param options optional configuration for passkey creation
      * @return PassageAuthResult
      * @throws RegisterWithPasskeyException
      */
