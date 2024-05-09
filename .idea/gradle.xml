@@ -9,6 +9,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/authentikit" />
             <option value="$PROJECT_DIR$/passage" />
             <option value="$PROJECT_DIR$/passageflex" />
           </set>
