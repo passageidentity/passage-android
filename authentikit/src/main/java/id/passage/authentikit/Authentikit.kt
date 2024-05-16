@@ -1,33 +1,20 @@
 package id.passage.authentikit
 
-import android.os.Build
 import android.content.Context
-import java.util.UUID
 
 public class Authentikit(
-    val context: Context
+    context: Context,
+    organizationId: String
 ) {
 
-    private companion object {
-        val sessionId = UUID.randomUUID().toString()
-        const val deviceOS = "Android"
-        const val minimumAndroidVersion = Build.VERSION_CODES.P // Android 28
+    val passkey: Passkey
+
+    init {
+        passkey = Passkey(context, organizationId)
     }
 
-    public fun evaluateReadiness() {
-
-
-        // Header values
-        val deviceOS = deviceOS
-        val deviceOSVersion = Build.VERSION.SDK_INT
-        val appIdentifier = context.packageName
-
-        // Body values
-        val supportsPasskeys = deviceOSVersion >= minimumAndroidVersion
-
-        val sessionId = sessionId
-
+    internal companion object {
+        const val BASE_PATH = "https://auth-uat.passage.dev"
     }
-
 
 }
