@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.util.UUID
 
-public class Passkey(private val context: Context, private val organizationId: String) {
+public class Passkey(private val context: Context, private val clientSideKey: String) {
 
     private companion object {
         const val deviceOS = "Android"
@@ -31,18 +31,19 @@ public class Passkey(private val context: Context, private val organizationId: S
             "app_identifier" to context.packageName,
             "device_os" to deviceOS,
             "device_os_version" to deviceOSVersion.toString(),
-            "Content-Type" to "application/json"
+            "Content-Type" to "application/json",
+            "X-API-KEY" to clientSideKey,
+            "Passage-Version" to "Passage Authentikit Android ${Authentikit.PACKAGE_VERSION}",
         )
         val requestBody = mapOf(
-            "device_id" to deviceId,
-            "security_key" to supportsPasskeys,
-            "platform" to supportsPasskeys,
             "cloud_synced" to supportsPasskeys,
+            "conditional_ui" to supportsPasskeys,
             "cross_platform" to supportsPasskeys,
-            "conditional_ui" to supportsPasskeys
+            "device_id" to deviceId,
+            "platform" to supportsPasskeys,
+            "security_key" to supportsPasskeys,
         )
-        val urlString = "${Authentikit.BASE_PATH}/v1/organizations/$organizationId/analytics/passkey-readiness"
-        val url = URL(urlString)
+        val url = URL("${Authentikit.BASE_PATH}/v1/analytics/passkey-readiness")
 
         withContext(Dispatchers.IO) {
             try {

@@ -4,17 +4,18 @@ import android.content.Context
 
 public class Authentikit(
     context: Context,
-    organizationId: String
+    clientSideKey: String
 ) {
 
     val passkey: Passkey
 
     init {
-        passkey = Passkey(context, organizationId)
+        passkey = Passkey(context, clientSideKey)
     }
 
     internal companion object {
         const val BASE_PATH = "https://auth-uat.passage.dev"
+        const val PACKAGE_VERSION = "0.1.0"
     }
 
 }
