@@ -4,9 +4,8 @@ import android.content.Context
 
 public class Authentikit(
     context: Context,
-    clientSideKey: String
+    clientSideKey: String,
 ) {
-
     val passkey: Passkey
 
     init {
@@ -17,5 +16,4 @@ public class Authentikit(
         var BASE_PATH = "https://auth.passage.id"
         const val PACKAGE_VERSION = "0.1.0"
     }
-
 }

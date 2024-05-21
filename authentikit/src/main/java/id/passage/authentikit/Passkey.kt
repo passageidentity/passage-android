@@ -2,14 +2,12 @@ package id.passage.authentikit
 
 import android.content.Context
 import android.os.Build
-import javax.net.ssl.HttpsURLConnection
+import org.json.JSONObject
 import java.net.URL
 import java.util.UUID
-import org.json.JSONObject
-
+import javax.net.ssl.HttpsURLConnection
 
 public class Passkey(private val context: Context, private val clientSideKey: String) {
-
     private companion object {
         const val deviceOS = "Android"
         const val minimumAndroidVersion = Build.VERSION_CODES.P // Android 28
@@ -23,23 +21,25 @@ public class Passkey(private val context: Context, private val clientSideKey: St
         val deviceId = getOrGenerateDeviceId()
         val deviceOSVersion = Build.VERSION.SDK_INT
         val supportsPasskeys = deviceOSVersion >= minimumAndroidVersion
-        val requestHeaders = mapOf(
-            "app_identifier" to context.packageName,
-            "device_os" to deviceOS,
-            "device_os_version" to deviceOSVersion.toString(),
-            "origin" to context.packageName,
-            "Content-Type" to "application/json",
-            "X-API-KEY" to clientSideKey,
-            "Passage-Version" to "Passage Authentikit Android ${Authentikit.PACKAGE_VERSION}",
-        )
-        val requestBody = mapOf(
-            "cloud_synced" to supportsPasskeys,
-            "conditional_ui" to supportsPasskeys,
-            "cross_platform" to supportsPasskeys,
-            "device_id" to deviceId,
-            "platform" to supportsPasskeys,
-            "security_key" to supportsPasskeys,
-        )
+        val requestHeaders =
+            mapOf(
+                "app_identifier" to context.packageName,
+                "device_os" to deviceOS,
+                "device_os_version" to deviceOSVersion.toString(),
+                "origin" to context.packageName,
+                "Content-Type" to "application/json",
+                "X-API-KEY" to clientSideKey,
+                "Passage-Version" to "Passage Authentikit Android ${Authentikit.PACKAGE_VERSION}",
+            )
+        val requestBody =
+            mapOf(
+                "cloud_synced" to supportsPasskeys,
+                "conditional_ui" to supportsPasskeys,
+                "cross_platform" to supportsPasskeys,
+                "device_id" to deviceId,
+                "platform" to supportsPasskeys,
+                "security_key" to supportsPasskeys,
+            )
         val url = URL("${Authentikit.BASE_PATH}/v1/analytics/passkey-readiness")
         val connection = url.openConnection() as HttpsURLConnection
         try {
@@ -86,5 +86,4 @@ public class Passkey(private val context: Context, private val clientSideKey: St
     private fun updateLastEvaluationDate() {
         sharedPreferences.edit().putLong(lastEvaluationKey, System.currentTimeMillis()).apply()
     }
-
 }
