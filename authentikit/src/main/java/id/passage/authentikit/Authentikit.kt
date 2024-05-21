@@ -13,7 +13,7 @@ public class Authentikit(
     }
 
     internal companion object {
-        var BASE_PATH = "https://auth.passage.id"
+        var basePath = "https://auth.passage.id"
         const val PACKAGE_VERSION = "0.1.0"
     }
 }

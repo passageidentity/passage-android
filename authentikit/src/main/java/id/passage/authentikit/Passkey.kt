@@ -9,9 +9,9 @@ import javax.net.ssl.HttpsURLConnection
 
 public class Passkey(private val context: Context, private val clientSideKey: String) {
     private companion object {
-        const val deviceOS = "Android"
-        const val minimumAndroidVersion = Build.VERSION_CODES.P // Android 28
-        const val lastEvaluationKey = "LAST_EVALUATION_DATE"
+        const val DEVICE_OS = "Android"
+        const val MINIMUM_ANDROID_VERSION = Build.VERSION_CODES.P // Android 28
+        const val LAST_EVALUATION_KEY = "LAST_EVALUATION_DATE"
     }
 
     private val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
@@ -20,11 +20,11 @@ public class Passkey(private val context: Context, private val clientSideKey: St
         if (!canEvaluateReadiness()) return
         val deviceId = getOrGenerateDeviceId()
         val deviceOSVersion = Build.VERSION.SDK_INT
-        val supportsPasskeys = deviceOSVersion >= minimumAndroidVersion
+        val supportsPasskeys = deviceOSVersion >= MINIMUM_ANDROID_VERSION
         val requestHeaders =
             mapOf(
                 "app_identifier" to context.packageName,
-                "device_os" to deviceOS,
+                "device_os" to DEVICE_OS,
                 "device_os_version" to deviceOSVersion.toString(),
                 "origin" to context.packageName,
                 "Content-Type" to "application/json",
@@ -40,7 +40,7 @@ public class Passkey(private val context: Context, private val clientSideKey: St
                 "platform" to supportsPasskeys,
                 "security_key" to supportsPasskeys,
             )
-        val url = URL("${Authentikit.BASE_PATH}/v1/analytics/passkey-readiness")
+        val url = URL("${Authentikit.basePath}/v1/analytics/passkey-readiness")
         val connection = url.openConnection() as HttpsURLConnection
         try {
             connection.requestMethod = "POST"
@@ -78,12 +78,12 @@ public class Passkey(private val context: Context, private val clientSideKey: St
     }
 
     private fun canEvaluateReadiness(): Boolean {
-        val lastEvaluationDate = sharedPreferences.getLong(lastEvaluationKey, 0L)
+        val lastEvaluationDate = sharedPreferences.getLong(LAST_EVALUATION_KEY, 0L)
         val currentTime = System.currentTimeMillis()
         return (currentTime - lastEvaluationDate) > 24 * 60 * 60 * 1000
     }
 
     private fun updateLastEvaluationDate() {
-        sharedPreferences.edit().putLong(lastEvaluationKey, System.currentTimeMillis()).apply()
+        sharedPreferences.edit().putLong(LAST_EVALUATION_KEY, System.currentTimeMillis()).apply()
     }
 }
