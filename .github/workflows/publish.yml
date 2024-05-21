@@ -1,0 +1,62 @@
+name: Publish Passage Package
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '17'
+
+    - name: Set up GPG
+      env:
+        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      run: |
+        echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+        echo "signing.gnupg.keyName=${{ secrets.GPG_KEY_NAME }}" >> gradle.properties
+        echo "signing.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }}" >> gradle.properties
+
+    - name: Publish to Maven Central
+      run: ./gradlew :passage:publish
+
+    - name: Wait for Staging Repository to be Created
+      run: sleep 60
+
+    - name: Get Staging Repository ID
+      id: get_repo_id
+      env:
+        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+      run: |
+        response=$(curl -u ${{ secrets.OSSRH_USERNAME }}:${{ secrets.OSSRH_PASSWORD }} -X GET "https://s01.oss.sonatype.org/service/local/staging/profile_repositories")
+        repo_id=$(echo $response | jq -r '.data[] | select(.repositoryType=="open") | .repositoryId')
+        echo "::set-output name=repo_id::$repo_id"
+
+    - name: Close and Release Repository
+      env:
+        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+      run: |
+        repo_id=${{ steps.get_repo_id.outputs.repo_id }}
+        curl -u ${{ secrets.OSSRH_USERNAME }}:${{ secrets.OSSRH_PASSWORD }} \
+             -X POST https://s01.oss.sonatype.org/service/local/staging/bulk/close \
+             -H "Content-Type: application/xml" \
+             -d "<promoteRequest><data><stagedRepositoryId>$repo_id</stagedRepositoryId></data></promoteRequest>"
+
+        # Wait for repository to close
+        sleep 60
+
+        curl -u ${{ secrets.OSSRH_USERNAME }}:${{ secrets.OSSRH_PASSWORD }} \
+             -X POST https://s01.oss.sonatype.org/service/local/staging/bulk/promote \
+             -H "Content-Type: application/xml" \
+             -d "<promoteRequest><data><stagedRepositoryId>$repo_id</stagedRepositoryId></data></promoteRequest>"
