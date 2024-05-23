@@ -17,7 +17,7 @@ class PasskeyEvaluationTests {
 
     @Before
     fun setup() {
-        Authentikit.BASE_PATH = "https://auth-uat.passage.dev"
+        Authentikit.basePath = "https://auth-uat.passage.dev"
     }
 
     @Test
