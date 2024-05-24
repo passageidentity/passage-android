@@ -55,15 +55,17 @@ jobs:
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
       run: |
         repo_id=${{ steps.get_repo_id.outputs.repo_id }}
+        close_xml="<promoteRequest><data><stagedRepositoryId>$repo_id</stagedRepositoryId></data></promoteRequest>"
         curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} \
              -X POST https://s01.oss.sonatype.org/service/local/staging/bulk/close \
              -H "Content-Type: application/xml" \
-             -d "<promoteRequest><data><stagedRepositoryId>$repo_id</stagedRepositoryId></data></promoteRequest>"
-
+             -d "$close_xml"
+        
         # Wait for repository to close
         sleep 60
-
-        curl -u ${OSSRH_USERNAME}:${secrets.OSSRH_PASSWORD} \
+        
+        promote_xml="<promoteRequest><data><stagedRepositoryId>$repo_id</stagedRepositoryId></data></promoteRequest>"
+        curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} \
              -X POST https://s01.oss.sonatype.org/service/local/staging/bulk/promote \
              -H "Content-Type: application/xml" \
-             -d "<promoteRequest><data><stagedRepositoryId>$repo_id</stagedRepositoryId></data></promoteRequest>"
+             -d "$promote_xml"
