@@ -56,13 +56,15 @@ jobs:
       run: |
         repo_id=${{ steps.get_repo_id.outputs.repo_id }}
         
+        # Construct the XML payload
         close_xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?><promoteRequest><data><stagedRepositoryId>$repo_id</stagedRepositoryId></data></promoteRequest>"
         echo "Close XML: $close_xml"
         
-        curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} \
-             -X POST https://s01.oss.sonatype.org/service/local/staging/bulk/close \
-             -H "Content-Type: application/xml" \
-             -d "$close_xml"
+        # Send the XML payload using echo to avoid escaping issues
+        echo "$close_xml" | curl -v -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} \
+                             -X POST https://s01.oss.sonatype.org/service/local/staging/bulk/close \
+                             -H "Content-Type: application/xml" \
+                             -d @-
         
         # Wait for repository to close
         sleep 60
@@ -70,7 +72,7 @@ jobs:
         promote_xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?><promoteRequest><data><stagedRepositoryId>$repo_id</stagedRepositoryId></data></promoteRequest>"
         echo "Promote XML: $promote_xml"
         
-        curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} \
-             -X POST https://s01.oss.sonatype.org/service/local/staging/bulk/promote \
-             -H "Content-Type: application/xml" \
-             -d "$promote_xml"
+        echo "$promote_xml" | curl -v -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} \
+                              -X POST https://s01.oss.sonatype.org/service/local/staging/bulk/promote \
+                              -H "Content-Type: application/xml" \
+                              -d @-
