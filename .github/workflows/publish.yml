@@ -23,7 +23,7 @@ jobs:
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
       run: |
-        echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+        echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
         echo "signing.gnupg.keyName=${GPG_KEY_ID}" >> gradle.properties
         echo "signing.gnupg.passphrase=${GPG_PASSPHRASE}" >> gradle.properties
 
@@ -46,8 +46,8 @@ jobs:
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
       run: |
         response=$(curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} -X GET "https://s01.oss.sonatype.org/service/local/staging/profile_repositories")
-        repo_id=$(echo $response | xmllint --xpath "string(//stagingProfileRepository/repositoryId)" -)
-        echo "::set-output name=repo_id::$repo_id"
+        repo_id=$(echo ${response} | xmllint --xpath "string(//stagingProfileRepository/repositoryId)" -)
+        echo "::set-output name=repo_id::${repo_id}"
 
     - name: Close and Release Repository
       env:
@@ -60,15 +60,15 @@ jobs:
         close_xml="
         <promoteRequest>
           <data>
-            <stagedRepositoryId>"$repo_id"</stagedRepositoryId>
+            <stagedRepositoryId>"${repo_id}"</stagedRepositoryId>
           </data>
         </promoteRequest>"
-        echo "Close XML: $close_xml"
+        echo "Close XML: ${close_xml}"
         
         curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} \
-             -X POST https://s01.oss.sonatype.org/service/local/staging/profiles/$profile_id/finish \
+             -X POST https://s01.oss.sonatype.org/service/local/staging/profiles/${profile_id}/finish \
              -H "Content-Type: application/xml" \
-             -d "$close_xml"
+             -d "${close_xml}"
         
         # Wait for repository to close
         sleep 60
@@ -76,12 +76,12 @@ jobs:
         promote_xml="
         <promoteRequest>
           <data>
-            <stagedRepositoryId>"$repo_id"</stagedRepositoryId>
+            <stagedRepositoryId>"${repo_id}"</stagedRepositoryId>
           </data>
         </promoteRequest>"
-        echo "Promote XML: $promote_xml"
+        echo "Promote XML: ${promote_xml}"
         
         curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} \
-             -X POST https://s01.oss.sonatype.org/service/local/staging/profiles/$profile_id/promote \
+             -X POST https://s01.oss.sonatype.org/service/local/staging/profiles/${profile_id}/promote \
              -H "Content-Type: application/xml" \
-             -d "$promote_xml"
+             -d "${promote_xml}"
