@@ -53,9 +53,9 @@ jobs:
       env:
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        OSSRH_PROFILE_ID: ${{ secrets.OSSRH_PROFILE_ID }}
       run: |
         repo_id=${{ steps.get_repo_id.outputs.repo_id }}
-        profile_id=${{ secrets.OSSRH_PROFILE_ID }}
         
         close_xml="
         <promoteRequest>
@@ -66,7 +66,7 @@ jobs:
         echo "Close XML: ${close_xml}"
         
         curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} \
-             -X POST https://s01.oss.sonatype.org/service/local/staging/profiles/${profile_id}/finish \
+             -X POST https://s01.oss.sonatype.org/service/local/staging/profiles/${OSSRH_PROFILE_ID}/finish \
              -H "Content-Type: application/xml" \
              -d "${close_xml}"
         
@@ -82,6 +82,6 @@ jobs:
         echo "Promote XML: ${promote_xml}"
         
         curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} \
-             -X POST https://s01.oss.sonatype.org/service/local/staging/profiles/${profile_id}/promote \
+             -X POST https://s01.oss.sonatype.org/service/local/staging/profiles/${OSSRH_PROFILE_ID}/promote \
              -H "Content-Type: application/xml" \
              -d "${promote_xml}"
