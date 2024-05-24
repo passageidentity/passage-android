@@ -43,7 +43,7 @@ jobs:
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
       run: |
         response=$(curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} -X GET "https://s01.oss.sonatype.org/service/local/staging/profile_repositories")
-        repo_id=$(echo $response | jq -r '.data[] | select(.repositoryType=="open") | .repositoryId')
+        repo_id=$(echo $response | xmllint --xpath "string(//stagingProfileRepository/repositoryId)" -)
         echo "::set-output name=repo_id::$repo_id"
 
     - name: Close and Release Repository
