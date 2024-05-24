@@ -60,7 +60,7 @@ jobs:
         close_xml="
         <promoteRequest>
           <data>
-            <stagedRepositoryId>'"$repo_id"'</stagedRepositoryId>
+            <stagedRepositoryId>"$repo_id"</stagedRepositoryId>
           </data>
         </promoteRequest>"
         echo "Close XML: $close_xml"
@@ -76,7 +76,7 @@ jobs:
         promote_xml="
         <promoteRequest>
           <data>
-            <stagedRepositoryId>'"$repo_id"'</stagedRepositoryId>
+            <stagedRepositoryId>"$repo_id"</stagedRepositoryId>
           </data>
         </promoteRequest>"
         echo "Promote XML: $promote_xml"
