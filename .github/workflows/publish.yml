@@ -55,18 +55,18 @@ jobs:
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
       run: |
         repo_id=${{ steps.get_repo_id.outputs.repo_id }}
+        profile_id="1cb966e2456354"
         
         close_xml="
         <promoteRequest>
           <data>
-            <stagedRepositoryId>$repo_id</stagedRepositoryId>
-            <description>$repo_id</description>
+            <stagedRepositoryId>'"$repo_id"'</stagedRepositoryId>
           </data>
         </promoteRequest>"
         echo "Close XML: $close_xml"
         
         curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} \
-             -X POST https://s01.oss.sonatype.org/service/local/staging/bulk/close \
+             -X POST https://s01.oss.sonatype.org/service/local/staging/profiles/$profile_id/finish \
              -H "Content-Type: application/xml" \
              -d "$close_xml"
         
@@ -76,13 +76,12 @@ jobs:
         promote_xml="
         <promoteRequest>
           <data>
-            <stagedRepositoryId>$repo_id</stagedRepositoryId>
-            <description>$repo_id</description>
+            <stagedRepositoryId>'"$repo_id"'</stagedRepositoryId>
           </data>
         </promoteRequest>"
         echo "Promote XML: $promote_xml"
         
         curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} \
-             -X POST https://s01.oss.sonatype.org/service/local/staging/bulk/promote \
+             -X POST https://s01.oss.sonatype.org/service/local/staging/profiles/$profile_id/promote \
              -H "Content-Type: application/xml" \
              -d "$promote_xml"
