@@ -28,6 +28,9 @@ jobs:
         echo "signing.gnupg.passphrase=${GPG_PASSPHRASE}" >> gradle.properties
 
     - name: Publish to Maven Central
+      env:
+        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
       run: ./gradlew :passage:publish
 
     - name: Wait for Staging Repository to be Created
