@@ -55,7 +55,7 @@ jobs:
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
       run: |
         repo_id=${{ steps.get_repo_id.outputs.repo_id }}
-        profile_id="1cb966e2456354"
+        profile_id=${{ secrets.OSSRH_PROFILE_ID }}
         
         close_xml="
         <promoteRequest>
