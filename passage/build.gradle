@@ -15,14 +15,6 @@ apply plugin: 'signing'
 group = "id.passage.android"
 version = "1.7.2"
 
-def localProperties = new Properties()
-File localPropertiesFile = rootProject.file('local.properties')
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withInputStream { localProperties.load(it) }
-} else {
-    println "local.properties file not found. Skipping..."
-}
-
 android {
     namespace 'id.passage.android'
     compileSdk 34
@@ -182,8 +174,8 @@ publishing {
             name = "OSSRH"
             url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
             credentials {
-                username localProperties.getProperty('ossrhUsername')
-                password localProperties.getProperty('ossrhPassword')
+                username = project.findProperty("ossrhUsername") ?: System.getenv("OSSRH_USERNAME")
+                password = project.findProperty("ossrhPassword") ?: System.getenv("OSSRH_PASSWORD")
             }
         }
     }

@@ -39,7 +39,7 @@ jobs:
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
       run: |
-        response=$(curl -u ${{ secrets.OSSRH_USERNAME }}:${{ secrets.OSSRH_PASSWORD }} -X GET "https://s01.oss.sonatype.org/service/local/staging/profile_repositories")
+        response=$(curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} -X GET "https://s01.oss.sonatype.org/service/local/staging/profile_repositories")
         repo_id=$(echo $response | jq -r '.data[] | select(.repositoryType=="open") | .repositoryId')
         echo "::set-output name=repo_id::$repo_id"
 
@@ -49,7 +49,7 @@ jobs:
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
       run: |
         repo_id=${{ steps.get_repo_id.outputs.repo_id }}
-        curl -u ${{ secrets.OSSRH_USERNAME }}:${{ secrets.OSSRH_PASSWORD }} \
+        curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} \
              -X POST https://s01.oss.sonatype.org/service/local/staging/bulk/close \
              -H "Content-Type: application/xml" \
              -d "<promoteRequest><data><stagedRepositoryId>$repo_id</stagedRepositoryId></data></promoteRequest>"
@@ -57,7 +57,7 @@ jobs:
         # Wait for repository to close
         sleep 60
 
-        curl -u ${{ secrets.OSSRH_USERNAME }}:${{ secrets.OSSRH_PASSWORD }} \
+        curl -u ${OSSRH_USERNAME}:${secrets.OSSRH_PASSWORD} \
              -X POST https://s01.oss.sonatype.org/service/local/staging/bulk/promote \
              -H "Content-Type: application/xml" \
              -d "<promoteRequest><data><stagedRepositoryId>$repo_id</stagedRepositoryId></data></promoteRequest>"
