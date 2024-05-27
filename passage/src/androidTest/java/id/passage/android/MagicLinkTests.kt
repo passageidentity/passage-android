@@ -60,7 +60,7 @@ internal class MagicLinkTests {
     }
 
     @Test
-    fun testRegisterExcitingUserMagicLink() = runTest {
+    fun testRegisterExistingUserMagicLink() = runTest {
         try {
             passage.newRegisterMagicLink(EXISTING_USER_EMAIL_MAGIC_LINK, null)
             fail("Test should throw NewRegisterMagicLinkInvalidIdentifierException")
