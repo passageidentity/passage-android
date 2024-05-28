@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: "actions/checkout@v3"
         with:
           fetch-depth: 0
 
@@ -57,7 +57,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: "actions/checkout@v3"
 
       - name: Create major release branch
         if: ${{ github.event.inputs.release-type == 'major' }}
@@ -84,19 +84,19 @@ jobs:
 
     steps:
       - name: Check out code - major release
-        uses: actions/checkout@v3
+        uses: "actions/checkout@v3"
         if: ${{ github.event.inputs.release-type == 'major' }}
         with:
           ref: ${{needs.determine-next-versions.outputs.branch-major}}
 
       - name: Check out code - minor release
-        uses: actions/checkout@v3
+        uses: "actions/checkout@v3"
         if: ${{ github.event.inputs.release-type == 'minor' }}
         with:
           ref: ${{needs.determine-next-versions.outputs.branch-minor}}
 
       - name: Check out code - patch release
-        uses: actions/checkout@v3
+        uses: "actions/checkout@v3"
         if: ${{ github.event.inputs.release-type == 'patch' }}
         with:
           ref: ${{needs.determine-next-versions.outputs.branch-patch}}
@@ -127,15 +127,15 @@ jobs:
 
       - name: Update version in README
         run: |
-          new_version=${{ needs.determine-next-versions.outputs.next-${{ github.event.inputs.release-type }} }}
+          new_version=${{ needs.determine-next-versions.outputs["next-${{ github.event.inputs.release-type }}"] }}
           sed -i "s/version: [0-9]*\.[0-9]*\.[0-9]*/version: $new_version/" README.md
           echo "Updated README to version $new_version"
 
       - name: Commit version change
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: "stefanzweifel/git-auto-commit-action@v4"
         with:
-          commit_message: "Bumped version to ${{ needs.determine-next-versions.outputs.next-${{ github.event.inputs.release-type }} }}"
-          branch: ${{ needs.determine-next-versions.outputs.branch-${{ github.event.inputs.release-type }} }}
+          commit_message: "Bumped version to ${{ needs.determine-next-versions.outputs["next-${{ github.event.inputs.release-type }}"] }}"
+          branch: ${{ needs.determine-next-versions.outputs["branch-${{ github.event.inputs.release-type }}"] }}
 
   create-github-release:
     name: Create GitHub Release
@@ -144,12 +144,12 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: "actions/checkout@v3"
 
       - name: Create Release
-        uses: ncipollo/release-action@v1
+        uses: "ncipollo/release-action@v1"
         with:
-          tag: "v${{ needs.determine-next-versions.outputs.next-${{ github.event.inputs.release-type }} }}"
+          tag: "v${{ needs.determine-next-versions.outputs["next-${{ github.event.inputs.release-type }}"] }}"
           generateReleaseNotes: true
           draft: false
 
@@ -160,10 +160,10 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: "actions/checkout@v3"
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: "actions/setup-java@v2"
         with:
           distribution: 'adopt'
           java-version: '17'
@@ -174,9 +174,9 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
         run: |
-          echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
-          echo "signing.gnupg.keyName=${GPG_KEY_ID}" >> gradle.properties
-          echo "signing.gnupg.passphrase=${GPG_PASSPHRASE}" >> gradle.properties
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          echo "signing.gnupg.keyName=${{ secrets.GPG_KEY_ID }}" >> gradle.properties
+          echo "signing.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }}" >> gradle.properties
 
       - name: Publish to Maven Central
         env:
