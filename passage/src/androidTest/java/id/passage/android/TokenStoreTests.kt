@@ -6,8 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import id.passage.android.IntegrationTestConfig.Companion.API_BASE_URL
 import id.passage.android.IntegrationTestConfig.Companion.APP_ID_OTP
-import id.passage.android.IntegrationTestConfig.Companion.WAIT_TIME_MILLISECONDS
 import id.passage.android.IntegrationTestConfig.Companion.EXISTING_USER_EMAIL_OTP
+import id.passage.android.IntegrationTestConfig.Companion.WAIT_TIME_MILLISECONDS
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.delay
