@@ -1,3 +1,4 @@
+
 name: Create Release
 
 on:
@@ -125,16 +126,31 @@ jobs:
           sed -i "s/versionCode .*/versionCode ${new_version//./}/" app/build.gradle
           echo "Updated to patch version $new_version"
 
-      - name: Update version in README
+      - name: Update version in README - major release
+        if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
-          new_version=${{ needs.determine-next-versions.outputs["next-${{ github.event.inputs.release-type }}"] }}
+          new_version=${{ needs.determine-next-versions.outputs.next-major }}
+          sed -i "s/version: [0-9]*\.[0-9]*\.[0-9]*/version: $new_version/" README.md
+          echo "Updated README to version $new_version"
+
+      - name: Update version in README - minor release
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        run: |
+          new_version=${{ needs.determine-next-versions.outputs.next-minor }}
+          sed -i "s/version: [0-9]*\.[0-9]*\.[0-9]*/version: $new_version/" README.md
+          echo "Updated README to version $new_version"
+
+      - name: Update version in README - patch release
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        run: |
+          new_version=${{ needs.determine-next-versions.outputs.next-patch }}
           sed -i "s/version: [0-9]*\.[0-9]*\.[0-9]*/version: $new_version/" README.md
           echo "Updated README to version $new_version"
 
       - name: Commit version change
         uses: "stefanzweifel/git-auto-commit-action@v4"
         with:
-          commit_message: "Bumped version to ${{ needs.determine-next-versions.outputs["next-${{ github.event.inputs.release-type }}"] }}"
+          commit_message: "Bumped version to ${{ needs.determine-next-versions.outputs['next-${{ github.event.inputs.release-type }}'] }}"
           branch: ${{ needs.determine-next-versions.outputs["branch-${{ github.event.inputs.release-type }}"] }}
 
   create-github-release:
@@ -149,7 +165,7 @@ jobs:
       - name: Create Release
         uses: "ncipollo/release-action@v1"
         with:
-          tag: "v${{ needs.determine-next-versions.outputs["next-${{ github.event.inputs.release-type }}"] }}"
+          tag: "v${{ needs.determine-next-versions.outputs['next-${{ github.event.inputs.release-type }}'] }}"
           generateReleaseNotes: true
           draft: false
 
