@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: "actions/checkout@v3"
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -57,25 +57,25 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: "actions/checkout@v3"
+        uses: actions/checkout@v3
 
       - name: Create major release branch
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
-          git checkout -b ${{needs.determine-next-versions.outputs.branch-major}}
-          git push origin ${{needs.determine-next-versions.outputs.branch-major}}
+          git checkout -b ${{ needs.determine-next-versions.outputs.branch-major }}
+          git push origin ${{ needs.determine-next-versions.outputs.branch-major }}
 
       - name: Create minor release branch
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
-          git checkout -b ${{needs.determine-next-versions.outputs.branch-minor}}
-          git push origin ${{needs.determine-next-versions.outputs.branch-minor}}
+          git checkout -b ${{ needs.determine-next-versions.outputs.branch-minor }}
+          git push origin ${{ needs.determine-next-versions.outputs.branch-minor }}
 
       - name: Create patch release branch
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
-          git checkout -b ${{needs.determine-next-versions.outputs.branch-patch}}
-          git push origin ${{needs.determine-next-versions.outputs.branch-patch}}
+          git checkout -b ${{ needs.determine-next-versions.outputs.branch-patch }}
+          git push origin ${{ needs.determine-next-versions.outputs.branch-patch }}
 
   bump-version:
     name: Bump the Version
@@ -84,73 +84,97 @@ jobs:
 
     steps:
       - name: Check out code - major release
-        uses: "actions/checkout@v3"
+        uses: actions/checkout@v3
         if: ${{ github.event.inputs.release-type == 'major' }}
         with:
-          ref: ${{needs.determine-next-versions.outputs.branch-major}}
+          ref: ${{ needs.determine-next-versions.outputs.branch-major }}
 
       - name: Check out code - minor release
-        uses: "actions/checkout@v3"
+        uses: actions/checkout@v3
         if: ${{ github.event.inputs.release-type == 'minor' }}
         with:
-          ref: ${{needs.determine-next-versions.outputs.branch-minor}}
+          ref: ${{ needs.determine-next-versions.outputs.branch-minor }}
 
       - name: Check out code - patch release
-        uses: "actions/checkout@v3"
+        uses: actions/checkout@v3
         if: ${{ github.event.inputs.release-type == 'patch' }}
         with:
-          ref: ${{needs.determine-next-versions.outputs.branch-patch}}
+          ref: ${{ needs.determine-next-versions.outputs.branch-patch }}
 
       - name: Update major version
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-major }}
-          sed -i "s/versionName \".*\"/versionName \"$new_version\"/" app/build.gradle
-          sed -i "s/versionCode .*/versionCode ${new_version//./}/" app/build.gradle
-          echo "Updated to major version $new_version"
+          current_version_code=$(grep 'versionCode ' passage/build.gradle | awk '{print $2}')
+          new_version_code=$((current_version_code + 1))
+          sed -i "s/versionName \".*\"/versionName \"$new_version\"/" passage/build.gradle
+          sed -i "s/^version = \".*\"/version = \"$new_version\"/" passage/build.gradle
+          sed -i "s/versionCode .*/versionCode $new_version_code/" passage/build.gradle
+          echo "Updated to major version $new_version with version code $new_version_code"
 
       - name: Update minor version
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-minor }}
-          sed -i "s/versionName \".*\"/versionName \"$new_version\"/" app/build.gradle
-          sed -i "s/versionCode .*/versionCode ${new_version//./}/" app/build.gradle
-          echo "Updated to minor version $new_version"
+          current_version_code=$(grep 'versionCode ' passage/build.gradle | awk '{print $2}')
+          new_version_code=$((current_version_code + 1))
+          sed -i "s/versionName \".*\"/versionName \"$new_version\"/" passage/build.gradle
+          sed -i "s/^version = \".*\"/version = \"$new_version\"/" passage/build.gradle
+          sed -i "s/versionCode .*/versionCode $new_version_code/" passage/build.gradle
+          echo "Updated to minor version $new_version with version code $new_version_code"
 
       - name: Update patch version
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-patch }}
-          sed -i "s/versionName \".*\"/versionName \"$new_version\"/" app/build.gradle
-          sed -i "s/versionCode .*/versionCode ${new_version//./}/" app/build.gradle
-          echo "Updated to patch version $new_version"
+          current_version_code=$(grep 'versionCode ' passage/build.gradle | awk '{print $2}')
+          new_version_code=$((current_version_code + 1))
+          sed -i "s/versionName \".*\"/versionName \"$new_version\"/" passage/build.gradle
+          sed -i "s/^version = \".*\"/version = \"$new_version\"/" passage/build.gradle
+          sed -i "s/versionCode .*/versionCode $new_version_code/" passage/build.gradle
+          echo "Updated to patch version $new_version with version code $new_version_code"
 
       - name: Update version in README - major release
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-major }}
-          sed -i "s/version: [0-9]*\.[0-9]*\.[0-9]*/version: $new_version/" README.md
+          sed -i "s/implementation 'id\.passage\.android:passage:[0-9]*\.[0-9]*\.[0-9]*'/implementation 'id.passage.android:passage:$new_version'/" README.md
           echo "Updated README to version $new_version"
 
       - name: Update version in README - minor release
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-minor }}
-          sed -i "s/version: [0-9]*\.[0-9]*\.[0-9]*/version: $new_version/" README.md
+          sed -i "s/implementation 'id\.passage\.android:passage:[0-9]*\.[0-9]*\.[0-9]*'/implementation 'id.passage.android:passage:$new_version'/" README.md
           echo "Updated README to version $new_version"
 
       - name: Update version in README - patch release
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-patch }}
-          sed -i "s/version: [0-9]*\.[0-9]*\.[0-9]*/version: $new_version/" README.md
+          sed -i "s/implementation 'id\.passage\.android:passage:[0-9]*\.[0-9]*\.[0-9]*'/implementation 'id.passage.android:passage:$new_version'/" README.md
           echo "Updated README to version $new_version"
 
-      - name: Commit version change
-        uses: "stefanzweifel/git-auto-commit-action@v4"
+      - name: Commit major version change
+        uses: stefanzweifel/git-auto-commit-action@v4
+        if: ${{ github.event.inputs.release-type == 'major' }}
         with:
-          commit_message: "Bumped version to ${{ needs.determine-next-versions.outputs['next-${{ github.event.inputs.release-type }}'] }}"
-          branch: ${{ needs.determine-next-versions.outputs["branch-${{ github.event.inputs.release-type }}"] }}
+          commit_message: "Bumped version to ${{ needs.determine-next-versions.outputs.next-major }}"
+          branch: ${{ needs.determine-next-versions.outputs.branch-major }}
+
+      - name: Commit minor version change
+        uses: stefanzweifel/git-auto-commit-action@v4
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        with:
+          commit_message: "Bumped version to ${{ needs.determine-next-versions.outputs.next-minor }}"
+          branch: ${{ needs.determine-next-versions.outputs.branch-minor }}
+
+      - name: Commit patch version change
+        uses: stefanzweifel/git-auto-commit-action@v4
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        with:
+          commit_message: "Bumped version to ${{ needs.determine-next-versions.outputs.next-patch }}"
+          branch: ${{ needs.determine-next-versions.outputs.branch-patch }}
 
   create-github-release:
     name: Create GitHub Release
@@ -158,13 +182,39 @@ jobs:
     needs: [determine-next-versions, create-release-branch, bump-version]
 
     steps:
-      - name: Check out code
-        uses: "actions/checkout@v3"
+      - name: Check out code - major release
+        uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'major' }}
 
-      - name: Create Release
-        uses: "ncipollo/release-action@v1"
+      - name: Check out code - minor release
+        uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+
+      - name: Check out code - patch release
+        uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+
+      - name: Create Release - major
+        uses: ncipollo/release-action@v1
+        if: ${{ github.event.inputs.release-type == 'major' }}
         with:
-          tag: "v${{ needs.determine-next-versions.outputs['next-${{ github.event.inputs.release-type }}'] }}"
+          tag: "v${{ needs.determine-next-versions.outputs.next-major }}"
+          generateReleaseNotes: true
+          draft: false
+
+      - name: Create Release - minor
+        uses: ncipollo/release-action@v1
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        with:
+          tag: "v${{ needs.determine-next-versions.outputs.next-minor }}"
+          generateReleaseNotes: true
+          draft: false
+
+      - name: Create Release - patch
+        uses: ncipollo/release-action@v1
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        with:
+          tag: "v${{ needs.determine-next-versions.outputs.next-patch }}"
           generateReleaseNotes: true
           draft: false
 
@@ -174,8 +224,8 @@ jobs:
     needs: [determine-next-versions, create-release-branch, bump-version, create-github-release]
 
     steps:
-    - name: Trigger publish workflow
-      run: |
+      - name: Trigger publish workflow
+        run: |
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
