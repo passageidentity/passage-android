@@ -1,7 +1,8 @@
 name: Publish Passage Package
 
 on:
-  workflow_dispatch:
+  repository_dispatch:
+    types: [publish]
 
 jobs:
   build:
