@@ -173,13 +173,39 @@ jobs:
     needs: [determine-next-versions, create-release-branch, bump-version]
 
     steps:
-      - name: Check out code
+      - name: Check out code - major release
         uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'major' }}
 
-      - name: Create Release
+      - name: Check out code - minor release
+        uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+
+      - name: Check out code - patch release
+        uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+
+      - name: Create Release - major
         uses: ncipollo/release-action@v1
+        if: ${{ github.event.inputs.release-type == 'major' }}
         with:
-          tag: "v${{ needs.determine-next-versions.outputs['next-' + github.event.inputs.release-type] }}"
+          tag: "v${{ needs.determine-next-versions.outputs.next-major }}"
+          generateReleaseNotes: true
+          draft: false
+
+      - name: Create Release - minor
+        uses: ncipollo/release-action@v1
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        with:
+          tag: "v${{ needs.determine-next-versions.outputs.next-minor }}"
+          generateReleaseNotes: true
+          draft: false
+
+      - name: Create Release - patch
+        uses: ncipollo/release-action@v1
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        with:
+          tag: "v${{ needs.determine-next-versions.outputs.next-patch }}"
           generateReleaseNotes: true
           draft: false
 
