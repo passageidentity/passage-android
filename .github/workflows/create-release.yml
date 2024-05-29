@@ -105,45 +105,54 @@ jobs:
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-major }}
+          current_version_code=$(grep 'versionCode ' passage/build.gradle | awk '{print $2}')
+          new_version_code=$((current_version_code + 1))
           sed -i "s/versionName \".*\"/versionName \"$new_version\"/" passage/build.gradle
-          sed -i "s/versionCode .*/versionCode ${new_version//./}/" passage/build.gradle
-          echo "Updated to major version $new_version"
+          sed -i "s/version \".*\"/version \"$new_version\"/" passage/build.gradle
+          sed -i "s/versionCode .*/versionCode $new_version_code/" passage/build.gradle
+          echo "Updated to major version $new_version with version code $new_version_code"
 
       - name: Update minor version
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-minor }}
+          current_version_code=$(grep 'versionCode ' passage/build.gradle | awk '{print $2}')
+          new_version_code=$((current_version_code + 1))
           sed -i "s/versionName \".*\"/versionName \"$new_version\"/" passage/build.gradle
-          sed -i "s/versionCode .*/versionCode ${new_version//./}/" passage/build.gradle
-          echo "Updated to minor version $new_version"
+          sed -i "s/version \".*\"/version \"$new_version\"/" passage/build.gradle
+          sed -i "s/versionCode .*/versionCode $new_version_code/" passage/build.gradle
+          echo "Updated to minor version $new_version with version code $new_version_code"
 
       - name: Update patch version
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-patch }}
+          current_version_code=$(grep 'versionCode ' passage/build.gradle | awk '{print $2}')
+          new_version_code=$((current_version_code + 1))
           sed -i "s/versionName \".*\"/versionName \"$new_version\"/" passage/build.gradle
-          sed -i "s/versionCode .*/versionCode ${new_version//./}/" passage/build.gradle
-          echo "Updated to patch version $new_version"
+          sed -i "s/version \".*\"/version \"$new_version\"/" passage/build.gradle
+          sed -i "s/versionCode .*/versionCode $new_version_code/" passage/build.gradle
+          echo "Updated to patch version $new_version with version code $new_version_code"
 
       - name: Update version in README - major release
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-major }}
-          sed -i "s/version: [0-9]*\.[0-9]*\.[0-9]*/version: $new_version/" README.md
+          sed -i "s/implementation 'id\.passage\.android:passage:[0-9]*\.[0-9]*\.[0-9]*'/implementation 'id.passage.android:passage:$new_version'/" README.md
           echo "Updated README to version $new_version"
 
       - name: Update version in README - minor release
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-minor }}
-          sed -i "s/version: [0-9]*\.[0-9]*\.[0-9]*/version: $new_version/" README.md
+          sed -i "s/implementation 'id\.passage\.android:passage:[0-9]*\.[0-9]*\.[0-9]*'/implementation 'id.passage.android:passage:$new_version'/" README.md
           echo "Updated README to version $new_version"
 
       - name: Update version in README - patch release
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-patch }}
-          sed -i "s/version: [0-9]*\.[0-9]*\.[0-9]*/version: $new_version/" README.md
+          sed -i "s/implementation 'id\.passage\.android:passage:[0-9]*\.[0-9]*\.[0-9]*'/implementation 'id.passage.android:passage:$new_version'/" README.md
           echo "Updated README to version $new_version"
 
       - name: Commit major version change
