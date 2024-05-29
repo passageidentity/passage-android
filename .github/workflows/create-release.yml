@@ -105,24 +105,24 @@ jobs:
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-major }}
-          sed -i "s/versionName \".*\"/versionName \"$new_version\"/" app/build.gradle
-          sed -i "s/versionCode .*/versionCode ${new_version//./}/" app/build.gradle
+          sed -i "s/versionName \".*\"/versionName \"$new_version\"/" passage/build.gradle
+          sed -i "s/versionCode .*/versionCode ${new_version//./}/" passage/build.gradle
           echo "Updated to major version $new_version"
 
       - name: Update minor version
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-minor }}
-          sed -i "s/versionName \".*\"/versionName \"$new_version\"/" app/build.gradle
-          sed -i "s/versionCode .*/versionCode ${new_version//./}/" app/build.gradle
+          sed -i "s/versionName \".*\"/versionName \"$new_version\"/" passage/build.gradle
+          sed -i "s/versionCode .*/versionCode ${new_version//./}/" passage/build.gradle
           echo "Updated to minor version $new_version"
 
       - name: Update patch version
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-patch }}
-          sed -i "s/versionName \".*\"/versionName \"$new_version\"/" app/build.gradle
-          sed -i "s/versionCode .*/versionCode ${new_version//./}/" app/build.gradle
+          sed -i "s/versionName \".*\"/versionName \"$new_version\"/" passage/build.gradle
+          sed -i "s/versionCode .*/versionCode ${new_version//./}/" passage/build.gradle
           echo "Updated to patch version $new_version"
 
       - name: Update version in README - major release
