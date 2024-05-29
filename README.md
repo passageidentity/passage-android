@@ -36,7 +36,20 @@ And you can use it like this:
 ```kotlin
 val nonce = PassageFlex.Passkey.authenticate()
 ```
+<br>
 
+### Authentikit
+
+You can import the Authentikit library by including this in your app's `build.gradle` file dependencies:
+```gradle
+implementation 'id.passage.android:authentikit:0.1.0'
+```
+
+And you can use it like this:
+```kotlin
+val authentikit = Authentikit(this, "YOUR_CLIENT_SIDE_KEY")
+authentikit.passkey.evaluateReadiness()
+```
 
 ## Documentation
 To get started using Passage in your Android app, please visit our [Passage Docs](https://docs.passage.id/mobile/android/).
