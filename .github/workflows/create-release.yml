@@ -108,7 +108,7 @@ jobs:
           current_version_code=$(grep 'versionCode ' passage/build.gradle | awk '{print $2}')
           new_version_code=$((current_version_code + 1))
           sed -i "s/versionName \".*\"/versionName \"$new_version\"/" passage/build.gradle
-          sed -i "s/version \".*\"/version \"$new_version\"/" passage/build.gradle
+          sed -i "s/^version = \".*\"/version = \"$new_version\"/" passage/build.gradle
           sed -i "s/versionCode .*/versionCode $new_version_code/" passage/build.gradle
           echo "Updated to major version $new_version with version code $new_version_code"
 
@@ -119,7 +119,7 @@ jobs:
           current_version_code=$(grep 'versionCode ' passage/build.gradle | awk '{print $2}')
           new_version_code=$((current_version_code + 1))
           sed -i "s/versionName \".*\"/versionName \"$new_version\"/" passage/build.gradle
-          sed -i "s/version \".*\"/version \"$new_version\"/" passage/build.gradle
+          sed -i "s/^version = \".*\"/version = \"$new_version\"/" passage/build.gradle
           sed -i "s/versionCode .*/versionCode $new_version_code/" passage/build.gradle
           echo "Updated to minor version $new_version with version code $new_version_code"
 
@@ -130,7 +130,7 @@ jobs:
           current_version_code=$(grep 'versionCode ' passage/build.gradle | awk '{print $2}')
           new_version_code=$((current_version_code + 1))
           sed -i "s/versionName \".*\"/versionName \"$new_version\"/" passage/build.gradle
-          sed -i "s/version \".*\"/version \"$new_version\"/" passage/build.gradle
+          sed -i "s/^version = \".*\"/version = \"$new_version\"/" passage/build.gradle
           sed -i "s/versionCode .*/versionCode $new_version_code/" passage/build.gradle
           echo "Updated to patch version $new_version with version code $new_version_code"
 
