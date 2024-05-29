@@ -2,7 +2,6 @@ name: Publish Passage Package
 
 on:
   repository_dispatch:
-    types: [publish]
 
 jobs:
   build:
