@@ -13,7 +13,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = "id.passage.android"
-version = "1.7.2"
+version = "1.7.3"
 
 android {
     namespace 'id.passage.android'
@@ -22,8 +22,8 @@ android {
     defaultConfig {
         minSdk 28 // Minimum support for Credentials Manager - ie passkeys
         targetSdk 34
-        versionCode 13
-        versionName "1.7.2"
+        versionCode 14
+        versionName "1.7.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -40,6 +40,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    buildTypes.configureEach { buildType ->
+        buildType.consumerProguardFiles 'proguard-rules.pro'
     }
 
     compileOptions {
