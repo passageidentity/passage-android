@@ -83,26 +83,29 @@ jobs:
     needs: [determine-next-versions, create-release-branch]
 
     steps:
+      - name: Set release type environment variable
+        run: echo "RELEASE_TYPE=${{ github.event.inputs.release-type }}" >> $GITHUB_ENV
+
       - name: Check out code - major release
         uses: "actions/checkout@v3"
-        if: ${{ github.event.inputs.release-type == 'major' }}
+        if: ${{ env.RELEASE_TYPE == 'major' }}
         with:
-          ref: ${{needs.determine-next-versions.outputs.branch-major}}
+          ref: ${{ needs.determine-next-versions.outputs.branch-major }}
 
       - name: Check out code - minor release
         uses: "actions/checkout@v3"
-        if: ${{ github.event.inputs.release-type == 'minor' }}
+        if: ${{ env.RELEASE_TYPE == 'minor' }}
         with:
-          ref: ${{needs.determine-next-versions.outputs.branch-minor}}
+          ref: ${{ needs.determine-next-versions.outputs.branch-minor }}
 
       - name: Check out code - patch release
         uses: "actions/checkout@v3"
-        if: ${{ github.event.inputs.release-type == 'patch' }}
+        if: ${{ env.RELEASE_TYPE == 'patch' }}
         with:
-          ref: ${{needs.determine-next-versions.outputs.branch-patch}}
+          ref: ${{ needs.determine-next-versions.outputs.branch-patch }}
 
       - name: Update major version
-        if: ${{ github.event.inputs.release-type == 'major' }}
+        if: ${{ env.RELEASE_TYPE == 'major' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-major }}
           sed -i "s/versionName \".*\"/versionName \"$new_version\"/" app/build.gradle
@@ -110,7 +113,7 @@ jobs:
           echo "Updated to major version $new_version"
 
       - name: Update minor version
-        if: ${{ github.event.inputs.release-type == 'minor' }}
+        if: ${{ env.RELEASE_TYPE == 'minor' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-minor }}
           sed -i "s/versionName \".*\"/versionName \"$new_version\"/" app/build.gradle
@@ -118,7 +121,7 @@ jobs:
           echo "Updated to minor version $new_version"
 
       - name: Update patch version
-        if: ${{ github.event.inputs.release-type == 'patch' }}
+        if: ${{ env.RELEASE_TYPE == 'patch' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-patch }}
           sed -i "s/versionName \".*\"/versionName \"$new_version\"/" app/build.gradle
@@ -126,21 +129,21 @@ jobs:
           echo "Updated to patch version $new_version"
 
       - name: Update version in README - major release
-        if: ${{ github.event.inputs.release-type == 'major' }}
+        if: ${{ env.RELEASE_TYPE == 'major' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-major }}
           sed -i "s/version: [0-9]*\.[0-9]*\.[0-9]*/version: $new_version/" README.md
           echo "Updated README to version $new_version"
 
       - name: Update version in README - minor release
-        if: ${{ github.event.inputs.release-type == 'minor' }}
+        if: ${{ env.RELEASE_TYPE == 'minor' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-minor }}
           sed -i "s/version: [0-9]*\.[0-9]*\.[0-9]*/version: $new_version/" README.md
           echo "Updated README to version $new_version"
 
       - name: Update version in README - patch release
-        if: ${{ github.event.inputs.release-type == 'patch' }}
+        if: ${{ env.RELEASE_TYPE == 'patch' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-patch }}
           sed -i "s/version: [0-9]*\.[0-9]*\.[0-9]*/version: $new_version/" README.md
@@ -149,8 +152,10 @@ jobs:
       - name: Commit version change
         uses: "stefanzweifel/git-auto-commit-action@v4"
         with:
-          commit_message: "Bumped version to ${{ needs.determine-next-versions.outputs['next-${{ github.event.inputs.release-type }}'] }}"
-          branch: ${{ needs.determine-next-versions.outputs["branch-${{ github.event.inputs.release-type }}"] }}
+          commit_message: |
+            Bumped version to ${{ needs.determine-next-versions.outputs["next-" + env.RELEASE_TYPE] }}
+          branch: ${{ needs.determine-next-versions.outputs["branch-" + env.RELEASE_TYPE] }}
+
 
   create-github-release:
     name: Create GitHub Release
