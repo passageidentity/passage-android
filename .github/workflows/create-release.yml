@@ -243,36 +243,38 @@ jobs:
           ref: ${{ needs.determine-next-versions.outputs.branch-patch }}
 
       - name: Create pull request for major release into main
-        uses: peter-evans/create-pull-request@v3
+        uses: thomaseizinger/create-pull-request@1.0.0
         if: ${{ github.event.inputs.release-type == 'major' }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ needs.determine-next-versions.outputs.branch-major }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          head: ${{needs.determine-next-versions.outputs.branch-major}}
           base: main
           title: v${{ needs.determine-next-versions.outputs.next-major }} into main
           body: |
             This PR was created by the create-release-branch workflow.
             New Release: v${{ needs.determine-next-versions.outputs.next-major }}
             I've updated the version name and code commit.
+
       - name: Create pull request for minor release into main
-        uses: peter-evans/create-pull-request@v3
+        uses: thomaseizinger/create-pull-request@1.0.0
         if: ${{ github.event.inputs.release-type == 'minor' }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ needs.determine-next-versions.outputs.branch-minor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          head: ${{needs.determine-next-versions.outputs.branch-minor}}
           base: main
           title: v${{ needs.determine-next-versions.outputs.next-minor }} into main
           body: |
             This PR was created by the create-release-branch workflow.
             New Release: v${{ needs.determine-next-versions.outputs.next-minor }}
             I've updated the version name and code commit.
+
       - name: Create pull request for patch release into main
-        uses: peter-evans/create-pull-request@v3
+        uses: thomaseizinger/create-pull-request@1.0.0
         if: ${{ github.event.inputs.release-type == 'patch' }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ needs.determine-next-versions.outputs.branch-patch }}
-          base: PSG-3979
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          head: ${{needs.determine-next-versions.outputs.branch-patch}}
+          base: main
           title: v${{ needs.determine-next-versions.outputs.next-patch }} into main
           body: |
             This PR was created by the create-release-branch workflow.
