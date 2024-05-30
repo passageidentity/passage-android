@@ -247,7 +247,7 @@ jobs:
         if: ${{ github.event.inputs.release-type == 'major' }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          head: ${{ needs.determine-next-versions.outputs.branch-major }}
+          head: ${{needs.determine-next-versions.outputs.branch-major}}
           base: main
           title: v${{ needs.determine-next-versions.outputs.next-major }} into main
           body: |
@@ -260,7 +260,7 @@ jobs:
         if: ${{ github.event.inputs.release-type == 'minor' }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          head: ${{ needs.determine-next-versions.outputs.branch-minor }}
+          head: ${{needs.determine-next-versions.outputs.branch-minor}}
           base: main
           title: v${{ needs.determine-next-versions.outputs.next-minor }} into main
           body: |
@@ -273,7 +273,7 @@ jobs:
         if: ${{ github.event.inputs.release-type == 'patch' }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          head: ${{ needs.determine-next-versions.outputs.branch-patch }}
+          head: ${{needs.determine-next-versions.outputs.branch-patch}}
           base: main
           title: v${{ needs.determine-next-versions.outputs.next-patch }} into main
           body: |
