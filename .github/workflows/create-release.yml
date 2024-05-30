@@ -243,11 +243,11 @@ jobs:
           ref: ${{ needs.determine-next-versions.outputs.branch-patch }}
 
       - name: Create pull request for major release into main
-        uses: thomaseizinger/create-pull-request@1.4.0
+        uses: peter-evans/create-pull-request@v3
         if: ${{ github.event.inputs.release-type == 'major' }}
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          head: ${{needs.determine-next-versions.outputs.branch-major}}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          head: ${{ needs.determine-next-versions.outputs.branch-major }}
           base: main
           title: v${{ needs.determine-next-versions.outputs.next-major }} into main
           body: |
@@ -256,11 +256,11 @@ jobs:
             I've updated the version name and code commit.
 
       - name: Create pull request for minor release into main
-        uses: thomaseizinger/create-pull-request@1.4.0
+        uses: peter-evans/create-pull-request@v3
         if: ${{ github.event.inputs.release-type == 'minor' }}
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          head: ${{needs.determine-next-versions.outputs.branch-minor}}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          head: ${{ needs.determine-next-versions.outputs.branch-minor }}
           base: main
           title: v${{ needs.determine-next-versions.outputs.next-minor }} into main
           body: |
@@ -269,11 +269,11 @@ jobs:
             I've updated the version name and code commit.
 
       - name: Create pull request for patch release into main
-        uses: thomaseizinger/create-pull-request@1.4.0
+        uses: peter-evans/create-pull-request@v3
         if: ${{ github.event.inputs.release-type == 'patch' }}
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          head: ${{needs.determine-next-versions.outputs.branch-patch}}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          head: ${{ needs.determine-next-versions.outputs.branch-patch }}
           base: main
           title: v${{ needs.determine-next-versions.outputs.next-patch }} into main
           body: |
