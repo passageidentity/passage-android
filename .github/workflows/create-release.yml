@@ -221,7 +221,7 @@ jobs:
   create-pull-request:
     name: Create Pull Request
     runs-on: ubuntu-latest
-    needs: [create-github-release]
+    needs: [create-github-release, determine-next-versions]
 
     steps:
       - name: Check out code - major release
