@@ -260,8 +260,8 @@ jobs:
         if: ${{ github.event.inputs.release-type == 'minor' }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          source_branch: ${{needs.determine-next-versions.outputs.branch-minor}}
-          target_branch: main
+          head: ${{needs.determine-next-versions.outputs.branch-minor}}
+          base: main
           title: v${{ needs.determine-next-versions.outputs.next-minor }} into main
           body: |
             This PR was created by the create-release-branch workflow.
@@ -273,8 +273,8 @@ jobs:
         if: ${{ github.event.inputs.release-type == 'patch' }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          source_branch: ${{needs.determine-next-versions.outputs.branch-patch}}
-          target_branch: main
+          head: ${{needs.determine-next-versions.outputs.branch-patch}}
+          base: main
           title: v${{ needs.determine-next-versions.outputs.next-patch }} into main
           body: |
             This PR was created by the create-release-branch workflow.
