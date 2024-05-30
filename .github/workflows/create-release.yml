@@ -263,10 +263,29 @@ jobs:
     needs: [create-pull-request]
 
     steps:
-      - name: Trigger publish workflow
+      - name: Trigger publish workflow - major
+        if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/${{ github.repository }}/dispatches \
-            -d '{"event_type":"publish", "client_payload": {"ref": "${{ needs.determine-next-versions.outputs.branch-${{ github.event.inputs.release-type }} }}"}}'
+            -d '{"event_type":"publish", "client_payload": {"ref": "${{ needs.determine-next-versions.outputs.branch-major }}"}}'
+
+      - name: Trigger publish workflow - minor
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/dispatches \
+            -d '{"event_type":"publish", "client_payload": {"ref": "${{ needs.determine-next-versions.outputs.branch-minor }}"}}'
+
+      - name: Trigger publish workflow - patch
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/dispatches \
+            -d '{"event_type":"publish", "client_payload": {"ref": "${{ needs.determine-next-versions.outputs.branch-patch }}"}}'
