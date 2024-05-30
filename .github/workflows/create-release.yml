@@ -224,38 +224,62 @@ jobs:
     needs: [create-github-release]
 
     steps:
-      - name: Create Pull Request - major
+      - name: Check out code - major release
+        uses: actions/checkout@v3
         if: ${{ github.event.inputs.release-type == 'major' }}
-        uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Bumped version to ${{ needs.determine-next-versions.outputs.next-major }}"
-          branch: ${{ needs.determine-next-versions.outputs.branch-major }}
-          base: main
-          title: "Release v${{ needs.determine-next-versions.outputs.next-major }}"
-          body: "Merging the new major release branch to main"
+          ref: ${{ needs.determine-next-versions.outputs.branch-major }}
 
-      - name: Create Pull Request - minor
+      - name: Check out code - minor release
+        uses: actions/checkout@v3
         if: ${{ github.event.inputs.release-type == 'minor' }}
-        uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Bumped version to ${{ needs.determine-next-versions.outputs.next-minor }}"
-          branch: ${{ needs.determine-next-versions.outputs.branch-minor }}
-          base: main
-          title: "Release v${{ needs.determine-next-versions.outputs.next-minor }}"
-          body: "Merging the new minor release branch to main"
+          ref: ${{ needs.determine-next-versions.outputs.branch-minor }}
 
-      - name: Create Pull Request - patch
+      - name: Check out code - patch release
+        uses: actions/checkout@v3
         if: ${{ github.event.inputs.release-type == 'patch' }}
-        uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Bumped version to ${{ needs.determine-next-versions.outputs.next-patch }}"
-          branch: ${{ needs.determine-next-versions.outputs.branch-patch }}
+          ref: ${{ needs.determine-next-versions.outputs.branch-patch }}
+
+      - name: Create pull request for major release into main
+        uses: thomaseizinger/create-pull-request@1.0.0
+        if: ${{ github.event.inputs.release-type == 'major' }}
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          head: ${{ needs.determine-next-versions.outputs.branch-major }}
           base: main
-          title: "Release v${{ needs.determine-next-versions.outputs.next-patch }}"
-          body: "Merging the new patch release branch to main"
+          title: v${{ needs.determine-next-versions.outputs.next-major }} into main
+          body: |
+            This PR was created by the create-release-branch workflow.
+            New Release: v${{ needs.determine-next-versions.outputs.next-major }}
+            I've updated the version name and code commit.
+
+      - name: Create pull request for minor release into main
+        uses: thomaseizinger/create-pull-request@1.0.0
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          head: ${{ needs.determine-next-versions.outputs.branch-minor }}
+          base: main
+          title: v${{ needs.determine-next-versions.outputs.next-minor }} into main
+          body: |
+            This PR was created by the create-release-branch workflow.
+            New Release: v${{ needs.determine-next-versions.outputs.next-minor }}
+            I've updated the version name and code commit.
+
+      - name: Create pull request for patch release into main
+        uses: thomaseizinger/create-pull-request@1.0.0
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          head: ${{ needs.determine-next-versions.outputs.branch-patch }}
+          base: main
+          title: v${{ needs.determine-next-versions.outputs.next-patch }} into main
+          body: |
+            This PR was created by the create-release-branch workflow.
+            New Release: v${{ needs.determine-next-versions.outputs.next-patch }}
+            I've updated the version name and code commit.
 
   publish-sdk:
     name: Publish SDK
