@@ -243,7 +243,7 @@ jobs:
           ref: ${{ needs.determine-next-versions.outputs.branch-patch }}
 
       - name: Create pull request for major release into main
-        uses: thomaseizinger/create-pull-request@1.0.0
+        uses: thomaseizinger/create-pull-request@1.4.0
         if: ${{ github.event.inputs.release-type == 'major' }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -256,7 +256,7 @@ jobs:
             I've updated the version name and code commit.
 
       - name: Create pull request for minor release into main
-        uses: thomaseizinger/create-pull-request@1.0.0
+        uses: thomaseizinger/create-pull-request@1.4.0
         if: ${{ github.event.inputs.release-type == 'minor' }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -269,7 +269,7 @@ jobs:
             I've updated the version name and code commit.
 
       - name: Create pull request for patch release into main
-        uses: thomaseizinger/create-pull-request@1.0.0
+        uses: thomaseizinger/create-pull-request@1.4.0
         if: ${{ github.event.inputs.release-type == 'patch' }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
