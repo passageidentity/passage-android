@@ -36,6 +36,7 @@ And you can use it like this:
 ```kotlin
 val nonce = PassageFlex.Passkey.authenticate()
 ```
+<!--
 <br>
 
 ### Authentikit
@@ -50,6 +51,7 @@ And you can use it like this:
 val authentikit = Authentikit(this, "YOUR_CLIENT_SIDE_KEY")
 authentikit.passkey.evaluateReadiness()
 ```
+-->
 
 ## Documentation
 To get started using Passage in your Android app, please visit our [Passage Docs](https://docs.passage.id/mobile/android/).
