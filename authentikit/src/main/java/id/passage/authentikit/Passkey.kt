@@ -23,10 +23,10 @@ public class Passkey(private val context: Context, private val clientSideKey: St
         val supportsPasskeys = deviceOSVersion >= MINIMUM_ANDROID_VERSION
         val requestHeaders =
             mapOf(
-                "app_identifier" to context.packageName,
-                "device_os" to DEVICE_OS,
-                "device_os_version" to deviceOSVersion.toString(),
-                "origin" to context.packageName,
+                "App-Identifier" to context.packageName,
+                "Device-OS" to DEVICE_OS,
+                "Device-OS-Version" to deviceOSVersion.toString(),
+                "Origin" to context.packageName,
                 "Content-Type" to "application/json",
                 "X-API-KEY" to clientSideKey,
                 "Passage-Version" to "Passage Authentikit Android ${Authentikit.PACKAGE_VERSION}",
