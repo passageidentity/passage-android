@@ -6,6 +6,7 @@ import id.passage.android.IntegrationTestConfig.Companion.AUTH_TOEKN
 import id.passage.android.IntegrationTestConfig.Companion.CURRENT_USER
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase.fail
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertNotEquals
@@ -50,8 +51,7 @@ internal class CurrentUserTests {
                 assertEquals(response?.phoneVerified, CURRENT_USER.phoneVerified)
                 assertEquals(response?.webauthn, CURRENT_USER.webauthn)
             } catch (e: Exception) {
-                // fail the test if we catch an error
-                assertTrue(false)
+                fail("Test failed due to unexpected exception: ${e.message}")
             }
         }
 
@@ -64,10 +64,10 @@ internal class CurrentUserTests {
                 if (response == null) {
                     assertTrue(true)
                 } else {
-                    assertTrue(false)
+                    fail("Test failed: response must be null")
                 }
             } catch (e: Exception) {
-                assertTrue(false)
+                fail("Test failed due to unexpected exception: ${e.message}")
             }
         }
 }

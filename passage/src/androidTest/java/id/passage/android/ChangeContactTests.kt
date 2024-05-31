@@ -8,6 +8,7 @@ import id.passage.android.exceptions.PassageUserRequestException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase.fail
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
@@ -47,7 +48,7 @@ internal class ChangeContactTests {
                 val response = CURRENT_USER.changeEmail(identifier)
                 assertNotNull(response.id)
             } catch (e: Exception) {
-                assertTrue(false)
+                fail("Test failed due to unexpected exception: ${e.message}")
             }
         }
 
@@ -59,7 +60,7 @@ internal class ChangeContactTests {
                 val date = System.currentTimeMillis()
                 val identifier = "authentigator+$date@passage.id"
                 CURRENT_USER.changeEmail(identifier)
-                assertTrue(false)
+                fail("Test should throw PassageUserUnauthorizedException")
             } catch (e: Exception) {
                 assertTrue(e is PassageUserUnauthorizedException)
             }
@@ -75,7 +76,7 @@ internal class ChangeContactTests {
                 val response = CURRENT_USER.changePhone("+14155552671")
                 assertNotNull(response.id)
             } catch (e: Exception) {
-                assertTrue(false)
+                fail("Test failed due to unexpected exception: ${e.message}")
             }
         }
 
@@ -88,7 +89,7 @@ internal class ChangeContactTests {
                 Passage.setAuthToken(AUTH_TOEKN)
                 val response = CURRENT_USER.changePhone("444")
                 assertNotNull(response.id)
-                assertTrue(false)
+                fail("Test should throw PassageUserRequestException")
             } catch (e: Exception) {
                 assertTrue(e is PassageUserRequestException)
             }
@@ -100,7 +101,7 @@ internal class ChangeContactTests {
             try {
                 Passage.setAuthToken("")
                 CURRENT_USER.changePhone("+14155552671")
-                assertTrue(false)
+                fail("Test should throw PassageUserUnauthorizedException")
             } catch (e: Exception) {
                 assertTrue(e is PassageUserUnauthorizedException)
             }
