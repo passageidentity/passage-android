@@ -1,5 +1,8 @@
 package id.passage.android
 
+import id.passage.android.model.User
+import id.passage.android.model.UserStatus
+
 internal class IntegrationTestConfig {
     companion object {
         const val API_BASE_URL = "https://auth-uat.passage.dev/v1"
@@ -9,5 +12,20 @@ internal class IntegrationTestConfig {
         const val EXISTING_USER_EMAIL_OTP = "authentigator+1716916054778@ncor7c1m.mailosaur.net"
         const val EXISTING_USER_EMAIL_MAGIC_LINK = "authentigator+1716572384858@ncor7c1m.mailosaur.net"
         const val DEACTIVATED_USER_EMAIL_MAGIC_LINK = "authentigator+1716778790434@ncor7c1m.mailosaur.net"
+        const val AUTH_TOEKN = BuildConfig.OTP_TEST_USER_AUTH_TOKEN
+        val CURRENT_USER =
+            PassageUser.convertToPassageUser(
+                User(
+                    email = "authentigator+1716916054778@ncor7c1m.mailosaur.net",
+                    emailVerified = true,
+                    id = "Cf70Zkwn1ywnpuua1ZFF717G",
+                    phone = "",
+                    phoneVerified = false,
+                    status = UserStatus.active,
+                    userMetadata = null,
+                    webauthn = false,
+                    webauthnTypes = emptyList(),
+                ),
+            )
     }
 }
