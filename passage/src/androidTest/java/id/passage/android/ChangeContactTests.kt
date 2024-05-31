@@ -6,9 +6,9 @@ import id.passage.android.IntegrationTestConfig.Companion.AUTH_TOEKN
 import id.passage.android.IntegrationTestConfig.Companion.CURRENT_USER
 import id.passage.android.exceptions.PassageUserRequestException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
+import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Rule
