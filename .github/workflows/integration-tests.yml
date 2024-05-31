@@ -11,6 +11,7 @@ jobs:
         api-level: [33] # TODO: add more api levels to test
     env:
       MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
+      OTP_TEST_USER_AUTH_TOKEN: ${{ secrets.OTP_TEST_USER_AUTH_TOKEN }}
       APP_API_KEY: ${{ secrets.APP_API_KEY }}
     steps:
       - name: checkout
