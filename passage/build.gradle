@@ -35,6 +35,7 @@ android {
     buildTypes {
         debug {
             buildConfigField "String", "MAILOSAUR_API_KEY", "\"${System.getenv('MAILOSAUR_API_KEY') ?: ''}\""
+            buildConfigField "String", "OTP_TEST_USER_AUTH_TOKEN", "\"${System.getenv('OTP_TEST_USER_AUTH_TOKEN') ?: ''}\""
         }
         release {
             minifyEnabled false
