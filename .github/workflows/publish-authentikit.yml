@@ -29,8 +29,8 @@ jobs:
 
     - name: Publish to Maven Central
       env:
-        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        OSSRH_USERNAME: ${{ secrets.OSSRH_TOKEN_ID }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
       run: ./gradlew :authentikit:publish
 
     - name: Wait for Staging Repository to be Created
@@ -42,20 +42,20 @@ jobs:
     - name: Get Staging Repository ID
       id: get_repo_id
       env:
-        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        OSSRH_USERNAME: ${{ secrets.OSSRH_TOKEN_ID }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
       run: |
         response=$(curl -u ${{ secrets.OSSRH_USERNAME }}:${{ secrets.OSSRH_PASSWORD }} -X GET "https://s01.oss.sonatype.org/service/local/staging/profile_repositories")
         echo "Response: $response"
 
-        repo_id=$(echo $response | xmllint --xpath "string(//stagingProfileRepository[./profileName[contains(text(), 'authentikit')]]/repositoryId)" -)
+        repo_id=$(echo ${response} | xmllint --xpath "string(//stagingProfileRepository/repositoryId)" -)
         echo "Repository ID: $repo_id"
         echo "::set-output name=repo_id::$repo_id"
 
     - name: Close and Release Repository
       env:
-        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        OSSRH_USERNAME: ${{ secrets.OSSRH_TOKEN_ID }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
         OSSRH_PROFILE_ID: ${{ secrets.OSSRH_PROFILE_ID }}
       run: |
         repo_id=${{ steps.get_repo_id.outputs.repo_id }}
