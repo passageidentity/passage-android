@@ -52,3 +52,57 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
     androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.name
+            version project.version
+
+            afterEvaluate {
+                from components.release
+            }
+
+            pom {
+                name = 'Authentikit'
+                description = "Authentikit evaluates the passkey readiness of a user's device."
+                url = 'https://github.com/passageidentity/passage-android'
+                licenses {
+                    license {
+                        name = 'MIT'
+                        url = 'https://github.com/passageidentity/passage-android/blob/main/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'passageidentity'
+                        name = 'Passage Identity'
+                        email = 'authentigator@passage.id'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:github.com/passageidentity/passage-android.git'
+                    developerConnection = 'scm:git:ssh://github.com/passageidentity/passage-android.git'
+                    url = 'https://github.com/passageidentity/passage-android'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "OSSRH"
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = project.findProperty("ossrhUsername") ?: System.getenv("OSSRH_USERNAME")
+                password = project.findProperty("ossrhPassword") ?: System.getenv("OSSRH_PASSWORD")
+            }
+        }
+    }
+}
+
+signing {
+    useGpgCmd()
+    sign publishing.publications.mavenJava
+}
