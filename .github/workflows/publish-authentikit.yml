@@ -48,7 +48,7 @@ jobs:
         response=$(curl -u ${{ secrets.OSSRH_USERNAME }}:${{ secrets.OSSRH_PASSWORD }} -X GET "https://s01.oss.sonatype.org/service/local/staging/profile_repositories")
         echo "Response: $response"
 
-        repo_id=$(echo $response | xmllint --xpath "string(//stagingProfileRepository[./profileName[contains(text(), 'authentikit')]]/repositoryId)" -)
+        repo_id=$(echo ${response} | xmllint --xpath "string(//stagingProfileRepository/repositoryId)" -)
         echo "Repository ID: $repo_id"
         echo "::set-output name=repo_id::$repo_id"
 
