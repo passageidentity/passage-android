@@ -600,8 +600,9 @@ public final class Passage(
     }
 
     public fun finishOIDC(code: String) {
+        // This will be something like: https://[SUBDOMAIN].withpassage.com/android/[ANDROID_PACKAGE_NAME]/callback
         val redirectUri = "https%3A%2F%2Ftry-uat.passage.dev"
-//        val tokenUrl = "https://bored-aqua-panda.withpassage-uat.com/token?code=$code"
+
         val client = OkHttpClient()
         val moshi = Moshi.Builder()
             .build()
