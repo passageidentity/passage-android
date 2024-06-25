@@ -39,6 +39,22 @@ internal class PassageSocial {
             }
 //            val url = "${authUrl}?${params}"
             val url = "https://bored-aqua-panda.withpassage-uat.com/authorize?client_id=0ZOAnfi5NnW6oEDw89pJ4jfR&redirect_uri=$redirectURI&state=$state&code_challenge=$codeChallenge&code_challenge_method=S256&scope=openid&response_type=code"
+
+            /*
+            val newParams = listOf(
+                "client_id": appInfo.appId,
+                "redirect_uri": appInfo.androidappcallbackorsomething, // ex: https://[SUBDOMAIN].withpassage.com/android/[ANDROID_PACKAGE_NAME]/callback
+                "state" to state,
+                "code_challenge" to codeChallenge,
+                "code_challenge_method" to CODE_CHALLENGE_METHOD,
+                "scope" to "openid"
+                "response_type" to "code"
+            ).joinToString("&") {
+                (key, value) -> "$key=${URLEncoder.encode(value, "UTF-8")}"
+            }
+            val newUrl = "${authUrl}/authorize?${newParams}
+            */
+            
             println(url)
             val intent = CustomTabsIntent.Builder().build()
             intent.launchUrl(activity, Uri.parse(url))
