@@ -91,7 +91,7 @@ internal class PassageOIDC {
                 "code" to code,
                 "client_id" to Passage.appId,
                 "verifier" to verifier,
-                "client_secret" to Passage.clientID,
+                "client_secret" to Passage.clientSecret,
                 "redirect_uri" to redirectUri
             ).joinToString("&") { (key, value) ->
                 "$key=${URLEncoder.encode(value, "UTF-8")}"
