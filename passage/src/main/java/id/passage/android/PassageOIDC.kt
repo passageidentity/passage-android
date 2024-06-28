@@ -30,7 +30,7 @@ internal class PassageOIDC {
             activity: Activity,
             authUrl: String,
         ) {
-            val redirectUri = "${Passage.BASE_PATH_OIDC}/android/${Passage.packageName}/callback"
+            val redirectUri = "${Passage.basePathOIDC}/android/${Passage.packageName}/callback"
             val state = getRandomString()
             val randomString = getRandomString()
             verifier = randomString
@@ -44,8 +44,7 @@ internal class PassageOIDC {
                     "code_challenge_method" to CODE_CHALLENGE_METHOD,
                     "scope" to "openid",
                     "response_type" to "code",
-                ).joinToString("&") {
-                        (key, value) ->
+                ).joinToString("&") { (key, value) ->
                     "$key=${URLEncoder.encode(value, "UTF-8")}"
                 }
             val url = "$authUrl?$newParams"
@@ -77,7 +76,7 @@ internal class PassageOIDC {
         }
 
         internal suspend fun finishOIDC(code: String): AuthResult? {
-            val redirectUri = "${Passage.BASE_PATH_OIDC}/android/${Passage.packageName}/callback"
+            val redirectUri = "${Passage.basePathOIDC}/android/${Passage.packageName}/callback"
             var authResult: AuthResult?
             val client = OkHttpClient()
             val moshi =
@@ -100,7 +99,7 @@ internal class PassageOIDC {
                     "$key=${URLEncoder.encode(value, "UTF-8")}"
                 }
 
-            val url = "${Passage.BASE_PATH_OIDC}/token?$params"
+            val url = "${Passage.basePathOIDC}/token?$params"
             val request =
                 Request
                     .Builder()

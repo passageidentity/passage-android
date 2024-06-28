@@ -38,7 +38,7 @@ public final class Passage(
     internal companion object {
         internal const val TAG = "Passage"
         internal var BASE_PATH = "https://auth.passage.id/v1"
-        internal lateinit var BASE_PATH_OIDC: String
+        internal lateinit var basePathOIDC: String
         internal lateinit var packageName: String
         internal lateinit var appId: String
         internal lateinit var clientSecret: String
@@ -84,7 +84,7 @@ public final class Passage(
         Companion.appId = appId ?: getRequiredResourceFromApp(activity, "passage_app_id")
         clientSecret = getRequiredResourceFromApp(activity, "passage_client_secret")
         language = getOptionalResourceFromApp(activity, "passage_language")
-        BASE_PATH_OIDC = "https://$authOrigin"
+        basePathOIDC = "https://$authOrigin"
         packageName = activity.packageName
 
         val usePassageStore = getOptionalResourceFromApp(activity, "use_passage_store")
@@ -671,7 +671,7 @@ public final class Passage(
         PassageOIDC.openChromeTab(
             appInfo().id,
             activity,
-            authUrl = "${BASE_PATH_OIDC}/authorize",
+            authUrl = "$basePathOIDC/authorize",
         )
     }
 
