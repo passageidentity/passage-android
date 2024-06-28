@@ -26,7 +26,7 @@ internal class PassageOIDC {
         private const val SECRET_STRING_LENGTH = 32
 
         internal fun openChromeTab(
-            appId:  String,
+            appId: String,
             activity: Activity,
             authUrl: String,
         ) {
@@ -35,19 +35,20 @@ internal class PassageOIDC {
             val randomString = getRandomString()
             verifier = randomString
             val codeChallenge = sha256Hash(randomString)
-            val newParams = listOf(
-                "client_id" to appId,
-                "redirect_uri" to redirectUri,
-                "state" to state,
-                "code_challenge" to codeChallenge,
-                "code_challenge_method" to CODE_CHALLENGE_METHOD,
-                "scope" to "openid",
-                "response_type" to "code",
-            ).joinToString("&") {
-                    (key, value) ->
-                "$key=${URLEncoder.encode(value, "UTF-8")}"
-            }
-            val url = "${authUrl}?${newParams}"
+            val newParams =
+                listOf(
+                    "client_id" to appId,
+                    "redirect_uri" to redirectUri,
+                    "state" to state,
+                    "code_challenge" to codeChallenge,
+                    "code_challenge_method" to CODE_CHALLENGE_METHOD,
+                    "scope" to "openid",
+                    "response_type" to "code",
+                ).joinToString("&") {
+                        (key, value) ->
+                    "$key=${URLEncoder.encode(value, "UTF-8")}"
+                }
+            val url = "$authUrl?$newParams"
             val intent = CustomTabsIntent.Builder().build()
             intent.launchUrl(activity, Uri.parse(url))
         }
@@ -75,54 +76,57 @@ internal class PassageOIDC {
             return Base64.getUrlEncoder().withoutPadding().encodeToString(digest)
         }
 
-
-        internal suspend fun finishOIDC(code: String) : AuthResult? {
+        internal suspend fun finishOIDC(code: String): AuthResult? {
             val redirectUri = "${Passage.BASE_PATH_OIDC}/android/${Passage.Package_NAME}/callback"
-            var authResult : AuthResult?
+            var authResult: AuthResult?
             val client = OkHttpClient()
-            val moshi = Moshi.Builder()
-                .build()
+            val moshi =
+                Moshi.Builder()
+                    .build()
             val jsonAdapter = moshi.adapter(OIDCResponse::class.java)
             val mediaType = "application/json; charset=utf-8".toMediaType()
             val requestBody = "{\"code\":\"$code\"}".toRequestBody(mediaType)
 
-            val params = listOf(
-                "grant_type" to "authorization_code",
-                "code" to code,
-                "client_id" to Passage.appId,
-                "verifier" to verifier,
-                "client_secret" to Passage.clientSecret,
-                "redirect_uri" to redirectUri
-            ).joinToString("&") { (key, value) ->
-                "$key=${URLEncoder.encode(value, "UTF-8")}"
-            }
+            val params =
+                listOf(
+                    "grant_type" to "authorization_code",
+                    "code" to code,
+                    "client_id" to Passage.appId,
+                    "verifier" to verifier,
+                    "client_secret" to Passage.clientSecret,
+                    "redirect_uri" to redirectUri,
+                ).joinToString("&") { (key, value) ->
+                    "$key=${URLEncoder.encode(value, "UTF-8")}"
+                }
 
             val url = "${Passage.BASE_PATH_OIDC}/token?$params"
-            val request = Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .build()
+            val request =
+                Request.Builder()
+                    .url(url)
+                    .post(requestBody)
+                    .build()
 
             withContext(Dispatchers.IO) {
                 client.newCall(request).execute().use { response ->
                     if (!response.isSuccessful) {
-                        if (response.code == 500)
+                        if (response.code == 500) {
                             throw ServerException("Server error : ${response.code} ${response.message}", response.code)
+                        }
                         throw ClientException("Client error : ${response.code} ${response.message}", response.code)
                     }
                     val responseBody = response.body?.string()
                     if (responseBody != null) {
                         val apiResponse = jsonAdapter.fromJson(responseBody)!!
-                        authResult = AuthResult(
-                            authToken = apiResponse.access_token,
-                            redirectUrl = "",
-                            refreshToken = apiResponse.refresh_token,
-                            refreshTokenExpiration = null
-                        )
-
-                    }
-                    else
+                        authResult =
+                            AuthResult(
+                                authToken = apiResponse.access_token,
+                                redirectUrl = "",
+                                refreshToken = apiResponse.refresh_token,
+                                refreshTokenExpiration = null,
+                            )
+                    } else {
                         throw Exception("Response body is null : ${response.code} ${response.message}")
+                    }
                 }
             }
             return authResult

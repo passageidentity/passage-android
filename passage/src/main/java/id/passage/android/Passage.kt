@@ -38,8 +38,8 @@ public final class Passage(
     internal companion object {
         internal const val TAG = "Passage"
         internal var BASE_PATH = "https://auth.passage.id/v1"
-        internal lateinit var BASE_PATH_OIDC : String
-        internal lateinit var Package_NAME : String
+        internal lateinit var BASE_PATH_OIDC: String
+        internal lateinit var Package_NAME: String
         internal lateinit var appId: String
         internal lateinit var clientSecret: String
         internal lateinit var authOrigin: String
@@ -84,7 +84,7 @@ public final class Passage(
         Companion.appId = appId ?: getRequiredResourceFromApp(activity, "passage_app_id")
         clientSecret = getRequiredResourceFromApp(activity, "passage_client_secret")
         language = getOptionalResourceFromApp(activity, "passage_language")
-        BASE_PATH_OIDC =  "https://$authOrigin"
+        BASE_PATH_OIDC = "https://$authOrigin"
         Package_NAME = activity.packageName
 
         val usePassageStore = getOptionalResourceFromApp(activity, "use_passage_store")
@@ -660,7 +660,6 @@ public final class Passage(
     }
     // endregion
 
-
     // region OIDC Methods
 
     /**
@@ -689,9 +688,8 @@ public final class Passage(
         try {
             val authResult = PassageOIDC.finishOIDC(code)
             if (authResult != null) handleAuthResult(authResult)
-
-        } catch (e : Exception) {
-            throw  FinishOIDCException.convert(e)
+        } catch (e: Exception) {
+            throw FinishOIDCException.convert(e)
         }
     }
     // endregion
