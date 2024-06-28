@@ -10,7 +10,10 @@ import id.passage.client.infrastructure.ServerException
  *
  * @see FinishOIDCException
  */
-public open class FinishOIDCException(message: String) : PassageException(message) {
+public open class FinishOIDCException(
+    message: String,
+) : PassageException(message) {
+    // Class body
     internal companion object {
         internal fun convert(e: Exception): FinishOIDCException {
             val message = e.message ?: e.toString()
@@ -21,8 +24,8 @@ public open class FinishOIDCException(message: String) : PassageException(messag
             }
         }
 
-        private fun convertClientException(e: ClientException): FinishOIDCException {
-            return when (e.statusCode.toString()) {
+        private fun convertClientException(e: ClientException): FinishOIDCException =
+            when (e.statusCode.toString()) {
                 "400" -> {
                     FinishOIDCBadRequestException(e.message.toString())
                 }
@@ -30,16 +33,19 @@ public open class FinishOIDCException(message: String) : PassageException(messag
                     FinishOIDCException(e.message.toString())
                 }
             }
-        }
     }
 }
 
 /**
  * Thrown when server returns bad request due to the invalid info.
  */
-public class FinishOIDCBadRequestException(message: String) : FinishOIDCException(message)
+public class FinishOIDCBadRequestException(
+    message: String,
+) : FinishOIDCException(message)
 
 /**
  * Thrown when Passage internal server error occurs.
  */
-public class FinishOIDCServerException(message: String) : FinishOIDCException(message)
+public class FinishOIDCServerException(
+    message: String,
+) : FinishOIDCException(message)

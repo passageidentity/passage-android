@@ -30,7 +30,7 @@ internal class PassageOIDC {
             activity: Activity,
             authUrl: String,
         ) {
-            val redirectUri = "${Passage.BASE_PATH_OIDC}/android/${Passage.Package_NAME}/callback"
+            val redirectUri = "${Passage.BASE_PATH_OIDC}/android/${Passage.packageName}/callback"
             val state = getRandomString()
             val randomString = getRandomString()
             verifier = randomString
@@ -77,11 +77,12 @@ internal class PassageOIDC {
         }
 
         internal suspend fun finishOIDC(code: String): AuthResult? {
-            val redirectUri = "${Passage.BASE_PATH_OIDC}/android/${Passage.Package_NAME}/callback"
+            val redirectUri = "${Passage.BASE_PATH_OIDC}/android/${Passage.packageName}/callback"
             var authResult: AuthResult?
             val client = OkHttpClient()
             val moshi =
-                Moshi.Builder()
+                Moshi
+                    .Builder()
                     .build()
             val jsonAdapter = moshi.adapter(OIDCResponse::class.java)
             val mediaType = "application/json; charset=utf-8".toMediaType()
@@ -101,7 +102,8 @@ internal class PassageOIDC {
 
             val url = "${Passage.BASE_PATH_OIDC}/token?$params"
             val request =
-                Request.Builder()
+                Request
+                    .Builder()
                     .url(url)
                     .post(requestBody)
                     .build()
@@ -135,4 +137,7 @@ internal class PassageOIDC {
 }
 
 @JsonClass(generateAdapter = true)
-data class OIDCResponse(val access_token: String, val refresh_token: String?)
+data class OIDCResponse(
+    val access_token: String,
+    val refresh_token: String?,
+)

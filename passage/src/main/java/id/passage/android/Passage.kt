@@ -39,7 +39,7 @@ public final class Passage(
         internal const val TAG = "Passage"
         internal var BASE_PATH = "https://auth.passage.id/v1"
         internal lateinit var BASE_PATH_OIDC: String
-        internal lateinit var Package_NAME: String
+        internal lateinit var packageName: String
         internal lateinit var appId: String
         internal lateinit var clientSecret: String
         internal lateinit var authOrigin: String
@@ -85,7 +85,7 @@ public final class Passage(
         clientSecret = getRequiredResourceFromApp(activity, "passage_client_secret")
         language = getOptionalResourceFromApp(activity, "passage_language")
         BASE_PATH_OIDC = "https://$authOrigin"
-        Package_NAME = activity.packageName
+        packageName = activity.packageName
 
         val usePassageStore = getOptionalResourceFromApp(activity, "use_passage_store")
         if (usePassageStore != "false") {
