@@ -667,7 +667,7 @@ public final class Passage(
      *
      * Authorizes user via a OIDC Login feature.
      */
-    public suspend fun startOIDC() {
+    public suspend fun hostedAuthStart() {
         PassageOIDC.openChromeTab(
             appInfo().id,
             activity,
@@ -684,7 +684,7 @@ public final class Passage(
      * @throws FinishOIDCException
      */
 
-    suspend fun finishOIDC(code: String) {
+    suspend fun hostedAuthFinish(code: String) {
         try {
             val authResult = PassageOIDC.finishOIDC(code)
             if (authResult != null) handleAuthResult(authResult)
