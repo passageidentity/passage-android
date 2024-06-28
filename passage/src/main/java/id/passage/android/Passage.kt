@@ -38,8 +38,10 @@ public final class Passage(
     internal companion object {
         internal const val TAG = "Passage"
         internal var BASE_PATH = "https://auth.passage.id/v1"
-
+        internal lateinit var BASE_PATH_OIDC : String
+        internal lateinit var Package_NAME : String
         internal lateinit var appId: String
+        internal lateinit var clientSecret: String
         internal lateinit var authOrigin: String
         internal var language: String? = null
 
@@ -80,7 +82,10 @@ public final class Passage(
     init {
         authOrigin = getRequiredResourceFromApp(activity, "passage_auth_origin")
         Companion.appId = appId ?: getRequiredResourceFromApp(activity, "passage_app_id")
+        clientSecret = getRequiredResourceFromApp(activity, "passage_client_secret")
         language = getOptionalResourceFromApp(activity, "passage_language")
+        BASE_PATH_OIDC =  "https://$authOrigin"
+        Package_NAME = activity.packageName
 
         val usePassageStore = getOptionalResourceFromApp(activity, "use_passage_store")
         if (usePassageStore != "false") {
@@ -652,6 +657,42 @@ public final class Passage(
     private fun handleAuthResult(authResult: PassageAuthResult?) {
         if (!isUsingTokenStore) return
         tokenStore.setTokens(authResult)
+    }
+    // endregion
+
+
+    // region OIDC Methods
+
+    /**
+     * Authorize with OIDC
+     *
+     * Authorizes user via a OIDC Login feature.
+     */
+    public suspend fun startOIDC() {
+        PassageOIDC.openChromeTab(
+            appInfo().id,
+            activity,
+            authUrl = "${BASE_PATH_OIDC}/authorize",
+        )
+    }
+
+    /**
+     * Finish OIDC login
+     *
+     * Finishes a OIDC login/sign up by exchanging the auth code for Passage tokens.
+     * @param code The code returned from the OIDC login.
+     * @return PassageAuthResult
+     * @throws FinishOIDCException
+     */
+
+    suspend fun finishOIDC(code: String) {
+        try {
+            val authResult = PassageOIDC.finishOIDC(code)
+            if (authResult != null) handleAuthResult(authResult)
+
+        } catch (e : Exception) {
+            throw  FinishOIDCException.convert(e)
+        }
     }
     // endregion
 }
