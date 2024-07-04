@@ -698,7 +698,7 @@ public final class Passage(
      * Logout user via a OIDC Logout feature.
      */
 
-    public suspend fun hostedLogout() {
+    public suspend fun hostedAuthLogout() {
         try {
             val idToken = tokenStore.idToken ?: throw Exception("idToken is null")
             PassageOIDC.logout(activity, idToken)
