@@ -41,7 +41,6 @@ public final class Passage(
         internal lateinit var basePathOIDC: String
         internal lateinit var packageName: String
         internal lateinit var appId: String
-        internal lateinit var clientSecret: String
         internal lateinit var authOrigin: String
         internal var language: String? = null
 
@@ -82,9 +81,7 @@ public final class Passage(
     init {
         authOrigin = getRequiredResourceFromApp(activity, "passage_auth_origin")
         Companion.appId = appId ?: getRequiredResourceFromApp(activity, "passage_app_id")
-        clientSecret = getRequiredResourceFromApp(activity, "passage_client_secret")
         language = getOptionalResourceFromApp(activity, "passage_language")
-        basePathOIDC = "https://$authOrigin"
         packageName = activity.packageName
 
         val usePassageStore = getOptionalResourceFromApp(activity, "use_passage_store")
@@ -667,11 +664,9 @@ public final class Passage(
      *
      * Authorizes user via a OIDC Login feature.
      */
-    public suspend fun hostedAuthStart() {
+    public fun hostedAuthStart() {
         PassageOIDC.openChromeTab(
-            appInfo().id,
             activity,
-            authUrl = "$basePathOIDC/authorize",
         )
     }
 
@@ -684,13 +679,34 @@ public final class Passage(
      * @throws FinishOIDCException
      */
 
-    suspend fun hostedAuthFinish(code: String) {
+    suspend fun hostedAuthFinish(
+        code: String,
+        clientSecret: String,
+        state: String,
+    ) {
         try {
-            val authResult = PassageOIDC.finishOIDC(code)
+            val authResult = PassageOIDC.finishOIDC(activity, code, clientSecret, state)
             if (authResult != null) handleAuthResult(authResult)
         } catch (e: Exception) {
             throw FinishOIDCException.convert(e)
         }
     }
+
+    /**
+     * Logout with OIDC
+     *
+     * Logout user via a OIDC Logout feature.
+     */
+
+    public suspend fun hostedLogout() {
+        try {
+            val idToken = tokenStore.idToken ?: throw Exception("idToken is null")
+            PassageOIDC.logout(activity, idToken)
+            tokenStore.clearAndRevokeTokens()
+        } catch (e: Exception) {
+            throw FinishOIDCException.convert(e)
+        }
+    }
+
     // endregion
 }
