@@ -36,17 +36,18 @@ internal class PassageOIDC {
             val randomString = getRandomString()
             verifier = getRandomString()
             val codeChallenge = sha256Hash(randomString)
-            val newParams = listOf(
-                "client_id" to appId,
-                "redirect_uri" to redirectUri,
-                "state" to state,
-                "code_challenge" to codeChallenge,
-                "code_challenge_method" to CODE_CHALLENGE_METHOD,
-                "scope" to "openid",
-                "response_type" to "code",
-            ).joinToString("&") { (key, value) ->
-                "$key=${URLEncoder.encode(value, "UTF-8")}"
-            }
+            val newParams =
+                listOf(
+                    "client_id" to appId,
+                    "redirect_uri" to redirectUri,
+                    "state" to state,
+                    "code_challenge" to codeChallenge,
+                    "code_challenge_method" to CODE_CHALLENGE_METHOD,
+                    "scope" to "openid",
+                    "response_type" to "code",
+                ).joinToString("&") { (key, value) ->
+                    "$key=${URLEncoder.encode(value, "UTF-8")}"
+                }
             val url = "$basePathOIDC/authorize?$newParams"
             val intent = CustomTabsIntent.Builder().build()
             intent.launchUrl(activity, Uri.parse(url))
@@ -87,30 +88,33 @@ internal class PassageOIDC {
 
             var authResult: AuthResult?
             val client = OkHttpClient()
-            val moshi = Moshi
-                .Builder()
-                .build()
+            val moshi =
+                Moshi
+                    .Builder()
+                    .build()
             val jsonAdapter = moshi.adapter(OIDCResponse::class.java)
             val mediaType = "application/json; charset=utf-8".toMediaType()
             val requestBody = "{\"code\":\"$code\"}".toRequestBody(mediaType)
 
-            val params = listOf(
-                "grant_type" to "authorization_code",
-                "code" to code,
-                "client_id" to Passage.appId,
-                "verifier" to verifier,
-                "client_secret" to clientSecret,
-                "redirect_uri" to redirectUri,
-            ).joinToString("&") { (key, value) ->
-                "$key=${URLEncoder.encode(value, "UTF-8")}"
-            }
+            val params =
+                listOf(
+                    "grant_type" to "authorization_code",
+                    "code" to code,
+                    "client_id" to Passage.appId,
+                    "verifier" to verifier,
+                    "client_secret" to clientSecret,
+                    "redirect_uri" to redirectUri,
+                ).joinToString("&") { (key, value) ->
+                    "$key=${URLEncoder.encode(value, "UTF-8")}"
+                }
 
             val url = "$basePathOIDC/token?$params"
-            val request = Request
-                .Builder()
-                .url(url)
-                .post(requestBody)
-                .build()
+            val request =
+                Request
+                    .Builder()
+                    .url(url)
+                    .post(requestBody)
+                    .build()
 
             withContext(Dispatchers.IO) {
                 client.newCall(request).execute().use { response ->
@@ -123,12 +127,13 @@ internal class PassageOIDC {
                     val responseBody = response.body?.string()
                     if (responseBody != null) {
                         val apiResponse = jsonAdapter.fromJson(responseBody)!!
-                        authResult = AuthResult(
-                            authToken = apiResponse.accessToken,
-                            redirectUrl = "",
-                            refreshToken = apiResponse.refreshToken,
-                            refreshTokenExpiration = null,
-                        )
+                        authResult =
+                            AuthResult(
+                                authToken = apiResponse.accessToken,
+                                redirectUrl = "",
+                                refreshToken = apiResponse.refreshToken,
+                                refreshTokenExpiration = null,
+                            )
 
                         PassageTokenStore(activity = activity).setIdToken(apiResponse.idToken)
                     } else {
@@ -145,12 +150,14 @@ internal class PassageOIDC {
         ) {
             val redirectUri = "$basePathOIDC/android/$packageName/logout"
             verifier = getRandomString()
-            val url = Uri.parse("$basePathOIDC/logout").buildUpon()
-                .appendQueryParameter("id_token_hint", idToken)
-                .appendQueryParameter("client_id", appId)
-                .appendQueryParameter("state", verifier)
-                .appendQueryParameter("post_logout_redirect_uri", redirectUri)
-                .build()
+            val url =
+                Uri.parse("$basePathOIDC/logout")
+                    .buildUpon()
+                    .appendQueryParameter("id_token_hint", idToken)
+                    .appendQueryParameter("client_id", appId)
+                    .appendQueryParameter("state", verifier)
+                    .appendQueryParameter("post_logout_redirect_uri", redirectUri)
+                    .build()
 
             val customTabsIntent = CustomTabsIntent.Builder().build()
             customTabsIntent.launchUrl(activity, url)
