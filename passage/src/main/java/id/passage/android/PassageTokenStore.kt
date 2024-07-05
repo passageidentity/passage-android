@@ -13,15 +13,19 @@ import kotlinx.coroutines.launch
 import java.lang.Exception
 
 @Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
-public final class PassageTokenStore(activity: Activity) {
+public final class PassageTokenStore(
+    activity: Activity,
+) {
     private companion object {
         private const val PASSAGE_SHARED_PREFERENCES = "PASSAGE_SHARED_PREFERENCES"
         private const val PASSAGE_AUTH_TOKEN = "PASSAGE_AUTH_TOKEN"
         private const val PASSAGE_REFRESH_TOKEN = "PASSAGE_REFRESH_TOKEN"
+        private const val PASSAGE_ID_TOKEN = "PASSAGE_ID_TOKEN"
     }
 
     private val masterKey: MasterKey =
-        MasterKey.Builder(activity)
+        MasterKey
+            .Builder(activity)
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()
 
@@ -36,6 +40,9 @@ public final class PassageTokenStore(activity: Activity) {
 
     public val authToken: String?
         get() = sharedPreferences.getString(PASSAGE_AUTH_TOKEN, null)
+
+    public val idToken: String?
+        get() = sharedPreferences.getString(PASSAGE_ID_TOKEN, null)
 
     internal val refreshToken: String?
         get() = sharedPreferences.getString(PASSAGE_REFRESH_TOKEN, null)
@@ -54,6 +61,13 @@ public final class PassageTokenStore(activity: Activity) {
         val authResult = PassageToken.refreshAuthToken(currentRefreshToken)
         setTokens(authResult)
         return authResult.authToken
+    }
+
+    public fun setIdToken(token: String?) {
+        with(sharedPreferences.edit()) {
+            putString(PASSAGE_ID_TOKEN, token)
+            apply()
+        }
     }
 
     private fun setAuthToken(token: String?) {
