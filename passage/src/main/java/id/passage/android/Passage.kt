@@ -660,23 +660,26 @@ public final class Passage(
     // region OIDC Methods
 
     /**
-     * Authorize with OIDC
+     * Authentication Method for Hosted Apps
      *
-     * Authorizes user via a OIDC Login feature.
+     * If your Passage app is Hosted, use this method to register and log in your user.
+     * This method will open up a Passage login experience on a Chrome tab.
      */
     public fun hostedAuthStart() {
-        PassageOIDC.openChromeTab(
+        PassageHosted.openChromeTab(
             activity,
         )
     }
 
     /**
-     * Finish OIDC login
+     * Finish Hosted Auth for Hosted Apps
      *
-     * Finishes a OIDC login/sign up by exchanging the auth code for Passage tokens.
-     * @param code The code returned from the OIDC login.
-     * @return PassageAuthResult
-     * @throws FinishOIDCException
+     * This method completes the hosted authentication process by exchanging the provided authorization code for Passage tokens.
+     *
+     * @param code The code returned from app link redirect to your activity.
+     * @param clientSecret You hosted app's client secret, found in Passage Console's OIDC Settings.
+     * @param state The state returned from app link redirect to your activity.
+     * @throws HostedAuthorizationError
      */
 
     suspend fun hostedAuthFinish(
@@ -685,27 +688,24 @@ public final class Passage(
         state: String,
     ) {
         try {
-            val authResult = PassageOIDC.finishOIDC(activity, code, clientSecret, state)
+            val authResult = PassageHosted.finishOIDC(activity, code, clientSecret, state)
             if (authResult != null) handleAuthResult(authResult)
         } catch (e: Exception) {
-            throw FinishOIDCException.convert(e)
+            throw HostedAuthorizationError.convert(e)
         }
     }
 
     /**
-     * Logout with OIDC
+     * Logout Method for Hosted Apps
      *
-     * Logout user via a OIDC Logout feature.
+     * If your Passage app is Hosted, use this method to log out your user. This method will briefly open up a web view where it will log out the
+     * @throws HostedLogoutException
      */
 
     public suspend fun hostedAuthLogout() {
-        try {
-            val idToken = tokenStore.idToken ?: throw Exception("idToken is null")
-            PassageOIDC.logout(activity, idToken)
+            val idToken = tokenStore.idToken ?: throw HostedLogoutException("Can't Logout - Missing Id Token")
+            PassageHosted.logout(activity, idToken)
             tokenStore.clearAndRevokeTokens()
-        } catch (e: Exception) {
-            throw FinishOIDCException.convert(e)
-        }
     }
 
     // endregion

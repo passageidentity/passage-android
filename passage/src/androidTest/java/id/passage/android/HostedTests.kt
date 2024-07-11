@@ -10,7 +10,7 @@ import com.google.common.truth.Truth.assertThat
 import id.passage.android.IntegrationTestConfig.Companion.API_BASE_URL
 import id.passage.android.IntegrationTestConfig.Companion.APP_ID_OIDC
 import id.passage.android.IntegrationTestConfig.Companion.EXISTING_USER_EMAIL_OTP
-import id.passage.android.exceptions.FinishOIDCException
+import id.passage.android.exceptions.HostedAuthorizationError
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.fail
@@ -24,7 +24,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-internal class OIDCTests {
+internal class HostedTests {
     private lateinit var passage: Passage
 
     @Before
@@ -108,7 +108,7 @@ internal class OIDCTests {
                 passage.hostedAuthFinish(invalidAuthCode, "", "")
                 fail("Test should throw FinishOIDCAuthenticationInvalidRequestException")
             } catch (e: Exception) {
-                assertThat(e is FinishOIDCException)
+                assertThat(e is HostedAuthorizationError)
             }
         }
 }

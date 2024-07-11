@@ -6,6 +6,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
+import id.passage.android.exceptions.HostedAuthorizationError
 import id.passage.android.model.AuthResult
 import id.passage.client.infrastructure.ClientException
 import id.passage.client.infrastructure.ServerException
@@ -20,7 +21,7 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Base64
 
-internal class PassageOIDC {
+internal class PassageHosted {
     internal companion object {
         private var verifier = ""
         private var state = ""
@@ -82,8 +83,8 @@ internal class PassageOIDC {
             state: String,
         ): AuthResult? {
             val redirectUri = "$basePathOIDC/android/$packageName/callback"
-            if (PassageOIDC.state != state) {
-                throw (Exception("State is Invalid"))
+            if (PassageHosted.state != state) {
+                throw HostedAuthorizationError("State is Invalid")
             }
 
             var authResult: AuthResult?
