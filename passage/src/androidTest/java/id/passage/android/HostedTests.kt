@@ -67,44 +67,70 @@ internal class HostedTests {
     private suspend fun hostedAuthLogin() {
         passage.hostedAuthStart()
         delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
+
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        println("Device instance obtained.")
+
         // Handle the Chrome welcome screen
         val addAccountButton = device.findObject(UiSelector().className("android.widget.Button").text("Add account to device"))
         val useWithoutAccountButton = device.findObject(UiSelector().className("android.widget.Button").text("Use without an account"))
+
         if (addAccountButton.exists()) {
+            println("Add account button found, clicking 'Use without an account'.")
             useWithoutAccountButton.click()
             delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
+        } else {
+            println("Add account button not found.")
         }
+
         // Check if the user is on the login screen with the email field
         val emailField = device.findObject(UiSelector().className("android.widget.EditText").instance(0))
         if (emailField.exists()) {
+            println("Email field found, entering email.")
             emailField.setText(EXISTING_USER_EMAIL_OTP)
             val nextButton = device.findObject(UiSelector().className("android.widget.Button").text("Continue"))
             nextButton.click()
         } else {
+            println("Email field not found, checking for 'Continue' button.")
             // User is already logged in, click Continue button
             val continueButton = device.findObject(UiSelector().className("android.widget.Button").text("Continue"))
             if (continueButton.exists()) {
+                println("Continue button found, clicking it.")
                 continueButton.click()
+            } else {
+                println("Continue button not found.")
             }
         }
+
         delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
+
         val otpCode = MailosaurAPIClient.getMostRecentOneTimePasscode() // Replace with the actual OTP code
+        println("OTP code retrieved: $otpCode")
 
         otpCode.forEachIndexed { index, char ->
             val otpField = device.findObject(UiSelector().className("android.widget.EditText").instance(index))
-            otpField.click()
-            otpField.setText(char.toString())
-            Thread.sleep(200)
+            if (otpField.exists()) {
+                println("OTP field $index found, entering OTP character.")
+                otpField.click()
+                otpField.setText(char.toString())
+                Thread.sleep(200)
+            } else {
+                println("OTP field $index not found.")
+            }
         }
 
         delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
+
         val skipButton = device.findObject(UiSelector().className("android.widget.Button").text("Skip"))
         if (skipButton.exists()) {
+            println("Skip button found, clicking it.")
             skipButton.click()
             delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
+        } else {
+            println("Skip button not found.")
         }
     }
+
 
     @Test
     fun testHostedLogout(): Unit =
