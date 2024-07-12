@@ -9,7 +9,7 @@ internal class IntegrationTestConfig {
         const val APP_ID_OTP = "Ezbk6fSdx9pNQ7v7UbVEnzeC"
         const val APP_ID_OIDC = "2ZWhX75KpwKKVdr4gxiZph9m"
         const val APP_ID_MAGIC_LINK = "Pea2GdtBHN3esylK4ZRlF19U"
-        const val WAIT_TIME_MILLISECONDS: Long = 8000
+        const val WAIT_TIME_MILLISECONDS: Long = 15000
         const val EXISTING_USER_EMAIL_OTP = "authentigator+1716916054778@ncor7c1m.mailosaur.net"
         const val EXISTING_USER_EMAIL_MAGIC_LINK = "authentigator+1716572384858@ncor7c1m.mailosaur.net"
         const val DEACTIVATED_USER_EMAIL_MAGIC_LINK = "authentigator+1716778790434@ncor7c1m.mailosaur.net"
