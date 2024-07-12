@@ -68,10 +68,26 @@ internal class HostedTests {
         passage.hostedAuthStart()
         delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        val loginField = device.findObject(UiSelector().className("android.widget.EditText").instance(0))
-        loginField.setText(EXISTING_USER_EMAIL_OTP)
-        val continueButton = device.findObject(UiSelector().className("android.widget.Button").text("Continue"))
-        continueButton.click()
+        // Handle the Chrome welcome screen
+        val addAccountButton = device.findObject(UiSelector().className("android.widget.Button").text("Add account to device"))
+        val useWithoutAccountButton = device.findObject(UiSelector().className("android.widget.Button").text("Use without an account"))
+        if (addAccountButton.exists()) {
+            useWithoutAccountButton.click()
+            delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
+        }
+        // Check if the user is on the login screen with the email field
+        val emailField = device.findObject(UiSelector().className("android.widget.EditText").instance(0))
+        if (emailField.exists()) {
+            emailField.setText(EXISTING_USER_EMAIL_OTP)
+            val nextButton = device.findObject(UiSelector().className("android.widget.Button").text("Continue"))
+            nextButton.click()
+        } else {
+            // User is already logged in, click Continue button
+            val continueButton = device.findObject(UiSelector().className("android.widget.Button").text("Continue"))
+            if (continueButton.exists()) {
+                continueButton.click()
+            }
+        }
         delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
         val otpCode = MailosaurAPIClient.getMostRecentOneTimePasscode() // Replace with the actual OTP code
 
@@ -84,14 +100,18 @@ internal class HostedTests {
 
         delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
         val skipButton = device.findObject(UiSelector().className("android.widget.Button").text("Skip"))
-        skipButton.click()
+        if (skipButton.exists()) {
+            skipButton.click()
+            delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
+        }
     }
 
     @Test
     fun testHostedLogout(): Unit =
         runBlocking {
             try {
-                hostedAuthLogin()
+                val alreadyAuthenticated = passage.getCurrentUser()
+                if (alreadyAuthenticated == null) hostedAuthLogin()
                 passage.hostedAuthLogout()
                 val user = passage.getCurrentUser()
                 assertNull(user)

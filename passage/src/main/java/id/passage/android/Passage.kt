@@ -15,6 +15,7 @@ import id.passage.android.api.UsersAPI
 import id.passage.android.exceptions.*
 import id.passage.android.model.ActivateMagicLinkRequest
 import id.passage.android.model.ActivateOneTimePasscodeRequest
+import id.passage.android.model.AuthResult
 import id.passage.android.model.AuthenticatorAttachment
 import id.passage.android.model.GetMagicLinkStatusRequest
 import id.passage.android.model.LoginMagicLinkRequest
@@ -38,7 +39,6 @@ public final class Passage(
     internal companion object {
         internal const val TAG = "Passage"
         internal var BASE_PATH = "https://auth.passage.id/v1"
-        internal lateinit var basePathOIDC: String
         internal lateinit var packageName: String
         internal lateinit var appId: String
         internal lateinit var authOrigin: String
@@ -655,6 +655,20 @@ public final class Passage(
         if (!isUsingTokenStore) return
         tokenStore.setTokens(authResult)
     }
+
+    /**
+     * Updates the Passage Token Store with the given ID token.
+     *
+     * This method should be called whenever a user utilizes Hosted Auth to ensure the
+     * isToken is updated in the Passage Token Store, if applicable.
+     *
+     * @param idToken The ID token to be handled.
+     */
+
+    private fun handleIdToken(idToken: String) {
+        if (!isUsingTokenStore) return
+        tokenStore.setIdToken(idToken)
+    }
     // endregion
 
     // region OIDC Methods
@@ -686,10 +700,14 @@ public final class Passage(
         code: String,
         clientSecret: String,
         state: String,
-    ) {
+    ) : Pair<AuthResult, String> {
         try {
-            val authResult = PassageHosted.finishOIDC(activity, code, clientSecret, state)
-            if (authResult != null) handleAuthResult(authResult)
+            val finishHostedAuthResult = PassageHosted.finishHostedAuth(code, clientSecret, state)
+            finishHostedAuthResult.let { (authResult, idToken) ->
+                handleAuthResult(authResult)
+                handleIdToken(idToken)
+            }
+            return finishHostedAuthResult
         } catch (e: Exception) {
             throw HostedAuthorizationError.convert(e)
         }
@@ -703,9 +721,9 @@ public final class Passage(
      */
 
     public suspend fun hostedAuthLogout() {
-            val idToken = tokenStore.idToken ?: throw HostedLogoutException("Can't Logout - Missing Id Token")
-            PassageHosted.logout(activity, idToken)
-            tokenStore.clearAndRevokeTokens()
+        val idToken = tokenStore.idToken ?: throw HostedLogoutException("Can't Logout - Missing Id Token")
+        PassageHosted.logout(activity, idToken)
+        tokenStore.clearAndRevokeTokens()
     }
 
     // endregion

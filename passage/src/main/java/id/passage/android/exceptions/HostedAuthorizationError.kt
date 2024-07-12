@@ -18,7 +18,7 @@ public open class HostedAuthorizationError(
         internal fun convert(e: Exception): HostedAuthorizationError {
             val message = e.message ?: e.toString()
             return when (e) {
-                is ClientException -> FinishOIDCServerException(message)
+                is ClientException -> FinishHostedServerException(message)
                 is ServerException -> FinishHostedBadRequestException(message)
                 else -> HostedAuthorizationError(message)
             }
@@ -36,7 +36,7 @@ public class FinishHostedBadRequestException(
 /**
  * Thrown when Passage internal server error occurs.
  */
-public class FinishOIDCServerException(
+public class FinishHostedServerException(
     message: String,
 ) : HostedAuthorizationError(message)
 

@@ -17,26 +17,22 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.net.URLEncoder
-import java.security.MessageDigest
-import java.security.SecureRandom
-import java.util.Base64
 
 internal class PassageHosted {
     internal companion object {
         private var verifier = ""
         private var state = ""
         private const val CODE_CHALLENGE_METHOD = "S256"
-        private const val SECRET_STRING_LENGTH = 32
         private val basePathOIDC = "https://${Passage.authOrigin}"
         private val appId = Passage.appId
         private val packageName = Passage.packageName
 
         internal fun openChromeTab(activity: Activity) {
             val redirectUri = "$basePathOIDC/android/$packageName/callback"
-            state = getRandomString()
-            val randomString = getRandomString()
-            verifier = getRandomString()
-            val codeChallenge = sha256Hash(randomString)
+            state = Utils.getRandomString()
+            val randomString = Utils.getRandomString()
+            verifier = Utils.getRandomString()
+            val codeChallenge = Utils.sha256Hash(randomString)
             val newParams =
                 listOf(
                     "client_id" to appId,
@@ -54,40 +50,18 @@ internal class PassageHosted {
             intent.launchUrl(activity, Uri.parse(url))
         }
 
-        private fun getRandomString(): String {
-            val digits = '0'..'9'
-            val upperCaseLetters = 'A'..'Z'
-            val lowerCaseLetters = 'a'..'z'
-            val characters = (digits + upperCaseLetters + lowerCaseLetters)
-                .joinToString("")
-            val random = SecureRandom()
-            val stringBuilder = StringBuilder(SECRET_STRING_LENGTH)
-            for (i in 0 until SECRET_STRING_LENGTH) {
-                val randomIndex = random.nextInt(characters.length)
-                stringBuilder.append(characters[randomIndex])
-            }
-            return stringBuilder.toString()
-        }
-
-        private fun sha256Hash(randomString: String): String {
-            val bytes = randomString.toByteArray()
-            val md = MessageDigest.getInstance("SHA-256")
-            val digest = md.digest(bytes)
-            return Base64.getUrlEncoder().withoutPadding().encodeToString(digest)
-        }
-
-        internal suspend fun finishOIDC(
-            activity: Activity,
+        internal suspend fun finishHostedAuth(
             code: String,
             clientSecret: String,
             state: String,
-        ): AuthResult? {
+        ): Pair<AuthResult, String> {
             val redirectUri = "$basePathOIDC/android/$packageName/callback"
             if (PassageHosted.state != state) {
                 throw HostedAuthorizationError("State is Invalid")
             }
 
-            var authResult: AuthResult?
+            var authResult: AuthResult
+            var idToken : String
             val client = OkHttpClient()
             val moshi =
                 Moshi
@@ -135,14 +109,13 @@ internal class PassageHosted {
                                 refreshToken = apiResponse.refreshToken,
                                 refreshTokenExpiration = null,
                             )
-
-                        PassageTokenStore(activity = activity).setIdToken(apiResponse.idToken)
+                        idToken = apiResponse.idToken
                     } else {
                         throw Exception("Response body is null : ${response.code} ${response.message}")
                     }
                 }
             }
-            return authResult
+            return Pair(authResult, idToken)
         }
 
         fun logout(
@@ -150,9 +123,9 @@ internal class PassageHosted {
             idToken: String,
         ) {
             val redirectUri = "$basePathOIDC/android/$packageName/logout"
-            verifier = getRandomString()
-            val url =
-                Uri.parse("$basePathOIDC/logout")
+            verifier = Utils.getRandomString()
+            val url = Uri
+                    .parse("$basePathOIDC/logout")
                     .buildUpon()
                     .appendQueryParameter("id_token_hint", idToken)
                     .appendQueryParameter("client_id", appId)
