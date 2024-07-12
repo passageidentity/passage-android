@@ -59,9 +59,8 @@ internal class PassageHosted {
             if (PassageHosted.state != state) {
                 throw HostedAuthorizationError("State is Invalid")
             }
-
             var authResult: AuthResult
-            var idToken : String
+            var idToken: String
             val client = OkHttpClient()
             val moshi =
                 Moshi
@@ -124,14 +123,14 @@ internal class PassageHosted {
         ) {
             val redirectUri = "$basePathOIDC/android/$packageName/logout"
             verifier = Utils.getRandomString()
-            val url = Uri
-                    .parse("$basePathOIDC/logout")
-                    .buildUpon()
-                    .appendQueryParameter("id_token_hint", idToken)
-                    .appendQueryParameter("client_id", appId)
-                    .appendQueryParameter("state", verifier)
-                    .appendQueryParameter("post_logout_redirect_uri", redirectUri)
-                    .build()
+            val url =
+                Uri.parse("$basePathOIDC/logout")
+                .buildUpon()
+                .appendQueryParameter("id_token_hint", idToken)
+                .appendQueryParameter("client_id", appId)
+                .appendQueryParameter("post_logout_redirect_uri", redirectUri)
+                .appendQueryParameter("state", verifier)
+                .build()
 
             val customTabsIntent = CustomTabsIntent.Builder().build()
             customTabsIntent.launchUrl(activity, url)

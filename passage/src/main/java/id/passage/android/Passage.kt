@@ -700,7 +700,7 @@ public final class Passage(
         code: String,
         clientSecret: String,
         state: String,
-    ) : Pair<AuthResult, String> {
+    ): Pair<AuthResult, String> {
         try {
             val finishHostedAuthResult = PassageHosted.finishHostedAuth(code, clientSecret, state)
             finishHostedAuthResult.let { (authResult, idToken) ->

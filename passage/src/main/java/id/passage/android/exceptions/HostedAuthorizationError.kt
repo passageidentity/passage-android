@@ -40,8 +40,9 @@ public class FinishHostedServerException(
     message: String,
 ) : HostedAuthorizationError(message)
 
-
 /**
  * Thrown when a error occurs During Hosted Logout.
  */
-public class HostedLogoutException(message: String) : HostedAuthorizationError(message)
+public class HostedLogoutException(
+    message: String
+) : HostedAuthorizationError(message)
