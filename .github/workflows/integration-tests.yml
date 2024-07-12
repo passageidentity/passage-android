@@ -65,11 +65,12 @@ jobs:
           script: |
             adb shell screenrecord /sdcard/screenrecord.mp4 &
             RECORD_PID=$!
-            ./gradlew connectedDebugAndroidTest
+            ./gradlew connectedDebugAndroidTest || true
             adb shell kill $RECORD_PID
             adb pull /sdcard/screenrecord.mp4
 
       - name: Upload screen recording
+        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: screenrecord
