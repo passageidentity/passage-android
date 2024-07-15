@@ -38,7 +38,6 @@ public final class Passage(
     internal companion object {
         internal const val TAG = "Passage"
         internal var BASE_PATH = "https://auth.passage.id/v1"
-
         internal lateinit var appId: String
         internal lateinit var authOrigin: String
         internal var language: String? = null
@@ -653,5 +652,89 @@ public final class Passage(
         if (!isUsingTokenStore) return
         tokenStore.setTokens(authResult)
     }
+
+    /**
+     * Updates the Passage Token Store with the given ID token.
+     *
+     * This method should be called whenever a user utilizes Hosted Auth to ensure the
+     * isToken is updated in the Passage Token Store, if applicable.
+     *
+     * @param idToken The ID token to be handled.
+     */
+
+    private fun handleIdToken(idToken: String) {
+        if (!isUsingTokenStore) return
+        tokenStore.setIdToken(idToken)
+    }
+    // endregion
+
+    // region OIDC Methods
+
+    /**
+     * Authentication Method for Hosted Apps
+     *
+     * If your Passage app is Hosted, use this method to register and log in your user.
+     * This method will open up a Passage login experience on a Chrome tab.
+     */
+    public fun hostedAuthStart() {
+        PassageHosted.openChromeTab(
+            activity,
+        )
+    }
+
+    /**
+     * Finish Hosted Auth for Hosted Apps
+     *
+     * This method completes the hosted authentication process by exchanging the provided authorization code for Passage tokens.
+     *
+     * @param code The code returned from app link redirect to your activity.
+     * @param clientSecret You hosted app's client secret, found in Passage Console's OIDC Settings.
+     * @param state The state returned from app link redirect to your activity.
+     * @throws HostedAuthorizationError
+     */
+
+    public suspend fun hostedAuthFinish(
+        code: String,
+        clientSecret: String,
+        state: String,
+    ): Pair<PassageAuthResult, String> {
+        try {
+            val finishHostedAuthResult = PassageHosted.finishHostedAuth(code, clientSecret, state)
+            finishHostedAuthResult.let { (authResult, idToken) ->
+                handleAuthResult(authResult)
+                handleIdToken(idToken)
+            }
+            return finishHostedAuthResult
+        } catch (e: Exception) {
+            throw HostedAuthorizationError.convert(e)
+        }
+    }
+
+    /**
+     * Logout Method for Hosted Apps
+     *
+     * If your Passage app is Hosted, use this method to log out your user. This method will briefly open up a web view where it will log out the
+     * @throws HostedLogoutException
+     */
+
+    public suspend fun hostedLogout() {
+        val idToken = tokenStore.idToken ?: throw HostedLogoutException("Can't Logout - Missing Id Token")
+        PassageHosted.logout(activity, idToken)
+        tokenStore.clearAndRevokeTokens()
+    }
+
+    /**
+     * Logout Method for Hosted Apps
+     *
+     * If your Passage app is Hosted, use this method to log out your user. This method will briefly open up a web view where it will log out the
+     * @param idToken The auth id token, used to log the user our of any remaining web sessions.
+     * @throws HostedLogoutException
+     */
+
+    public suspend fun hostedLogout(idToken: String) {
+        PassageHosted.logout(activity, idToken)
+        tokenStore.clearAndRevokeTokens()
+    }
+
     // endregion
 }
