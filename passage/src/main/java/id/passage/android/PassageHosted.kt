@@ -25,9 +25,10 @@ internal class PassageHosted {
         private const val CODE_CHALLENGE_METHOD = "S256"
         private val basePathOIDC = "https://${Passage.authOrigin}"
         private val appId = Passage.appId
-        private val packageName = Passage.packageName
+        private var packageName = ""
 
         internal fun openChromeTab(activity: Activity) {
+            packageName = activity.packageName
             val redirectUri = "$basePathOIDC/android/$packageName/callback"
             state = Utils.getRandomString()
             val randomString = Utils.getRandomString()

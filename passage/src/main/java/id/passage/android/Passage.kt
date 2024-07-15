@@ -38,7 +38,6 @@ public final class Passage(
     internal companion object {
         internal const val TAG = "Passage"
         internal var BASE_PATH = "https://auth.passage.id/v1"
-        internal lateinit var packageName: String
         internal lateinit var appId: String
         internal lateinit var authOrigin: String
         internal var language: String? = null
@@ -81,7 +80,6 @@ public final class Passage(
         authOrigin = getRequiredResourceFromApp(activity, "passage_auth_origin")
         Companion.appId = appId ?: getRequiredResourceFromApp(activity, "passage_app_id")
         language = getOptionalResourceFromApp(activity, "passage_language")
-        packageName = activity.packageName
 
         val usePassageStore = getOptionalResourceFromApp(activity, "use_passage_store")
         if (usePassageStore != "false") {
