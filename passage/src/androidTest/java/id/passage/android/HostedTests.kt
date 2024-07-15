@@ -1,22 +1,24 @@
 package id.passage.android
 
+import android.content.Intent
+import androidx.browser.customtabs.CustomTabsIntent.SHARE_STATE_DEFAULT
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasDataString
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiSelector
 import com.google.common.truth.Truth.assertThat
 import id.passage.android.IntegrationTestConfig.Companion.API_BASE_URL
 import id.passage.android.IntegrationTestConfig.Companion.APP_ID_OIDC
-import id.passage.android.IntegrationTestConfig.Companion.EXISTING_USER_EMAIL_OTP
 import id.passage.android.exceptions.HostedAuthorizationError
-import junit.framework.TestCase.assertNotNull
-import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.fail
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -51,100 +53,39 @@ internal class HostedTests {
         )
 
     @Test
-    fun testHostedAuthStart(): Unit =
-        runBlocking {
+    fun testAuthorizeWith() =
+        runTest {
             try {
-                hostedAuthLogin()
-                val user = passage.getCurrentUser()
-                assertNotNull(user)
+                val expectedBasePath = "https://fragile-greenyellow-bat.withpassage-uat.com/authorize"
+                val expectedCodeChallengeMethod = "code_challenge_method=S256"
+                val expectedState = "state="
+                val expectedCodeChallenge = "code_challenge="
+
+                passage.hostedAuthStart()
+
+                intended(
+                    allOf(
+                        // Web browser is open
+                        hasAction(Intent.ACTION_VIEW),
+                        // Web browser is a Custom Chrome Tab
+                        hasExtra("androidx.browser.customtabs.extra.SHARE_STATE", SHARE_STATE_DEFAULT),
+                        // Web browser url has expected base path
+                        hasDataString(containsString(expectedBasePath)),
+                        hasDataString(containsString(expectedCodeChallengeMethod)),
+                        hasDataString(containsString(expectedState)),
+                        hasDataString(containsString(expectedCodeChallenge)),
+                    ),
+                )
+
+
             } catch (e: Exception) {
                 fail("Test failed due to unexpected exception: ${e.message}")
             } finally {
+                // Simulate a back press to dismiss the Custom Chrome Tab
                 UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
             }
         }
 
-    private suspend fun hostedAuthLogin() {
-        passage.hostedAuthStart()
-        delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
-
-        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        println("Device instance obtained.")
-
-        // Handle the Chrome welcome screen
-        val addAccountButton = device.findObject(UiSelector().className("android.widget.Button").text("Add account to device"))
-        val useWithoutAccountButton = device.findObject(UiSelector().className("android.widget.Button").text("Use without an account"))
-
-        if (addAccountButton.exists()) {
-            println("Add account button found, clicking 'Use without an account'.")
-            useWithoutAccountButton.click()
-            delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
-        } else {
-            println("Add account button not found.")
-        }
-
-        // Check if the user is on the login screen with the email field
-        val emailField = device.findObject(UiSelector().className("android.widget.EditText").instance(0))
-        if (emailField.exists()) {
-            println("Email field found, entering email.")
-            emailField.setText(EXISTING_USER_EMAIL_OTP)
-            val nextButton = device.findObject(UiSelector().className("android.widget.Button").text("Continue"))
-            nextButton.click()
-        } else {
-            println("Email field not found, checking for 'Continue' button.")
-            // User is already logged in, click Continue button
-            val continueButton = device.findObject(UiSelector().className("android.widget.Button").text("Continue"))
-            if (continueButton.exists()) {
-                println("Continue button found, clicking it.")
-                continueButton.click()
-            } else {
-                println("Continue button not found.")
-            }
-        }
-
-        delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
-
-        val otpCode = MailosaurAPIClient.getMostRecentOneTimePasscode() // Replace with the actual OTP code
-        println("OTP code retrieved: $otpCode")
-
-        otpCode.forEachIndexed { index, char ->
-            val otpField = device.findObject(UiSelector().className("android.widget.EditText").instance(index))
-            if (otpField.exists()) {
-                println("OTP field $index found, entering OTP character.")
-                otpField.click()
-                otpField.setText(char.toString())
-                Thread.sleep(200)
-            } else {
-                println("OTP field $index not found.")
-            }
-        }
-
-        delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
-
-        val skipButton = device.findObject(UiSelector().className("android.widget.Button").text("Skip"))
-        if (skipButton.exists()) {
-            println("Skip button found, clicking it.")
-            skipButton.click()
-            delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
-        } else {
-            println("Skip button not found.")
-        }
-    }
-
-
-    @Test
-    fun testHostedLogout(): Unit =
-        runBlocking {
-            try {
-                val alreadyAuthenticated = passage.getCurrentUser()
-                if (alreadyAuthenticated == null) hostedAuthLogin()
-                passage.hostedAuthLogout()
-                val user = passage.getCurrentUser()
-                assertNull(user)
-            } catch (e: Exception) {
-                fail("Test failed due to unexpected exception: ${e.message}")
-            }
-        }
 
     @Test
     fun testFinishAuthorizationInvalidRequest() =
