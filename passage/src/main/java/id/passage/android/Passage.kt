@@ -15,7 +15,6 @@ import id.passage.android.api.UsersAPI
 import id.passage.android.exceptions.*
 import id.passage.android.model.ActivateMagicLinkRequest
 import id.passage.android.model.ActivateOneTimePasscodeRequest
-import id.passage.android.model.AuthResult
 import id.passage.android.model.AuthenticatorAttachment
 import id.passage.android.model.GetMagicLinkStatusRequest
 import id.passage.android.model.LoginMagicLinkRequest
