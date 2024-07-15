@@ -13,7 +13,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = "id.passage.android"
-version = "1.7.5"
+version = "1.8.0"
 
 android {
     namespace 'id.passage.android'
@@ -22,8 +22,8 @@ android {
     defaultConfig {
         minSdk 28 // Minimum support for Credentials Manager - ie passkeys
         targetSdk 34
-        versionCode 15
-        versionName "1.7.5"
+        versionCode 16
+        versionName "1.8.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
