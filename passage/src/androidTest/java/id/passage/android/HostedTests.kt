@@ -76,7 +76,6 @@ internal class HostedTests {
                         hasDataString(containsString(expectedCodeChallenge)),
                     ),
                 )
-
             } catch (e: Exception) {
                 fail("Test failed due to unexpected exception: ${e.message}")
             } finally {
