@@ -86,7 +86,6 @@ internal class HostedTests {
             }
         }
 
-
     @Test
     fun testFinishAuthorizationInvalidRequest() =
         runTest {

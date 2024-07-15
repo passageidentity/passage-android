@@ -12,11 +12,12 @@ class Utils {
             val digits = '0'..'9'
             val upperCaseLetters = 'A'..'Z'
             val lowerCaseLetters = 'a'..'z'
-            val characters = (
-                    digits +
-                    upperCaseLetters +
-                    lowerCaseLetters
-                    )
+            val characters =
+                (
+                digits +
+                upperCaseLetters +
+                lowerCaseLetters
+                )
                 .joinToString("")
             val random = SecureRandom()
             val stringBuilder = StringBuilder(SECRET_STRING_LENGTH)

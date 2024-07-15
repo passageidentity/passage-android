@@ -124,13 +124,14 @@ internal class PassageHosted {
             val redirectUri = "$basePathOIDC/android/$packageName/logout"
             verifier = Utils.getRandomString()
             val url =
-                Uri.parse("$basePathOIDC/logout")
-                .buildUpon()
-                .appendQueryParameter("id_token_hint", idToken)
-                .appendQueryParameter("client_id", appId)
-                .appendQueryParameter("post_logout_redirect_uri", redirectUri)
-                .appendQueryParameter("state", verifier)
-                .build()
+                Uri
+                    .parse("$basePathOIDC/logout")
+                    .buildUpon()
+                    .appendQueryParameter("id_token_hint", idToken)
+                    .appendQueryParameter("client_id", appId)
+                    .appendQueryParameter("post_logout_redirect_uri", redirectUri)
+                    .appendQueryParameter("state", verifier)
+                    .build()
 
             val customTabsIntent = CustomTabsIntent.Builder().build()
             customTabsIntent.launchUrl(activity, url)
