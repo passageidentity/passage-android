@@ -17,7 +17,7 @@ class Utils {
                     digits +
                         upperCaseLetters +
                         lowerCaseLetters
-                    ).joinToString("")
+                ).joinToString("")
             val random = SecureRandom()
             val stringBuilder = StringBuilder(SECRET_STRING_LENGTH)
             for (i in 0 until SECRET_STRING_LENGTH) {
