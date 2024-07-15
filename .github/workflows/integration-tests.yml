@@ -55,40 +55,15 @@ jobs:
         arch: x86_64
         script: echo "Generated AVD snapshot for caching."
 
-    - name: Run tests with screen recording and screenshots
-      uses: reactivecircus/android-emulator-runner@v2
-      with:
-        api-level: ${{ matrix.api-level }}
-        force-avd-creation: false
-        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-        disable-animations: true
-        arch: x86_64
-        script: |
-          adb shell screenrecord /sdcard/screenrecord.mp4 & 
-          RECORD_PID=$!
-          ./gradlew connectedDebugAndroidTest || true
-          adb shell kill $RECORD_PID
-          adb pull /sdcard/screenrecord.mp4
-          mkdir -p /tmp/screenshots
-          adb shell screencap -p /sdcard/screenshot.png
-          adb pull /sdcard/screenshot.png /tmp/screenshots/
-          ls -l /tmp/screenshots  # List screenshot files to verify they exist
-          ls -l  # List files to verify screenrecord.mp4 exists
+    - name: Run tests with screen recording
+      run: ./test-ci.sh
 
     - name: Upload screen recording
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: screenrecord
-        path: screenrecord.mp4
-        if-no-files-found: warn
-
-    - name: Upload screenshots
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: screenshots
-        path: /tmp/screenshots
+        path: testRecording.mp4
         if-no-files-found: warn
 
     - name: Upload test results
