@@ -56,7 +56,7 @@ jobs:
         script: echo "Generated AVD snapshot for caching."
 
     - name: Run tests with screen recording
-      run: ./test-ci.sh
+      run: ./.github/workflows/test-ci.sh
 
     - name: Upload screen recording
       if: always()
