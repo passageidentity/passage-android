@@ -14,9 +14,9 @@ class Utils {
             val lowerCaseLetters = 'a'..'z'
             val characters =
                 (
-                digits +
-                upperCaseLetters +
-                lowerCaseLetters
+                    digits +
+                    upperCaseLetters +
+                    lowerCaseLetters
                 )
                 .joinToString("")
             val random = SecureRandom()
