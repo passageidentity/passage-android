@@ -3,7 +3,7 @@
 
     <!-- Required Passage app settings -->
     <string name="passage_app_id">2ZWhX75KpwKKVdr4gxiZph9m</string>
-    <string name="passage_auth_origin">fragile-greenyellow-bat.withpassage-uat.com</string>
+    <string name="passage_auth_origin">try-uat.passage.dev</string>
     <string name="asset_statements">
       [{
         \"include\": \"https://@string/passage_auth_origin/.well-known/assetlinks.json\"
