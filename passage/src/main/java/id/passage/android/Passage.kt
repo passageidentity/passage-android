@@ -696,11 +696,11 @@ public final class Passage(
      * @throws HostedAuthorizationError
      */
 
-    suspend fun hostedAuthFinish(
+    public suspend fun hostedAuthFinish(
         code: String,
         clientSecret: String,
         state: String,
-    ): Pair<AuthResult, String> {
+    ): Pair<PassageAuthResult, String> {
         try {
             val finishHostedAuthResult = PassageHosted.finishHostedAuth(code, clientSecret, state)
             finishHostedAuthResult.let { (authResult, idToken) ->
