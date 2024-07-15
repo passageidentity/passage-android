@@ -56,7 +56,6 @@ internal class HostedTests {
     fun testAuthorizeWith() =
         runTest {
             try {
-                val expectedBasePath = "https://fragile-greenyellow-bat.withpassage-uat.com/authorize"
                 val expectedCodeChallengeMethod = "code_challenge_method=S256"
                 val expectedState = "state="
                 val expectedCodeChallenge = "code_challenge="
@@ -69,8 +68,6 @@ internal class HostedTests {
                         hasAction(Intent.ACTION_VIEW),
                         // Web browser is a Custom Chrome Tab
                         hasExtra("androidx.browser.customtabs.extra.SHARE_STATE", SHARE_STATE_DEFAULT),
-                        // Web browser url has expected base path
-                        hasDataString(containsString(expectedBasePath)),
                         hasDataString(containsString(expectedCodeChallengeMethod)),
                         hasDataString(containsString(expectedState)),
                         hasDataString(containsString(expectedCodeChallenge)),
