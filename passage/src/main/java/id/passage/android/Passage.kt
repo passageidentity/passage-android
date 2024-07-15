@@ -720,8 +720,21 @@ public final class Passage(
      * @throws HostedLogoutException
      */
 
-    public suspend fun hostedAuthLogout() {
+    public suspend fun hostedLogout() {
         val idToken = tokenStore.idToken ?: throw HostedLogoutException("Can't Logout - Missing Id Token")
+        PassageHosted.logout(activity, idToken)
+        tokenStore.clearAndRevokeTokens()
+    }
+
+    /**
+     * Logout Method for Hosted Apps
+     *
+     * If your Passage app is Hosted, use this method to log out your user. This method will briefly open up a web view where it will log out the
+     * @param idToken The auth id token, used to log the user our of any remaining web sessions.
+     * @throws HostedLogoutException
+     */
+
+    public suspend fun hostedLogout(idToken: String) {
         PassageHosted.logout(activity, idToken)
         tokenStore.clearAndRevokeTokens()
     }
