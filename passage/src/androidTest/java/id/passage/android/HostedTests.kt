@@ -86,7 +86,7 @@ internal class HostedTests {
         runTest {
             try {
                 val invalidAuthCode = "INVALID_AUTH_CODE"
-                passage.hostedAuthFinish(invalidAuthCode, "", "")
+                passage.hostedAuthFinish(invalidAuthCode, "")
                 fail("Test should throw FinishOIDCAuthenticationInvalidRequestException")
             } catch (e: Exception) {
                 assertThat(e is HostedAuthorizationError)
