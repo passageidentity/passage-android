@@ -12,7 +12,28 @@ import id.passage.android.api.OAuth2API
 import id.passage.android.api.OTPAPI
 import id.passage.android.api.RegisterAPI
 import id.passage.android.api.UsersAPI
-import id.passage.android.exceptions.*
+import id.passage.android.exceptions.AppInfoException
+import id.passage.android.exceptions.FinishSocialAuthenticationException
+import id.passage.android.exceptions.GetMagicLinkStatusException
+import id.passage.android.exceptions.GetMagicLinkStatusNotFoundException
+import id.passage.android.exceptions.HostedAuthorizationError
+import id.passage.android.exceptions.HostedLogoutException
+import id.passage.android.exceptions.LoginException
+import id.passage.android.exceptions.LoginNoExistingUserException
+import id.passage.android.exceptions.LoginNoFallbackException
+import id.passage.android.exceptions.LoginWithPasskeyException
+import id.passage.android.exceptions.MagicLinkActivateException
+import id.passage.android.exceptions.NewLoginMagicLinkException
+import id.passage.android.exceptions.NewLoginOneTimePasscodeException
+import id.passage.android.exceptions.NewRegisterMagicLinkException
+import id.passage.android.exceptions.NewRegisterOneTimePasscodeException
+import id.passage.android.exceptions.OneTimePasscodeActivateException
+import id.passage.android.exceptions.PassageTokenException
+import id.passage.android.exceptions.RegisterException
+import id.passage.android.exceptions.RegisterNoFallbackException
+import id.passage.android.exceptions.RegisterPublicDisabledException
+import id.passage.android.exceptions.RegisterUserExistsException
+import id.passage.android.exceptions.RegisterWithPasskeyException
 import id.passage.android.model.ActivateMagicLinkRequest
 import id.passage.android.model.ActivateOneTimePasscodeRequest
 import id.passage.android.model.AuthenticatorAttachment
@@ -688,18 +709,16 @@ public final class Passage(
      * This method completes the hosted authentication process by exchanging the provided authorization code for Passage tokens.
      *
      * @param code The code returned from app link redirect to your activity.
-     * @param clientSecret You hosted app's client secret, found in Passage Console's OIDC Settings.
      * @param state The state returned from app link redirect to your activity.
      * @throws HostedAuthorizationError
      */
 
     public suspend fun hostedAuthFinish(
         code: String,
-        clientSecret: String,
         state: String,
     ): Pair<PassageAuthResult, String> {
         try {
-            val finishHostedAuthResult = PassageHosted.finishHostedAuth(code, clientSecret, state)
+            val finishHostedAuthResult = PassageHosted.finishHostedAuth(code, state)
             finishHostedAuthResult.let { (authResult, idToken) ->
                 handleAuthResult(authResult)
                 handleIdToken(idToken)
