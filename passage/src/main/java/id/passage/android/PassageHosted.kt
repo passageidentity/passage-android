@@ -31,9 +31,8 @@ internal class PassageHosted {
             packageName = activity.packageName
             val redirectUri = "$basePathOIDC/android/$packageName/callback"
             state = Utils.getRandomString()
-            val randomString = Utils.getRandomString()
             verifier = Utils.getRandomString()
-            val codeChallenge = Utils.sha256Hash(randomString)
+            val codeChallenge = Utils.sha256Hash(verifier)
             val newParams =
                 listOf(
                     "client_id" to appId,
@@ -53,7 +52,6 @@ internal class PassageHosted {
 
         internal suspend fun finishHostedAuth(
             code: String,
-            clientSecret: String,
             state: String,
         ): Pair<AuthResult, String> {
             val redirectUri = "$basePathOIDC/android/$packageName/callback"
@@ -76,8 +74,7 @@ internal class PassageHosted {
                     "grant_type" to "authorization_code",
                     "code" to code,
                     "client_id" to Passage.appId,
-                    "verifier" to verifier,
-                    "client_secret" to clientSecret,
+                    "code_verifier" to verifier,
                     "redirect_uri" to redirectUri,
                 ).joinToString("&") { (key, value) ->
                     "$key=${URLEncoder.encode(value, "UTF-8")}"
@@ -123,7 +120,7 @@ internal class PassageHosted {
             idToken: String,
         ) {
             val redirectUri = "$basePathOIDC/android/$packageName/logout"
-            verifier = Utils.getRandomString()
+            state = Utils.getRandomString()
             val url =
                 Uri
                     .parse("$basePathOIDC/logout")
@@ -131,7 +128,7 @@ internal class PassageHosted {
                     .appendQueryParameter("id_token_hint", idToken)
                     .appendQueryParameter("client_id", appId)
                     .appendQueryParameter("post_logout_redirect_uri", redirectUri)
-                    .appendQueryParameter("state", verifier)
+                    .appendQueryParameter("state", state)
                     .build()
 
             val customTabsIntent = CustomTabsIntent.Builder().build()
