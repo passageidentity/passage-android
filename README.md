@@ -15,7 +15,7 @@ Integrating passkey technology can be really hard. That's why we built the Passa
 
 You can import the Passage library by including this in your app's `build.gradle` file dependencies:
 ```gradle
-implementation 'id.passage.android:passage:1.7.5'
+implementation 'id.passage.android:passage:1.8.0'
 ```
 
 And you can use it like this:
