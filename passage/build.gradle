@@ -27,7 +27,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    
+
     buildFeatures {
         buildConfig = true
     }
@@ -93,9 +93,9 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:4.10.0"
 
     // For JSON serialization and parsing
-    implementation "com.squareup.moshi:moshi:1.14.0"
-    implementation "com.squareup.moshi:moshi-adapters:1.14.0"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.14.0"
+    implementation "com.squareup.moshi:moshi:1.15.1"
+    implementation "com.squareup.moshi:moshi-adapters:1.15.1"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.15.1"
 
 
     // For safely encrypting stored data
