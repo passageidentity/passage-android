@@ -4,6 +4,7 @@ import android.app.Activity
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import id.passage.android.model.OAuth2ConnectionType
+import id.passage.android.utils.StringUtils
 import java.net.URLEncoder
 
 internal class PassageSocial {
@@ -18,10 +19,10 @@ internal class PassageSocial {
             authUrl: String,
         ) {
             val redirectURI = "https://$authOrigin"
-            val state = Utils.getRandomString()
-            val randomString = Utils.getRandomString()
+            val state = StringUtils.getRandomString()
+            val randomString = StringUtils.getRandomString()
             verifier = randomString
-            val codeChallenge = Utils.sha256Hash(randomString)
+            val codeChallenge = StringUtils.sha256Hash(randomString)
             val params =
                 listOf(
                     "redirect_uri" to redirectURI,
