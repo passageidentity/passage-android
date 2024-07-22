@@ -1,10 +1,10 @@
-package id.passage.android
+package id.passage.android.utils
 
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Base64
 
-class Utils {
+class StringUtils {
     companion object {
         private const val SECRET_STRING_LENGTH = 32
 
