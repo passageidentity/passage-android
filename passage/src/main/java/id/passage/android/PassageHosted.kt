@@ -2,7 +2,6 @@ package id.passage.android
 
 import android.app.Activity
 import android.net.Uri
-import android.util.Log
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
@@ -29,7 +28,10 @@ internal class PassageHosted {
         private val appId = Passage.appId
         private var packageName = ""
 
-        private fun openCustomTab(activity: Activity, url: String) {
+        private fun openCustomTab(
+            activity: Activity,
+            url: String,
+        ) {
             WebViewUtils.openCustomTab(activity, url)
         }
 
@@ -99,12 +101,12 @@ internal class PassageHosted {
                         if (response.code == 500) {
                             throw ServerException(
                                 "Server error : ${response.code} ${response.message}",
-                                response.code
+                                response.code,
                             )
                         }
                         throw ClientException(
                             "Client error : ${response.code} ${response.message}",
-                            response.code
+                            response.code,
                         )
                     }
                     val responseBody = response.body?.string()
@@ -126,23 +128,25 @@ internal class PassageHosted {
             return Pair(authResult, idToken)
         }
 
-        fun logout(activity: Activity, idToken: String) {
+        fun logout(
+            activity: Activity,
+            idToken: String,
+        ) {
             packageName = activity.packageName
             val redirectUri = "$basePathOIDC/android/$packageName/logout"
             val state = StringUtils.getRandomString()
-            val url = Uri.parse("$basePathOIDC/logout")
-                .buildUpon()
-                .appendQueryParameter("id_token_hint", idToken)
-                .appendQueryParameter("client_id", appId)
-                .appendQueryParameter("post_logout_redirect_uri", redirectUri)
-                .appendQueryParameter("state", state)
-                .build()
+            val url =
+                Uri
+                    .parse("$basePathOIDC/logout")
+                    .buildUpon()
+                    .appendQueryParameter("id_token_hint", idToken)
+                    .appendQueryParameter("client_id", appId)
+                    .appendQueryParameter("post_logout_redirect_uri", redirectUri)
+                    .appendQueryParameter("state", state)
+                    .build()
 
             openCustomTab(activity, url.toString())
-
-            Log.d("PassageHosted", "Logout URL: $url")
         }
-
     }
 }
 
