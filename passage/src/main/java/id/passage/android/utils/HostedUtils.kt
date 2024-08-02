@@ -1,14 +1,13 @@
-package id.passage.android
+package id.passage.android.utils
 
 import android.app.Activity
 import android.net.Uri
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
+import id.passage.android.Passage
 import id.passage.android.exceptions.HostedAuthorizationError
 import id.passage.android.model.AuthResult
-import id.passage.android.utils.StringUtils
-import id.passage.android.utils.WebViewUtils
 import id.passage.client.infrastructure.ClientException
 import id.passage.client.infrastructure.ServerException
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +18,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.net.URLEncoder
 
-internal class PassageHosted {
+class HostedUtils {
     internal companion object {
         private var verifier = ""
         private var state = ""
@@ -62,7 +61,7 @@ internal class PassageHosted {
             state: String,
         ): Pair<AuthResult, String> {
             val redirectUri = "$basePathOIDC/android/$packageName/callback"
-            if (PassageHosted.state != state) {
+            if (HostedUtils.state != state) {
                 throw HostedAuthorizationError("State is Invalid")
             }
             var authResult: AuthResult

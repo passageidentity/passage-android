@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import id.passage.android.exceptions.PassageTokenException
+import id.passage.android.model.AuthResult
 import id.passage.client.infrastructure.ApiClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -86,7 +87,7 @@ public final class PassageTokenStore(
         }
     }
 
-    internal fun setTokens(authResult: PassageAuthResult?) {
+    internal fun setTokens(authResult: AuthResult?) {
         authResult?.let {
             setAuthToken(it.authToken)
             setRefreshToken(it.refreshToken)

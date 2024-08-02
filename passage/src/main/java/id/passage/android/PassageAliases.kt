@@ -2,23 +2,28 @@
 
 package id.passage.android
 
+import id.passage.android.api.CurrentuserAPI
 import id.passage.android.model.App
-import id.passage.android.model.AuthResult
 import id.passage.android.model.Credential
+import id.passage.android.model.CurrentUser
+import id.passage.android.model.MagicLink
 import id.passage.android.model.OAuth2ConnectionType
-import id.passage.android.model.OneTimePasscodeResponse
-
-public typealias PassageAuthResult = AuthResult
-
-public typealias OneTimePasscode = OneTimePasscodeResponse
-
-@Deprecated("Use PassageAppInfo instead.", replaceWith = ReplaceWith("PassageAppInfo"))
-public typealias PassageApp = App
+import id.passage.android.model.User
+import id.passage.android.model.UserMetadataResponse
 
 public typealias PassageAppInfo = App
 
-@Deprecated("Authentication methods are no longer treated as fallbacks. This enum class will be removed in a future version.")
-public typealias PassageAuthFallbackMethod = App.AuthFallbackMethod
+public typealias MagicLinkResponse = MagicLink
+
+public typealias CurrentUserInfo = CurrentUser
+
+public typealias PassagePasskey = PassageCredential
+
+public typealias Metadata = UserMetadataResponse
+
+public typealias SocialConnection = CurrentuserAPI.SocialConnectionType_deleteCurrentuserSocialConnection
+
+public typealias PublicUserInfo = User
 
 public typealias PassageCredential = Credential
 

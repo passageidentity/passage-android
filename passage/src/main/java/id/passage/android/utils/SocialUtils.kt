@@ -1,13 +1,12 @@
-package id.passage.android
+package id.passage.android.utils
 
 import android.app.Activity
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import id.passage.android.model.OAuth2ConnectionType
-import id.passage.android.utils.StringUtils
 import java.net.URLEncoder
 
-internal class PassageSocial {
+class SocialUtils {
     internal companion object {
         internal var verifier = ""
         private const val CODE_CHALLENGE_METHOD = "S256"
@@ -30,14 +29,12 @@ internal class PassageSocial {
                     "code_challenge" to codeChallenge,
                     "code_challenge_method" to CODE_CHALLENGE_METHOD,
                     "connection_type" to connection.value,
-                ).joinToString("&") {
-                        (key, value) ->
+                ).joinToString("&") { (key, value) ->
                     "$key=${URLEncoder.encode(value, "UTF-8")}"
                 }
             val url = "$authUrl?$params"
             val intent = CustomTabsIntent.Builder().build()
             intent.launchUrl(activity, Uri.parse(url))
         }
-
     }
 }
