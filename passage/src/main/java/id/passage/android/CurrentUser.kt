@@ -202,14 +202,11 @@ class CurrentUser(
     }
 
     /**
-     * Create User
+     * Retrieve Current User Metadata
      *
-     * Creates a new user with the provided identifier and optional metadata. This method should be used to register a new user.
-     * The `identifier` is required to uniquely identify the user (e.g., email or phone number).
-     * The `userMetadata` can be used to provide additional information about the user.
-     * @param identifier The identifier for the new user (e.g., email or phone number)
-     * @param userMetadata Optional metadata associated with the user
-     * @return PublicUserInfo? containing the created user's information, null if creation fails
+     * Fetches the metadata associated with the current user. This method requires that the user is authenticated via a bearer token.
+     * The metadata contains various attributes associated with the user, which can be used for user-specific operations.
+     * @return Metadata? containing the current user's metadata, null if retrieval fails
      */
     suspend fun metadata(): Metadata? {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
@@ -221,14 +218,12 @@ class CurrentUser(
     }
 
     /**
-     * Create User
+     * Update User Metadata
      *
-     * Creates a new user with the provided identifier and optional metadata. This method should be used to register a new user.
-     * The `identifier` is required to uniquely identify the user (e.g., email or phone number).
-     * The `userMetadata` can be used to provide additional information about the user.
-     * @param identifier The identifier for the new user (e.g., email or phone number)
-     * @param userMetadata Optional metadata associated with the user
-     * @return PublicUserInfo? containing the created user's information, null if creation fails
+     * Updates the metadata associated with the current user. This method requires that the user is authenticated via a bearer token.
+     * The `metadata` parameter should contain the new metadata that will be associated with the user.
+     * @param metadata The Metadata object containing the updated user information
+     * @return CurrentUserInfo? containing the updated user information, null if the update fails
      */
     suspend fun updateMetadata(metadata: Metadata): CurrentUserInfo? {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
