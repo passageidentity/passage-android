@@ -7,8 +7,8 @@ import id.passage.android.api.RegisterAPI
 import id.passage.android.exceptions.GetMagicLinkStatusException
 import id.passage.android.exceptions.GetMagicLinkStatusNotFoundException
 import id.passage.android.exceptions.MagicLinkActivateException
-import id.passage.android.exceptions.NewLoginMagicLinkException
-import id.passage.android.exceptions.NewRegisterMagicLinkException
+import id.passage.android.exceptions.MagicLinkLoginException
+import id.passage.android.exceptions.MagicLinkRegisterException
 import id.passage.android.model.ActivateMagicLinkRequest
 import id.passage.android.model.AuthResult
 import id.passage.android.model.GetMagicLinkStatusRequest
@@ -27,7 +27,7 @@ class MagicLink(
      * @param identifier valid email or E164 phone number
      * @param magicLinkPath path relative to the app's auth origin (optional)
      * @return MagicLink
-     * @throws NewRegisterMagicLinkException
+     * @throws MagicLinkRegisterException
      */
     suspend fun register(
         identifier: String,
@@ -44,7 +44,7 @@ class MagicLink(
             try {
                 registerAPI.registerMagicLink(Passage.appId, request).magicLink
             } catch (e: Exception) {
-                throw NewRegisterMagicLinkException.convert(e)
+                throw MagicLinkRegisterException.convert(e)
             }
         return magicLink
     }
@@ -56,7 +56,7 @@ class MagicLink(
      * @param identifier valid email or E164 phone number
      * @param magicLinkPath path relative to the app's auth_origin (optional)
      * @return MagicLink?
-     * @throws NewLoginMagicLinkException
+     * @throws MagicLinkLoginException
      */
     suspend fun login(
         identifier: String,
@@ -73,7 +73,7 @@ class MagicLink(
             try {
                 loginAPI.loginMagicLink(Passage.appId, request)
             } catch (e: Exception) {
-                throw NewLoginMagicLinkException.convert(e)
+                throw MagicLinkLoginException.convert(e)
             }
         return response.magicLink
     }

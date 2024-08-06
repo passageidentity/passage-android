@@ -3,6 +3,8 @@ package id.passage.android
 import id.passage.android.api.AppsAPI
 import id.passage.android.api.UsersAPI
 import id.passage.android.exceptions.AppInfoException
+import id.passage.android.exceptions.CreateUserException
+import id.passage.android.exceptions.UserExistsException
 import id.passage.android.model.CreateUserParams
 import okhttp3.OkHttpClient
 
@@ -13,7 +15,7 @@ class App(
      * App Info
      *
      * Get information about an application.
-     * @return PassageApp?
+     * @return PassageAppInfo
      * @throws AppInfoException
      */
     suspend fun info(): PassageAppInfo {
@@ -39,7 +41,7 @@ class App(
         return try {
             usersAPI.checkUserIdentifier(Passage.appId, identifier).user
         } catch (e: Exception) {
-            null
+            throw UserExistsException.convert(e)
         }
     }
 
@@ -56,12 +58,12 @@ class App(
     suspend fun createUser(
         identifier: String,
         userMetadata: Any?,
-    ): PublicUserInfo? {
+    ): PublicUserInfo {
         val usersAPI = UsersAPI()
         return try {
-            usersAPI.createUser(Passage.appId, CreateUserParams(identifier, userMetadata)).user
+            usersAPI.createUser(Passage.appId, CreateUserParams(identifier, userMetadata)).user ?: throw Exception("User is null")
         } catch (e: Exception) {
-            null
+            throw CreateUserException.convert(e)
         }
     }
 }

@@ -17,14 +17,12 @@ public typealias MagicLinkResponse = MagicLink
 
 public typealias CurrentUserInfo = CurrentUser
 
-public typealias PassagePasskey = PassageCredential
+public typealias PassagePasskey = Credential
 
 public typealias Metadata = UserMetadataResponse
 
 public typealias SocialConnection = CurrentuserAPI.SocialConnectionType_deleteCurrentuserSocialConnection
 
 public typealias PublicUserInfo = User
-
-public typealias PassageCredential = Credential
 
 public typealias PassageSocialConnection = OAuth2ConnectionType

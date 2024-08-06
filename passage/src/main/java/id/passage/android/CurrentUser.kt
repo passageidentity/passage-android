@@ -3,7 +3,10 @@ package id.passage.android
 import android.app.Activity
 import id.passage.android.api.CurrentuserAPI
 import id.passage.android.exceptions.AddDevicePasskeyException
+import id.passage.android.exceptions.GetMetadataException
 import id.passage.android.exceptions.PassageUserException
+import id.passage.android.exceptions.UpdateMetadataException
+import id.passage.android.exceptions.UserInfoException
 import id.passage.android.model.AddDeviceFinishRequest
 import id.passage.android.model.AuthenticatorAttachment
 import id.passage.android.model.CurrentUserDevicesStartRequest
@@ -31,7 +34,7 @@ class CurrentUser(
         try {
             return currentUserAPI.getCurrentuser(Passage.appId).user
         } catch (e: Exception) {
-            return null
+            throw UserInfoException.convert(e)
         }
     }
 
@@ -213,7 +216,7 @@ class CurrentUser(
         return try {
             currentUserAPI.getCurrentuserMetadata(Passage.appId)
         } catch (e: Exception) {
-            null
+            throw GetMetadataException.convert(e)
         }
     }
 
@@ -231,7 +234,7 @@ class CurrentUser(
         return try {
             currentUserAPI.updateCurrentuserMetadata(Passage.appId, request).user
         } catch (e: Exception) {
-            null
+            throw UpdateMetadataException.convert(e)
         }
     }
 }

@@ -3,9 +3,9 @@ package id.passage.android
 import id.passage.android.api.LoginAPI
 import id.passage.android.api.OTPAPI
 import id.passage.android.api.RegisterAPI
-import id.passage.android.exceptions.NewLoginOneTimePasscodeException
-import id.passage.android.exceptions.NewRegisterOneTimePasscodeException
 import id.passage.android.exceptions.OneTimePasscodeActivateException
+import id.passage.android.exceptions.OneTimePasscodeLoginException
+import id.passage.android.exceptions.OneTimePasscodeRegisterException
 import id.passage.android.model.ActivateOneTimePasscodeRequest
 import id.passage.android.model.AuthResult
 import id.passage.android.model.LoginOneTimePasscodeRequest
@@ -24,7 +24,7 @@ class OneTimePasscode(
      * email or text with a one time passcode to complete their registration.
      * @param identifier valid email or E164 phone number
      * @return OneTimePasscode
-     * @throws NewRegisterOneTimePasscodeException
+     * @throws OneTimePasscodeRegisterException
      */
     suspend fun register(identifier: String): OneTimePasscodeResponse {
         val registerAPI = RegisterAPI(Passage.BASE_PATH, passageClient)
@@ -33,7 +33,7 @@ class OneTimePasscode(
             try {
                 registerAPI.registerOneTimePasscode(Passage.appId, request)
             } catch (e: Exception) {
-                throw NewRegisterOneTimePasscodeException.convert(e)
+                throw OneTimePasscodeRegisterException.convert(e)
             }
         return response
     }
@@ -45,7 +45,7 @@ class OneTimePasscode(
      * passcode to complete their login.
      * @param identifier valid email or E164 phone number
      * @return OneTimePasscode
-     * @throws NewLoginOneTimePasscodeException
+     * @throws OneTimePasscodeLoginException
      */
     suspend fun login(identifier: String): OneTimePasscodeResponse {
         val loginAPI = LoginAPI(Passage.BASE_PATH, passageClient)
@@ -54,7 +54,7 @@ class OneTimePasscode(
             try {
                 loginAPI.loginOneTimePasscode(Passage.appId, request)
             } catch (e: Exception) {
-                throw NewLoginOneTimePasscodeException.convert(e)
+                throw OneTimePasscodeLoginException.convert(e)
             }
         return response
     }
