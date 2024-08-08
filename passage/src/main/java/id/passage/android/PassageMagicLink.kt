@@ -13,10 +13,11 @@ import id.passage.android.model.ActivateMagicLinkRequest
 import id.passage.android.model.AuthResult
 import id.passage.android.model.GetMagicLinkStatusRequest
 import id.passage.android.model.LoginMagicLinkRequest
+import id.passage.android.model.MagicLink
 import id.passage.android.model.RegisterMagicLinkRequest
 import okhttp3.OkHttpClient
 
-class MagicLink(
+class PassageMagicLink(
     private val passageClient: OkHttpClient,
     private val tokenStore: PassageTokenStore,
 ) {
@@ -32,7 +33,7 @@ class MagicLink(
     suspend fun register(
         identifier: String,
         magicLinkPath: String? = null,
-    ): MagicLinkResponse {
+    ): MagicLink {
         val registerAPI = RegisterAPI(Passage.BASE_PATH, passageClient)
         val request =
             RegisterMagicLinkRequest(
@@ -61,7 +62,7 @@ class MagicLink(
     suspend fun login(
         identifier: String,
         magicLinkPath: String? = null,
-    ): MagicLinkResponse {
+    ): MagicLink {
         val loginAPI = LoginAPI(Passage.BASE_PATH, passageClient)
         val request =
             LoginMagicLinkRequest(

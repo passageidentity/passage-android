@@ -3,16 +3,16 @@ package id.passage.android.utils
 import android.app.Activity
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
-import id.passage.android.model.OAuth2ConnectionType
+import id.passage.android.SocialConnection
 import java.net.URLEncoder
 
-class SocialUtils {
+internal class SocialUtils {
     internal companion object {
         internal var verifier = ""
         private const val CODE_CHALLENGE_METHOD = "S256"
 
         internal fun openChromeTab(
-            connection: OAuth2ConnectionType,
+            connection: SocialConnection,
             authOrigin: String,
             activity: Activity,
             authUrl: String,

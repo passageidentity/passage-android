@@ -10,13 +10,15 @@ import id.passage.android.exceptions.UserInfoException
 import id.passage.android.model.AddDeviceFinishRequest
 import id.passage.android.model.AuthenticatorAttachment
 import id.passage.android.model.CurrentUserDevicesStartRequest
+import id.passage.android.model.MagicLink
 import id.passage.android.model.UpdateDeviceRequest
 import id.passage.android.model.UpdateMetadataRequest
 import id.passage.android.model.UpdateUserEmailRequest
 import id.passage.android.model.UpdateUserPhoneRequest
 import id.passage.android.model.UserSocialConnections
+import id.passage.android.utils.HostedUtils
 
-class CurrentUser(
+class PassageCurrentUser(
     private val tokenStore: PassageTokenStore,
     private val activity: Activity,
 ) {
@@ -29,7 +31,7 @@ class CurrentUser(
      * @return PassageUser?
      * @throws PassageUserException
      */
-    suspend fun userInfo(): CurrentUserInfo? {
+    suspend fun userInfo(): CurrentUserInfo {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         try {
             return currentUserAPI.getCurrentuser(Passage.appId).user
@@ -46,7 +48,7 @@ class CurrentUser(
      * @return MagicLink?
      * @throws PassageUserException
      */
-    suspend fun changeEmail(newEmail: String): MagicLinkResponse {
+    suspend fun changeEmail(newEmail: String): MagicLink {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val request = UpdateUserEmailRequest(newEmail, Passage.language, null, null)
         val response =
@@ -66,7 +68,7 @@ class CurrentUser(
      * @return MagicLink?
      * @throws PassageUserException
      */
-    suspend fun changePhone(newPhone: String): MagicLinkResponse {
+    suspend fun changePhone(newPhone: String): MagicLink {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val request = UpdateUserPhoneRequest(Passage.language, null, newPhone, null)
         val response =
@@ -85,7 +87,7 @@ class CurrentUser(
      * @return List<PassageCredential>
      * @throws PassageUserException
      */
-    suspend fun passkeys(): List<PassagePasskey> {
+    suspend fun passkeys(): List<Passkey> {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         return try {
             currentUserAPI.getCurrentuserDevices(Passage.appId).devices
@@ -103,10 +105,7 @@ class CurrentUser(
      * @return PassageCredential
      * @throws AddDevicePasskeyException
      */
-    suspend fun addPasskey(
-        activity: Activity,
-        options: PasskeyCreationOptions? = null,
-    ): PassagePasskey {
+    suspend fun addPasskey(options: PasskeyCreationOptions? = null): Passkey {
         try {
             val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
             // Get Create Credential challenge from Passage
@@ -162,7 +161,7 @@ class CurrentUser(
     suspend fun editPasskey(
         passkeyId: String,
         friendlyName: String,
-    ): PassagePasskey {
+    ): Passkey {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val request = UpdateDeviceRequest(friendlyName = friendlyName)
         return try {
@@ -236,5 +235,19 @@ class CurrentUser(
         } catch (e: Exception) {
             throw UpdateMetadataException.convert(e)
         }
+    }
+
+    /**
+     * Sign Out Current User
+     *
+     * If the user is using the Hosted Login feature, a webview will open to log them out and then clear the local token store.
+     * @return void
+     */
+    suspend fun logout() {
+        val idToken = tokenStore.idToken
+        if (idToken != null) {
+            HostedUtils.logout(activity, idToken)
+        }
+        tokenStore.clearAndRevokeTokens()
     }
 }

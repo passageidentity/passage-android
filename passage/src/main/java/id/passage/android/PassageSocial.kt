@@ -7,7 +7,7 @@ import id.passage.android.model.AuthResult
 import id.passage.android.utils.SocialUtils
 import okhttp3.OkHttpClient
 
-class Social(
+class PassageSocial(
     private val passageClient: OkHttpClient,
     private val activity: Activity,
     private val tokenStore: PassageTokenStore,
@@ -18,7 +18,7 @@ class Social(
      * Authorizes user via a supported third-party social provider.
      * @param connection The Social connection to use for authorization
      */
-    fun authorizeWith(connection: PassageSocialConnection) {
+    fun authorizeWith(connection: SocialConnection) {
         SocialUtils.openChromeTab(
             connection,
             Passage.authOrigin,

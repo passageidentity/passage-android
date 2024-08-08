@@ -5,7 +5,7 @@ import id.passage.android.exceptions.HostedAuthorizationError
 import id.passage.android.model.AuthResult
 import id.passage.android.utils.HostedUtils
 
-class Hosted(
+class PassageHosted(
     private val activity: Activity,
     private val tokenStore: PassageTokenStore,
 ) {

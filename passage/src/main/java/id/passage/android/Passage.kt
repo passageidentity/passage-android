@@ -12,13 +12,13 @@ public final class Passage(
     appId: String? = null,
 ) {
     // region Private VARIABLES
-    var app: App
-    var passkey: Passkey
-    var magicLink: MagicLink
-    var hosted: Hosted
-    var oneTimePasscode: OneTimePasscode
-    var social: Social
-    var currentUser: CurrentUser
+    var passageApp: PassageApp
+    var passagePasskey: PassagePasskey
+    var passageMagicLink: PassageMagicLink
+    var passageHosted: PassageHosted
+    var passageOneTimePasscode: PassageOneTimePasscode
+    var passageSocial: PassageSocial
+    var passageCurrentUser: PassageCurrentUser
     var tokenStore: PassageTokenStore
     var passageClient: OkHttpClient
 
@@ -51,13 +51,13 @@ public final class Passage(
         Companion.appId = appId ?: getRequiredResourceFromApp(activity, "passage_app_id")
         language = getOptionalResourceFromApp(activity, "passage_language")
         tokenStore = PassageTokenStore(activity)
-        app = App(passageClient)
-        passkey = Passkey(passageClient, activity)
-        oneTimePasscode = OneTimePasscode(passageClient, tokenStore)
-        hosted = Hosted(activity, tokenStore)
-        social = Social(passageClient, activity, tokenStore)
-        magicLink = MagicLink(passageClient, tokenStore)
-        currentUser = CurrentUser(tokenStore, activity)
+        passageApp = PassageApp(passageClient)
+        passagePasskey = PassagePasskey(passageClient, activity)
+        passageOneTimePasscode = PassageOneTimePasscode(passageClient, tokenStore)
+        passageHosted = PassageHosted(activity, tokenStore)
+        passageSocial = PassageSocial(passageClient, activity, tokenStore)
+        passageMagicLink = PassageMagicLink(passageClient, tokenStore)
+        passageCurrentUser = PassageCurrentUser(tokenStore, activity)
     }
 
     public fun overrideBasePath(newPath: String) {

@@ -13,7 +13,7 @@ import id.passage.android.model.RegisterWebAuthnFinishRequest
 import id.passage.android.model.RegisterWebAuthnStartRequest
 import okhttp3.OkHttpClient
 
-class Passkey(
+class PassagePasskey(
     private val passageClient: OkHttpClient,
     private val activity: Activity,
 ) {

@@ -8,7 +8,7 @@ import id.passage.android.exceptions.UserExistsException
 import id.passage.android.model.CreateUserParams
 import okhttp3.OkHttpClient
 
-class App(
+class PassageApp(
     private val passageClient: OkHttpClient,
 ) {
     /**

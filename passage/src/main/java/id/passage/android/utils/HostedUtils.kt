@@ -18,7 +18,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.net.URLEncoder
 
-class HostedUtils {
+internal class HostedUtils {
     internal companion object {
         private var verifier = ""
         private var state = ""
