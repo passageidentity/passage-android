@@ -3,7 +3,6 @@ package id.passage.android.utils
 import android.app.Activity
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
-import id.passage.android.SocialConnection
 import java.net.URLEncoder
 
 internal class SocialUtils {

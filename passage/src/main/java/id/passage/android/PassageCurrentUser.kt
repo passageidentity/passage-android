@@ -16,7 +16,13 @@ import id.passage.android.model.UpdateMetadataRequest
 import id.passage.android.model.UpdateUserEmailRequest
 import id.passage.android.model.UpdateUserPhoneRequest
 import id.passage.android.model.UserSocialConnections
+import id.passage.android.utils.CurrentUserInfo
 import id.passage.android.utils.HostedUtils
+import id.passage.android.utils.Metadata
+import id.passage.android.utils.Passkey
+import id.passage.android.utils.PasskeyCreationOptions
+import id.passage.android.utils.PasskeyUtils
+import id.passage.android.utils.SocialConnection
 
 class PassageCurrentUser(
     private val tokenStore: PassageTokenStore,
@@ -48,9 +54,12 @@ class PassageCurrentUser(
      * @return MagicLink?
      * @throws PassageUserException
      */
-    suspend fun changeEmail(newEmail: String): MagicLink {
+    suspend fun changeEmail(
+        newEmail: String,
+        language: String?,
+    ): MagicLink {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-        val request = UpdateUserEmailRequest(newEmail, Passage.language, null, null)
+        val request = UpdateUserEmailRequest(newEmail, language, null, null)
         val response =
             try {
                 currentUserAPI.updateEmailCurrentuser(Passage.appId, request)
@@ -68,9 +77,12 @@ class PassageCurrentUser(
      * @return MagicLink?
      * @throws PassageUserException
      */
-    suspend fun changePhone(newPhone: String): MagicLink {
+    suspend fun changePhone(
+        newPhone: String,
+        language: String?,
+    ): MagicLink {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
-        val request = UpdateUserPhoneRequest(Passage.language, null, newPhone, null)
+        val request = UpdateUserPhoneRequest(language, null, newPhone, null)
         val response =
             try {
                 currentUserAPI.updatePhoneCurrentuser(Passage.appId, request)

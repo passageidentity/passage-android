@@ -10,6 +10,7 @@ import id.passage.android.model.ActivateOneTimePasscodeRequest
 import id.passage.android.model.AuthResult
 import id.passage.android.model.LoginOneTimePasscodeRequest
 import id.passage.android.model.RegisterOneTimePasscodeRequest
+import id.passage.android.utils.OneTimePasscode
 import okhttp3.OkHttpClient
 
 class PassageOneTimePasscode(
@@ -25,9 +26,12 @@ class PassageOneTimePasscode(
      * @return OneTimePasscode
      * @throws OneTimePasscodeRegisterException
      */
-    suspend fun register(identifier: String): OneTimePasscode {
+    suspend fun register(
+        identifier: String,
+        language: String?,
+    ): OneTimePasscode {
         val registerAPI = RegisterAPI(Passage.BASE_PATH, passageClient)
-        val request = RegisterOneTimePasscodeRequest(identifier, Passage.language)
+        val request = RegisterOneTimePasscodeRequest(identifier, language)
         val response =
             try {
                 registerAPI.registerOneTimePasscode(Passage.appId, request)
@@ -46,9 +50,12 @@ class PassageOneTimePasscode(
      * @return OneTimePasscode
      * @throws OneTimePasscodeLoginException
      */
-    suspend fun login(identifier: String): OneTimePasscode {
+    suspend fun login(
+        identifier: String,
+        language: String?,
+    ): OneTimePasscode {
         val loginAPI = LoginAPI(Passage.BASE_PATH, passageClient)
-        val request = LoginOneTimePasscodeRequest(identifier, Passage.language)
+        val request = LoginOneTimePasscodeRequest(identifier, language)
         val response =
             try {
                 loginAPI.loginOneTimePasscode(Passage.appId, request)

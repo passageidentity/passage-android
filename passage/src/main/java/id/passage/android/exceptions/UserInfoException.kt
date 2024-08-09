@@ -52,7 +52,7 @@ public class UserInfoAppNotFoundException(
 ) : UserInfoException(message)
 
 /**
- * Thrown when identifier is not verified"
+ * Thrown when identifier is not verified
  */
 
 public class UserInfoForbiddenException(

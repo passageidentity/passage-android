@@ -2,14 +2,12 @@ package id.passage.android
 
 import android.app.Activity
 import android.webkit.WebSettings
-import id.passage.android.ResourceUtils.Companion.getOptionalResourceFromApp
-import id.passage.android.ResourceUtils.Companion.getRequiredResourceFromApp
+import id.passage.android.utils.ResourceUtils.Companion.getRequiredResourceFromApp
 import okhttp3.OkHttpClient
 
-@Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
-public final class Passage(
+class Passage(
     activity: Activity,
-    appId: String? = null,
+    appId: String,
 ) {
     // region Private VARIABLES
     var passageApp: PassageApp
@@ -28,7 +26,6 @@ public final class Passage(
         internal var BASE_PATH = "https://auth.passage.id/v1"
         internal lateinit var appId: String
         internal lateinit var authOrigin: String
-        internal var language: String? = null
     }
 
     // region INITIALIZATION
@@ -48,11 +45,10 @@ public final class Passage(
                             .build(),
                     )
                 }.build()
-        Companion.appId = appId ?: getRequiredResourceFromApp(activity, "passage_app_id")
-        language = getOptionalResourceFromApp(activity, "passage_language")
+        Companion.appId = appId
         tokenStore = PassageTokenStore(activity)
         passageApp = PassageApp(passageClient)
-        passagePasskey = PassagePasskey(passageClient, activity)
+        passagePasskey = PassagePasskey(passageClient, activity, tokenStore)
         passageOneTimePasscode = PassageOneTimePasscode(passageClient, tokenStore)
         passageHosted = PassageHosted(activity, tokenStore)
         passageSocial = PassageSocial(passageClient, activity, tokenStore)

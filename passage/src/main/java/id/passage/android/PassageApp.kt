@@ -6,6 +6,8 @@ import id.passage.android.exceptions.AppInfoException
 import id.passage.android.exceptions.CreateUserException
 import id.passage.android.exceptions.UserExistsException
 import id.passage.android.model.CreateUserParams
+import id.passage.android.utils.PassageAppInfo
+import id.passage.android.utils.PublicUserInfo
 import okhttp3.OkHttpClient
 
 class PassageApp(

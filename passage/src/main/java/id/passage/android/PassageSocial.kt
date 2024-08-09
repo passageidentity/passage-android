@@ -4,6 +4,7 @@ import android.app.Activity
 import id.passage.android.api.OAuth2API
 import id.passage.android.exceptions.FinishSocialAuthenticationException
 import id.passage.android.model.AuthResult
+import id.passage.android.utils.SocialConnection
 import id.passage.android.utils.SocialUtils
 import okhttp3.OkHttpClient
 

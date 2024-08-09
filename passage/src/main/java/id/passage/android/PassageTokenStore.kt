@@ -13,8 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-@Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
-public final class PassageTokenStore(
+class PassageTokenStore(
     activity: Activity,
 ) {
     private companion object {

@@ -1,11 +1,9 @@
 package id.passage.android
 
-import android.util.Log
 import id.passage.android.api.LoginAPI
 import id.passage.android.api.MagicLinkAPI
 import id.passage.android.api.RegisterAPI
 import id.passage.android.exceptions.GetMagicLinkStatusException
-import id.passage.android.exceptions.GetMagicLinkStatusNotFoundException
 import id.passage.android.exceptions.MagicLinkActivateException
 import id.passage.android.exceptions.MagicLinkLoginException
 import id.passage.android.exceptions.MagicLinkRegisterException
@@ -33,12 +31,13 @@ class PassageMagicLink(
     suspend fun register(
         identifier: String,
         magicLinkPath: String? = null,
+        language: String? = null,
     ): MagicLink {
         val registerAPI = RegisterAPI(Passage.BASE_PATH, passageClient)
         val request =
             RegisterMagicLinkRequest(
                 identifier = identifier,
-                language = Passage.language,
+                language = language,
                 magicLinkPath = magicLinkPath,
             )
         val magicLink =
@@ -62,12 +61,13 @@ class PassageMagicLink(
     suspend fun login(
         identifier: String,
         magicLinkPath: String? = null,
+        language: String? = null,
     ): MagicLink {
         val loginAPI = LoginAPI(Passage.BASE_PATH, passageClient)
         val request =
             LoginMagicLinkRequest(
                 identifier = identifier,
-                language = Passage.language,
+                language = language,
                 magicLinkPath = magicLinkPath,
             )
         val response =
@@ -88,16 +88,15 @@ class PassageMagicLink(
      * @return PassageAuthResult?
      * @throws MagicLinkActivateException
      */
-    suspend fun activate(userMagicLink: String): AuthResult {
+    suspend fun activate(magicLink: String): AuthResult {
         val magicLinkAPI = MagicLinkAPI(Passage.BASE_PATH, passageClient)
-        val request = ActivateMagicLinkRequest(userMagicLink)
+        val request = ActivateMagicLinkRequest(magicLink)
         val response =
             try {
                 magicLinkAPI.activateMagicLink(Passage.appId, request)
             } catch (e: Exception) {
                 throw MagicLinkActivateException.convert(e)
             }
-        // TODO: Once BE issue is fixed, we won't need to transform data model
         val authResult =
             AuthResult(
                 authToken = response.authResult.authToken,
@@ -120,19 +119,14 @@ class PassageMagicLink(
      * @return PassageAuthResult?
      * @throws GetMagicLinkStatusException
      */
-    suspend fun status(magicLinkId: String): AuthResult? {
+    suspend fun status(id: String): AuthResult {
         val magicLinkAPI = MagicLinkAPI(Passage.BASE_PATH, passageClient)
-        val request = GetMagicLinkStatusRequest(magicLinkId)
+        val request = GetMagicLinkStatusRequest(id)
         val response =
             try {
                 magicLinkAPI.magicLinkStatus(Passage.appId, request)
             } catch (e: Exception) {
-                val exception = GetMagicLinkStatusException.convert(e)
-                if (exception is GetMagicLinkStatusNotFoundException) {
-                    Log.w(Passage.TAG, "Magic link not activated.")
-                    return null
-                }
-                throw exception
+                throw GetMagicLinkStatusException.convert(e)
             }
         // TODO: Once BE issue is fixed, we won't need to transform data model
         val authResult =

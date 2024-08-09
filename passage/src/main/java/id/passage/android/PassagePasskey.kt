@@ -11,11 +11,14 @@ import id.passage.android.model.LoginWebAuthnFinishRequest
 import id.passage.android.model.LoginWebAuthnStartRequest
 import id.passage.android.model.RegisterWebAuthnFinishRequest
 import id.passage.android.model.RegisterWebAuthnStartRequest
+import id.passage.android.utils.PasskeyCreationOptions
+import id.passage.android.utils.PasskeyUtils
 import okhttp3.OkHttpClient
 
 class PassagePasskey(
     private val passageClient: OkHttpClient,
     private val activity: Activity,
+    private val tokenStore: PassageTokenStore,
 ) {
     /**
      * Register user with passkey
@@ -51,7 +54,7 @@ class PassagePasskey(
                 )
             val authResponse = registerAPI.registerWebauthnFinish(Passage.appId, webauthnFinishRequest)
             // Handle and return auth result
-            // handleAuthResult(authResponse.authResult)
+            tokenStore.setTokens(authResponse.authResult)
             return authResponse.authResult
         } catch (e: Exception) {
             throw RegisterWithPasskeyException.convert(e)
@@ -84,8 +87,8 @@ class PassagePasskey(
                     userId = webauthnStartResponse.user?.id,
                 )
             val authResponse = loginAPI.loginWebauthnFinish(Passage.appId, webauthnFinishRequest)
-            // handleAuthResult(authResponse.authResult)
-            // Return auth result
+            // Handle and return auth result
+            tokenStore.setTokens(authResponse.authResult)
             return authResponse.authResult
         } catch (e: Exception) {
             throw LoginWithPasskeyException.convert(e)
