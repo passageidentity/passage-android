@@ -89,20 +89,7 @@ class PassageOneTimePasscode(
             } catch (e: Exception) {
                 throw OneTimePasscodeActivateException.convert(e)
             }
-        val otpAuthResult = response.authResult
-        // NOTE: The OpenAPI codegen produces an `IdentityAuthResult` for passkey and magic link
-        // responses, but produces an `AuthResult` for OTP. They have the same shape, so we
-        // created a `PassageAuthResult` alias for `IdentityAuthResult`, and return that alias
-        // from all of the methods that produce an auth result. This should be temporary, until
-        // the Passage API returns just `AuthResult` for all.
-        val authResult =
-            AuthResult(
-                authToken = otpAuthResult.authToken,
-                redirectUrl = otpAuthResult.redirectUrl,
-                refreshToken = otpAuthResult.refreshToken,
-                refreshTokenExpiration = otpAuthResult.refreshTokenExpiration,
-            )
-        tokenStore.setTokens(authResult)
-        return authResult
+        tokenStore.setTokens(response.authResult)
+        return response.authResult
     }
 }
