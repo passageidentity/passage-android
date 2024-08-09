@@ -1,7 +1,8 @@
 package id.passage.android
 
 import id.passage.android.api.TokensAPI
-import id.passage.android.exceptions.*
+import id.passage.android.exceptions.PassageTokenException
+import id.passage.android.model.AuthResult
 import id.passage.android.model.RefreshAuthTokenRequest
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -21,7 +22,7 @@ public object PassageToken {
      * @return PassageAuthResult
      * @throws PassageTokenException
      */
-    public suspend fun refreshAuthToken(refreshToken: String): PassageAuthResult {
+    public suspend fun refreshAuthToken(refreshToken: String): AuthResult {
         val api = TokensAPI(Passage.BASE_PATH)
         val request = RefreshAuthTokenRequest(refreshToken)
         val apiAuthResult =

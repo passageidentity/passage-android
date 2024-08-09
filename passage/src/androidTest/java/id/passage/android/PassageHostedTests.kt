@@ -13,8 +13,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.google.common.truth.Truth.assertThat
 import id.passage.android.IntegrationTestConfig.Companion.API_BASE_URL
-import id.passage.android.IntegrationTestConfig.Companion.APP_ID_OTP
-import id.passage.android.exceptions.FinishSocialAuthenticationInvalidRequestException
+import id.passage.android.IntegrationTestConfig.Companion.APP_ID_OIDC
+import id.passage.android.exceptions.HostedAuthorizationError
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.allOf
@@ -26,7 +26,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-internal class SocialTests {
+internal class PassageHostedTests {
     private lateinit var passage: Passage
 
     @Before
@@ -34,7 +34,7 @@ internal class SocialTests {
         Intents.init()
         activityRule?.scenario?.onActivity { activity ->
             activity?.let {
-                passage = Passage(it, APP_ID_OTP)
+                passage = Passage(it, APP_ID_OIDC)
                 passage.overrideBasePath(API_BASE_URL)
             }
         }
@@ -56,14 +56,11 @@ internal class SocialTests {
     fun testAuthorizeWith() =
         runTest {
             try {
-                val expectedBasePath = "$API_BASE_URL/apps/$APP_ID_OTP/social/authorize"
-                val expectedRedirectUri = "redirect_uri=https%3A%2F%2Ftry-uat.passage.dev"
                 val expectedCodeChallengeMethod = "code_challenge_method=S256"
-                val expectedConnectionType = "connection_type=github"
                 val expectedState = "state="
                 val expectedCodeChallenge = "code_challenge="
 
-                passage.authorizeWith(PassageSocialConnection.github)
+                passage.hostedAuthStart()
 
                 intended(
                     allOf(
@@ -71,12 +68,7 @@ internal class SocialTests {
                         hasAction(Intent.ACTION_VIEW),
                         // Web browser is a Custom Chrome Tab
                         hasExtra("androidx.browser.customtabs.extra.SHARE_STATE", SHARE_STATE_DEFAULT),
-                        // Web browser url has expected base path
-                        hasDataString(containsString(expectedBasePath)),
-                        // Web browser url contains expected query params and values
-                        hasDataString(containsString(expectedRedirectUri)),
                         hasDataString(containsString(expectedCodeChallengeMethod)),
-                        hasDataString(containsString(expectedConnectionType)),
                         hasDataString(containsString(expectedState)),
                         hasDataString(containsString(expectedCodeChallenge)),
                     ),
@@ -94,10 +86,10 @@ internal class SocialTests {
         runTest {
             try {
                 val invalidAuthCode = "INVALID_AUTH_CODE"
-                passage.finishSocialAuthentication(invalidAuthCode)
-                fail("Test should throw FinishSocialAuthenticationInvalidRequestException")
+                passage.hostedAuthFinish(invalidAuthCode, "")
+                fail("Test should throw FinishOIDCAuthenticationInvalidRequestException")
             } catch (e: Exception) {
-                assertThat(e is FinishSocialAuthenticationInvalidRequestException)
+                assertThat(e is HostedAuthorizationError)
             }
         }
 }

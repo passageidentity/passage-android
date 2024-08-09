@@ -1,9 +1,8 @@
-package id.passage.android
+package id.passage.android.utils
 
 import android.app.Activity
 
-@Suppress("unused", "RedundantModalityModifier")
-internal final class ResourceUtils {
+internal class ResourceUtils {
     internal companion object {
         internal fun getOptionalResourceFromApp(
             activity: Activity,
