@@ -51,6 +51,7 @@ class PassageCurrentUser(
      *
      * Initiate an email change for the authenticated user. An email change requires verification, so an email will be sent to the user which they must verify before the email change takes effect.
      * @param newEmail valid email
+     * @param language optional language string for localizing emails, if no language or an invalid language is provided the application default language will be used
      * @return MagicLink?
      * @throws PassageUserException
      */
@@ -74,6 +75,7 @@ class PassageCurrentUser(
      *
      * Initiate a phone number change for the authenticated user. An phone number change requires verification, so an SMS with a link will be sent to the user which they must verify before the phone number change takes effect.
      * @param newPhone valid E164 phone number
+     * @param language optional language string for localizing emails, if no language or an invalid language is provided the application default language will be used
      * @return MagicLink?
      * @throws PassageUserException
      */

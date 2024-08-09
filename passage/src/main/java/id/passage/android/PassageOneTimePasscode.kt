@@ -23,6 +23,7 @@ class PassageOneTimePasscode(
      * Create a user and send a registration email or SMS to the user. The user will receive an
      * email or text with a one time passcode to complete their registration.
      * @param identifier valid email or E164 phone number
+     * @param language optional language string for localizing emails, if no language or an invalid language is provided the application default language will be used
      * @return OneTimePasscode
      * @throws OneTimePasscodeRegisterException
      */
@@ -47,6 +48,7 @@ class PassageOneTimePasscode(
      * Send a login email or SMS to the user. The user will receive an email or text with a one time
      * passcode to complete their login.
      * @param identifier valid email or E164 phone number
+     * @param language optional language string for localizing emails, if no language or an invalid language is provided the application default language will be used
      * @return OneTimePasscode
      * @throws OneTimePasscodeLoginException
      */

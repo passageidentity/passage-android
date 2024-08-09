@@ -25,6 +25,7 @@ class PassageMagicLink(
      * Create a user and send a registration email or SMS to the user. The user will receive an email or text with a link to complete their registration.
      * @param identifier valid email or E164 phone number
      * @param magicLinkPath path relative to the app's auth origin (optional)
+     * @param language optional language string for localizing emails, if no language or an invalid language is provided the application default language will be used
      * @return MagicLink
      * @throws MagicLinkRegisterException
      */
@@ -55,6 +56,7 @@ class PassageMagicLink(
      * Send a login email or SMS to the user. The user will receive an email or text with a link to complete their login.
      * @param identifier valid email or E164 phone number
      * @param magicLinkPath path relative to the app's auth_origin (optional)
+     * @param language optional language string for localizing emails, if no language or an invalid language is provided the application default language will be used
      * @return MagicLink?
      * @throws MagicLinkLoginException
      */
@@ -97,15 +99,8 @@ class PassageMagicLink(
             } catch (e: Exception) {
                 throw MagicLinkActivateException.convert(e)
             }
-        val authResult =
-            AuthResult(
-                authToken = response.authResult.authToken,
-                redirectUrl = response.authResult.redirectUrl,
-                refreshToken = response.authResult.refreshToken,
-                refreshTokenExpiration = response.authResult.refreshTokenExpiration,
-            )
-        tokenStore.setTokens(authResult)
-        return authResult
+        tokenStore.setTokens(response.authResult)
+        return response.authResult
     }
 
     /**
@@ -115,7 +110,7 @@ class PassageMagicLink(
      * this endpoint will return an authentication token for the user. This endpoint can be used to
      * initiate a login in one device and then poll and wait for the login to complete on another
      * device.
-     * @param magicLinkId Magic Link ID
+     * @param id Magic Link ID
      * @return PassageAuthResult?
      * @throws GetMagicLinkStatusException
      */
@@ -128,15 +123,8 @@ class PassageMagicLink(
             } catch (e: Exception) {
                 throw GetMagicLinkStatusException.convert(e)
             }
-        // TODO: Once BE issue is fixed, we won't need to transform data model
-        val authResult =
-            AuthResult(
-                authToken = response.authResult.authToken,
-                redirectUrl = response.authResult.redirectUrl,
-                refreshToken = response.authResult.refreshToken,
-                refreshTokenExpiration = response.authResult.refreshTokenExpiration,
-            )
-        tokenStore.setTokens(authResult)
-        return authResult
+
+        tokenStore.setTokens(response.authResult)
+        return response.authResult
     }
 }
