@@ -21,7 +21,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-internal class OneTimePasscodeTests {
+internal class PassageOneTimePasscodeTests {
     private lateinit var passage: Passage
 
     @Before

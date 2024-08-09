@@ -31,15 +31,13 @@ class PassageMagicLink(
      */
     suspend fun register(
         identifier: String,
-        magicLinkPath: String? = null,
         language: String? = null,
     ): MagicLink {
         val registerAPI = RegisterAPI(Passage.BASE_PATH, passageClient)
         val request =
             RegisterMagicLinkRequest(
                 identifier = identifier,
-                language = language,
-                magicLinkPath = magicLinkPath,
+                language = language
             )
         val magicLink =
             try {
@@ -62,15 +60,13 @@ class PassageMagicLink(
      */
     suspend fun login(
         identifier: String,
-        magicLinkPath: String? = null,
         language: String? = null,
     ): MagicLink {
         val loginAPI = LoginAPI(Passage.BASE_PATH, passageClient)
         val request =
             LoginMagicLinkRequest(
                 identifier = identifier,
-                language = language,
-                magicLinkPath = magicLinkPath,
+                language = language
             )
         val response =
             try {

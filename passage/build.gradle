@@ -5,15 +5,19 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.8.21'
     id 'maven-publish'
     id 'signing'
+    id 'kotlin-kapt'
 }
-
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
 
 group = "id.passage.android"
 version = "1.8.2"
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '7.5'  // Updated to a more recent version
+}
+
+task prepareKotlinBuildScriptModel {
+
+}
 
 android {
     namespace 'id.passage.android'
@@ -96,7 +100,6 @@ dependencies {
     implementation "com.squareup.moshi:moshi:1.15.1"
     implementation "com.squareup.moshi:moshi-adapters:1.15.1"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:1.15.1"
-
 
     // For safely encrypting stored data
     implementation "androidx.security:security-crypto:1.1.0-alpha06"

@@ -23,7 +23,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-internal class MagicLinkTests {
+internal class PassageMagicLinkTests {
     private lateinit var passage: Passage
 
     @Before
