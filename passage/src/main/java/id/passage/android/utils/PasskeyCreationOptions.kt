@@ -1,7 +1,7 @@
-package id.passage.android
+package id.passage.android.utils
 
 import id.passage.android.model.AuthenticatorAttachment
 
-public data class PasskeyCreationOptions(
+data class PasskeyCreationOptions(
     val authenticatorAttachment: AuthenticatorAttachment,
 )

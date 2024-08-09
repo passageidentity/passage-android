@@ -12,7 +12,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsServiceConnection
 import androidx.browser.customtabs.CustomTabsSession
 
-object WebViewUtils {
+internal object WebViewUtils {
     private var customTabsSession: CustomTabsSession? = null
 
     private fun createCustomTabsSession(context: Context): CustomTabsSession? {

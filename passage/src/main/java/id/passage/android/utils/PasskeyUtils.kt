@@ -1,4 +1,4 @@
-package id.passage.android
+package id.passage.android.utils
 
 import android.app.Activity
 import androidx.credentials.CreateCredentialResponse
@@ -24,9 +24,8 @@ import id.passage.android.model.CredentialCreationResponseJsonAdapter
 import id.passage.android.model.ProtocolCredentialAssertion1PublicKey
 import id.passage.android.model.ProtocolCredentialAssertion1PublicKeyJsonAdapter
 
-@Suppress("unused", "RedundantVisibilityModifier", "RedundantModalityModifier")
-public final class PasskeyUtils {
-    public companion object {
+class PasskeyUtils {
+    companion object {
         private const val REGISTRATION_RESPONSE_BUNDLE_KEY = "androidx.credentials.BUNDLE_KEY_REGISTRATION_RESPONSE_JSON"
         private const val AUTH_RESPONSE_BUNDLE_KEY = "androidx.credentials.BUNDLE_KEY_AUTHENTICATION_RESPONSE_JSON"
 

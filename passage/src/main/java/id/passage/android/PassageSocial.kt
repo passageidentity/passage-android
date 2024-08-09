@@ -1,43 +1,51 @@
 package id.passage.android
 
 import android.app.Activity
-import android.net.Uri
-import androidx.browser.customtabs.CustomTabsIntent
-import id.passage.android.model.OAuth2ConnectionType
-import id.passage.android.utils.StringUtils
-import java.net.URLEncoder
+import id.passage.android.api.OAuth2API
+import id.passage.android.exceptions.FinishSocialAuthenticationException
+import id.passage.android.model.AuthResult
+import id.passage.android.utils.SocialConnection
+import id.passage.android.utils.SocialUtils
+import okhttp3.OkHttpClient
 
-internal class PassageSocial {
-    internal companion object {
-        internal var verifier = ""
-        private const val CODE_CHALLENGE_METHOD = "S256"
+class PassageSocial(
+    private val passageClient: OkHttpClient,
+    private val activity: Activity,
+    private val tokenStore: PassageTokenStore,
+) {
+    /**
+     * Authorize with Social Connection
+     *
+     * Authorizes user via a supported third-party social provider.
+     * @param connection The Social connection to use for authorization
+     */
+    fun authorizeWith(connection: SocialConnection) {
+        SocialUtils.openChromeTab(
+            connection,
+            Passage.authOrigin,
+            activity,
+            authUrl = "${Passage.BASE_PATH}/apps/${Passage.appId}/social/authorize",
+        )
+    }
 
-        internal fun openChromeTab(
-            connection: OAuth2ConnectionType,
-            authOrigin: String,
-            activity: Activity,
-            authUrl: String,
-        ) {
-            val redirectURI = "https://$authOrigin"
-            val state = StringUtils.getRandomString()
-            val randomString = StringUtils.getRandomString()
-            verifier = randomString
-            val codeChallenge = StringUtils.sha256Hash(randomString)
-            val params =
-                listOf(
-                    "redirect_uri" to redirectURI,
-                    "state" to state,
-                    "code_challenge" to codeChallenge,
-                    "code_challenge_method" to CODE_CHALLENGE_METHOD,
-                    "connection_type" to connection.value,
-                ).joinToString("&") {
-                        (key, value) ->
-                    "$key=${URLEncoder.encode(value, "UTF-8")}"
-                }
-            val url = "$authUrl?$params"
-            val intent = CustomTabsIntent.Builder().build()
-            intent.launchUrl(activity, Uri.parse(url))
-        }
-
+    /**
+     * Finish Social Authentication
+     *
+     * Finishes a social login by exchanging the social login provider code for Passage tokens.
+     * @param code The code returned from the social login provider.
+     * @return PassageAuthResult
+     * @throws FinishSocialAuthenticationException
+     */
+    suspend fun finish(code: String): AuthResult {
+        val oauthAPI = OAuth2API(Passage.BASE_PATH, passageClient)
+        val authResult =
+            try {
+                oauthAPI.exchangeSocialToken(Passage.appId, code, SocialUtils.verifier).authResult
+            } catch (e: java.lang.Exception) {
+                throw FinishSocialAuthenticationException.convert(e)
+            }
+        SocialUtils.verifier = ""
+        tokenStore.setTokens(authResult)
+        return authResult
     }
 }
