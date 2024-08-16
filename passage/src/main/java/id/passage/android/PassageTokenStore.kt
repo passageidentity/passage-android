@@ -38,10 +38,10 @@ class PassageTokenStore(
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
         )
 
-    public val authToken: String?
+    internal val authToken: String?
         get() = sharedPreferences.getString(PASSAGE_AUTH_TOKEN, null)
 
-    public val idToken: String?
+    internal val idToken: String?
         get() = sharedPreferences.getString(PASSAGE_ID_TOKEN, null)
 
     internal val refreshToken: String?
@@ -63,13 +63,6 @@ class PassageTokenStore(
         return authResult.authToken
     }
 
-    public fun setIdToken(token: String?) {
-        with(sharedPreferences.edit()) {
-            putString(PASSAGE_ID_TOKEN, token)
-            apply()
-        }
-    }
-
     private fun setAuthToken(token: String?) {
         with(sharedPreferences.edit()) {
             putString(PASSAGE_AUTH_TOKEN, token)
@@ -82,6 +75,12 @@ class PassageTokenStore(
     private fun setRefreshToken(token: String?) {
         with(sharedPreferences.edit()) {
             putString(PASSAGE_REFRESH_TOKEN, token)
+            apply()
+        }
+    }
+    internal fun setIdToken(token: String?) {
+        with(sharedPreferences.edit()) {
+            putString(PASSAGE_ID_TOKEN, token)
             apply()
         }
     }
