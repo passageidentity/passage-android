@@ -57,7 +57,7 @@ class PassageCurrentUser(
      */
     suspend fun changeEmail(
         newEmail: String,
-        language: String?,
+        language: String? = null,
     ): MagicLink {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val request = UpdateUserEmailRequest(newEmail, language, null, null)
@@ -81,7 +81,7 @@ class PassageCurrentUser(
      */
     suspend fun changePhone(
         newPhone: String,
-        language: String?,
+        language: String? = null,
     ): MagicLink {
         val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
         val request = UpdateUserPhoneRequest(language, null, newPhone, null)

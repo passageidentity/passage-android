@@ -29,7 +29,7 @@ class PassageOneTimePasscode(
      */
     suspend fun register(
         identifier: String,
-        language: String?,
+        language: String? = null
     ): OneTimePasscode {
         val registerAPI = RegisterAPI(Passage.BASE_PATH, passageClient)
         val request = RegisterOneTimePasscodeRequest(identifier, language)
@@ -54,7 +54,7 @@ class PassageOneTimePasscode(
      */
     suspend fun login(
         identifier: String,
-        language: String?,
+        language: String? = null
     ): OneTimePasscode {
         val loginAPI = LoginAPI(Passage.BASE_PATH, passageClient)
         val request = LoginOneTimePasscodeRequest(identifier, language)
