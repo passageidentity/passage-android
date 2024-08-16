@@ -78,6 +78,7 @@ class PassageTokenStore(
             apply()
         }
     }
+
     internal fun setIdToken(token: String?) {
         with(sharedPreferences.edit()) {
             putString(PASSAGE_ID_TOKEN, token)
