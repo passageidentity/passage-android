@@ -1,7 +1,9 @@
 package id.passage.android
 
+import id.passage.android.model.CurrentUser
 import id.passage.android.model.User
 import id.passage.android.model.UserStatus
+import id.passage.android.utils.PublicUserInfo
 
 internal class IntegrationTestConfig {
     companion object {
@@ -14,19 +16,16 @@ internal class IntegrationTestConfig {
         const val EXISTING_USER_EMAIL_MAGIC_LINK = "authentigator+1716572384858@ncor7c1m.mailosaur.net"
         const val DEACTIVATED_USER_EMAIL_MAGIC_LINK = "authentigator+1716778790434@ncor7c1m.mailosaur.net"
         const val AUTH_TOEKN = BuildConfig.OTP_TEST_USER_AUTH_TOKEN
-        val CURRENT_USER =
-            PassageUser.convertToPassageUser(
-                User(
-                    email = "authentigator+1716916054778@ncor7c1m.mailosaur.net",
-                    emailVerified = true,
-                    id = "Cf70Zkwn1ywnpuua1ZFF717G",
-                    phone = "",
-                    phoneVerified = false,
-                    status = UserStatus.active,
-                    userMetadata = null,
-                    webauthn = false,
-                    webauthnTypes = emptyList(),
-                ),
-            )
+        val CURRENT_USER = PublicUserInfo(
+            email = "authentigator+1716916054778@ncor7c1m.mailosaur.net",
+            emailVerified = true,
+            id = "Cf70Zkwn1ywnpuua1ZFF717G",
+            phone = "",
+            phoneVerified = false,
+            status = UserStatus.active,
+            userMetadata = null,
+            webauthn = false,
+            webauthnTypes = emptyList(),
+        )
     }
 }
