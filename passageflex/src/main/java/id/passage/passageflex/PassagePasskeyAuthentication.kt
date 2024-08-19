@@ -17,12 +17,11 @@ object PassagePasskeyAuthentication {
     internal suspend fun register(
         transactionId: String,
         activity: Activity,
+        appId: String,
         authenticatorAttachment: AuthenticatorAttachment = AuthenticatorAttachment.platform,
         apiBasePath: String? = null,
     ): String {
         try {
-            // Get Passage App ID from developer's `strings.xml` resource.
-            val appId = Utils.getAppId(activity)
             // Request a Registration Start Handshake from Passage server
             val registerAPI = RegisterAPI(apiBasePath ?: BASE_PATH)
             val startRequest =
@@ -67,11 +66,10 @@ object PassagePasskeyAuthentication {
     internal suspend fun authenticate(
         transactionId: String? = null,
         activity: Activity,
+        appId: String,
         apiBasePath: String? = null,
     ): String {
         try {
-            // Get Passage App ID from developer's `strings.xml` resource.
-            val appId = Utils.getAppId(activity)
             // Request an Assertion Start Handshake from Passage server
             val authenticateAPI = AuthenticateAPI(apiBasePath ?: BASE_PATH)
             val startRequest = AuthenticateWebAuthnStartWithTransactionRequest(transactionId)
