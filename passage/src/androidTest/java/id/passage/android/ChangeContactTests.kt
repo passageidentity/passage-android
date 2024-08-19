@@ -3,7 +3,6 @@ package id.passage.android
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import id.passage.android.IntegrationTestConfig.Companion.AUTH_TOEKN
-import id.passage.android.IntegrationTestConfig.Companion.CURRENT_USER
 import id.passage.android.exceptions.PassageUserRequestException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import id.passage.android.model.AuthResult
@@ -57,7 +56,7 @@ internal class ChangeContactTests {
     fun testChangeEmailUnAuthed() =
         runBlocking {
             try {
-                passage.tokenStore.setTokens(AuthResult(AUTH_TOEKN, ""))
+                passage.tokenStore.setTokens(AuthResult("invalid", ""))
                 val date = System.currentTimeMillis()
                 val identifier = "authentigator+$date@passage.id"
                 passage.currentUser.changeEmail(identifier)
@@ -100,7 +99,7 @@ internal class ChangeContactTests {
     fun testChangePhoneUnAuthed() =
         runBlocking {
             try {
-                passage.tokenStore.setTokens(AuthResult(AUTH_TOEKN, ""))
+                passage.tokenStore.setTokens(AuthResult("invalid", ""))
                 passage.currentUser.changePhone("+14155552671")
                 fail("Test should throw PassageUserUnauthorizedException")
             } catch (e: Exception) {

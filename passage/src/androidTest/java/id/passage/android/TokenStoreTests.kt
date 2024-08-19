@@ -9,11 +9,13 @@ import id.passage.android.IntegrationTestConfig.Companion.APP_ID_OTP
 import id.passage.android.IntegrationTestConfig.Companion.EXISTING_USER_EMAIL_OTP
 import id.passage.android.IntegrationTestConfig.Companion.WAIT_TIME_MILLISECONDS
 import id.passage.android.exceptions.PassageUserUnauthorizedException
+import id.passage.android.exceptions.UserInfoUnauthorizedException
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -67,10 +69,10 @@ internal class TokenStoreTests {
         runTest {
             try {
                 passage.currentUser.logout()
-                val signedOutUser = passage.currentUser.userInfo()
-                assertThat(signedOutUser).isNull()
+                passage.currentUser.userInfo()
+                fail("Test should throw UserInfoUnauthorizedException")
             } catch (e: Exception) {
-                fail("Test failed due to unexpected exception: ${e.message}")
+                assertTrue(e is UserInfoUnauthorizedException)
             }
         }
 

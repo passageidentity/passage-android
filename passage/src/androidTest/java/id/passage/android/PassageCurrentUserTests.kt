@@ -4,6 +4,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import id.passage.android.IntegrationTestConfig.Companion.AUTH_TOEKN
 import id.passage.android.IntegrationTestConfig.Companion.CURRENT_USER
+import id.passage.android.exceptions.UserInfoUnauthorizedException
 import id.passage.android.model.AuthResult
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
@@ -60,15 +61,11 @@ internal class PassageCurrentUserTests {
     fun testCurrentUserNotAuthorized() =
         runBlocking {
             try {
-                passage.tokenStore.setTokens(AuthResult("", ""))
-                val response = passage.currentUser.userInfo()
-                if (response == null) {
-                    assertTrue(true)
-                } else {
-                    fail("Test failed: response must be null")
-                }
+                passage.tokenStore.setTokens(AuthResult("invalid", ""))
+                passage.currentUser.userInfo()
+                fail("Test should throw UserInfoUnauthorizedException")
             } catch (e: Exception) {
-                fail("Test failed due to unexpected exception: ${e.message}")
+                assertTrue(e is UserInfoUnauthorizedException)
             }
         }
 }

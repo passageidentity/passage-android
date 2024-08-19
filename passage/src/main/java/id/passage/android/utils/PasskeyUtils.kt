@@ -144,7 +144,9 @@ class PasskeyUtils {
          */
         internal fun getCredentialHandshakeResponse(credentialResponse: GetCredentialResponse): CredentialAssertionResponse {
             val handshakeResponseJson =
-                credentialResponse.credential.data.getString(AUTH_RESPONSE_BUNDLE_KEY).toString()
+                credentialResponse.credential.data
+                    .getString(AUTH_RESPONSE_BUNDLE_KEY)
+                    .toString()
             val moshi = Moshi.Builder().build()
             val handshakeResponseAdapter = CredentialAssertionResponseJsonAdapter(moshi)
             return handshakeResponseAdapter.fromJson(handshakeResponseJson)
