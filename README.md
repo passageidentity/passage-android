@@ -29,12 +29,13 @@ passage.loginWithPasskey()
 
 You can import the PassageFlex library by including this in your app's `build.gradle` file dependencies:
 ```gradle
-implementation 'id.passage.android:passageflex:0.1.0'
+implementation 'id.passage.android:passageflex:0.2.0'
 ```
 
 And you can use it like this:
 ```kotlin
-val nonce = PassageFlex.Passkey.authenticate()
+val passageFlex = PassageFlex(activity, "YOUR_APP_ID")
+val nonce = passageFlex.passkey.authenticate()
 ```
 <!--
 <br>

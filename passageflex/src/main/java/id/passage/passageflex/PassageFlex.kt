@@ -8,13 +8,13 @@ import android.app.Activity
  *  Find out more at: https://passage.1password.com
  */
 public class PassageFlex(
-    appId: String,
-    activity: Activity
+    activity: Activity,
+    appId: String
 ) {
 
     /**
      * PassageFlexPasskey utilizes Android's native passkey APIs and Passage Flex APIs together.
      */
-    public val passkey = PassageFlexPasskey(appId, activity)
+    public val passkey = PassageFlexPasskey(activity, appId)
 
 }

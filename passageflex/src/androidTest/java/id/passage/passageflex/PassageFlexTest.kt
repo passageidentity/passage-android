@@ -42,12 +42,6 @@ internal class PassageFlexTest {
         )
 
     @Test
-    fun testGetAppId() {
-        val appId = Utils.getAppId(testActivity)
-        assertEquals("hknBjKc5jettbgwAQ4j9bnsu", appId)
-    }
-
-//    @Test
     fun testPasskeyRegister() =
         runBlocking<Unit> {
             // What this test is expected to do:
@@ -59,10 +53,9 @@ internal class PassageFlexTest {
             try {
                 // 1.
                 // Get a transaction id for a new user:
-                val appId = Utils.getAppId(testActivity)
                 val date = System.currentTimeMillis()
                 val email = "authentigator+$date@passage.id"
-                val transactionId = FlexServerMock.getTransactionId(email, true, appId)
+                val transactionId = FlexServerMock.getTransactionId(email, true, FlexTestConfig.APP_ID)
                 // 2.
                 // Call "register" on the UI thread so we can look for the "Continue" button that's a
                 // part of the Credential Manager UI.
@@ -75,6 +68,7 @@ internal class PassageFlexTest {
                         PassagePasskeyAuthentication.register(
                             transactionId = transactionId,
                             activity = testActivity,
+                            appId = FlexTestConfig.APP_ID,
                             authenticatorAttachment = AuthenticatorAttachment.platform,
                             apiBasePath = FlexTestConfig.API_BASE_URL,
                         )
@@ -104,7 +98,7 @@ internal class PassageFlexTest {
             }
         }
 
-//    @Test
+    @Test
     fun testPasskeyAuthenticate() =
         runBlocking<Unit> {
             // What this test is expected to do:
@@ -126,6 +120,7 @@ internal class PassageFlexTest {
                         // environment, AND there are no registered passkeys on the test device.
                         PassagePasskeyAuthentication.authenticate(
                             activity = testActivity,
+                            appId = FlexTestConfig.APP_ID,
                             apiBasePath = FlexTestConfig.API_BASE_URL,
                         )
                     } catch (e: AuthenticateException) {

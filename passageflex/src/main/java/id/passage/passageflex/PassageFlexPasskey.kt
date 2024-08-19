@@ -7,8 +7,8 @@ import id.passage.android.passageflex.model.AuthenticatorAttachment
  * The base class for utilizing Android's native passkey APIs and Passage Flex APIs together.
  */
 public class PassageFlexPasskey(
-    val appId: String,
-    val activity: Activity
+    val activity: Activity,
+    val appId: String
 ) {
     /**
      * Registers a new passkey.
