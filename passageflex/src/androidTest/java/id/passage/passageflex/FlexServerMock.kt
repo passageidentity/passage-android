@@ -13,7 +13,8 @@ internal object FlexServerMock {
         appId: String,
     ): String =
         kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-            val url = URL("${FlexTestConfig.MGMT_BASE_URL}/apps/$appId/transactions")
+            val transactionType = if (isNewUser) "register" else "authenticate"
+            val url = URL("${FlexTestConfig.MGMT_BASE_URL}/apps/$appId/transactions/$transactionType")
             (url.openConnection() as HttpURLConnection).run {
                 requestMethod = "POST"
                 doOutput = true // Allows POST data
