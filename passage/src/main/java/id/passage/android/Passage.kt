@@ -9,16 +9,16 @@ class Passage(
     activity: Activity,
     appId: String,
 ) {
-    // region Private VARIABLES
-    var passageApp: PassageApp
-    var passagePasskey: PassagePasskey
-    var passageMagicLink: PassageMagicLink
-    var passageHosted: PassageHosted
-    var passageOneTimePasscode: PassageOneTimePasscode
-    var passageSocial: PassageSocial
-    var passageCurrentUser: PassageCurrentUser
-    var tokenStore: PassageTokenStore
-    var passageClient: OkHttpClient
+    // region VARIABLES
+    var app: PassageApp
+    var passkey: PassagePasskey
+    var magicLink: PassageMagicLink
+    var hosted: PassageHosted
+    var oneTimePasscode: PassageOneTimePasscode
+    var social: PassageSocial
+    var currentUser: PassageCurrentUser
+    private var tokenStore: PassageTokenStore
+    private var passageClient: OkHttpClient
 
     // region CONSTANTS AND SINGLETON VARIABLES
     internal companion object {
@@ -47,13 +47,13 @@ class Passage(
                 }.build()
         Companion.appId = appId
         tokenStore = PassageTokenStore(activity)
-        passageApp = PassageApp(passageClient)
-        passagePasskey = PassagePasskey(passageClient, activity, tokenStore)
-        passageOneTimePasscode = PassageOneTimePasscode(passageClient, tokenStore)
-        passageHosted = PassageHosted(activity, tokenStore)
-        passageSocial = PassageSocial(passageClient, activity, tokenStore)
-        passageMagicLink = PassageMagicLink(passageClient, tokenStore)
-        passageCurrentUser = PassageCurrentUser(tokenStore, activity)
+        app = PassageApp(passageClient)
+        passkey = PassagePasskey(passageClient, activity, tokenStore)
+        oneTimePasscode = PassageOneTimePasscode(passageClient, tokenStore)
+        hosted = PassageHosted(activity, tokenStore)
+        social = PassageSocial(passageClient, activity, tokenStore)
+        magicLink = PassageMagicLink(passageClient, tokenStore)
+        currentUser = PassageCurrentUser(tokenStore, activity)
     }
 
     public fun overrideBasePath(newPath: String) {

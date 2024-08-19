@@ -13,7 +13,7 @@ import java.util.Base64
 private data class AuthTokenPayload(val exp: Long)
 
 @Suppress("unused", "RedundantVisibilityModifier")
-public object PassageToken {
+internal object PassageToken {
     /**
      * Refresh Auth Token
      *
