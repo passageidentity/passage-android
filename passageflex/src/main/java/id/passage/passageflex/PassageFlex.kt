@@ -9,12 +9,10 @@ import android.app.Activity
  */
 public class PassageFlex(
     activity: Activity,
-    appId: String
+    appId: String,
 ) {
-
     /**
      * PassageFlexPasskey utilizes Android's native passkey APIs and Passage Flex APIs together.
      */
     public val passkey = PassageFlexPasskey(activity, appId)
-
 }

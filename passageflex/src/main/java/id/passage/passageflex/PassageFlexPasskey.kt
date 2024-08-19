@@ -8,7 +8,7 @@ import id.passage.android.passageflex.model.AuthenticatorAttachment
  */
 public class PassageFlexPasskey(
     val activity: Activity,
-    val appId: String
+    val appId: String,
 ) {
     /**
      * Registers a new passkey.
@@ -48,13 +48,11 @@ public class PassageFlexPasskey(
      * token on your app's server.
      * @throws AuthenticateException
      */
-    public suspend fun authenticate(
-        transactionId: String? = null,
-    ): String {
+    public suspend fun authenticate(transactionId: String? = null): String {
         return PassagePasskeyAuthentication.authenticate(
             transactionId,
             activity,
-            appId
+            appId,
         )
     }
 }
