@@ -27,14 +27,12 @@ public class PassageFlexPasskey(
     public suspend fun register(
         transactionId: String,
         authenticatorAttachment: AuthenticatorAttachment = AuthenticatorAttachment.platform,
-    ): String {
-        return PassagePasskeyAuthentication.register(
-            transactionId,
-            activity,
-            appId,
-            authenticatorAttachment,
-        )
-    }
+    ) = PassagePasskeyAuthentication.register(
+        transactionId,
+        activity,
+        appId,
+        authenticatorAttachment,
+    )
 
     /**
      * Authenticates with a passkey.
@@ -48,11 +46,10 @@ public class PassageFlexPasskey(
      * token on your app's server.
      * @throws AuthenticateException
      */
-    public suspend fun authenticate(transactionId: String? = null): String {
-        return PassagePasskeyAuthentication.authenticate(
+    public suspend fun authenticate(transactionId: String? = null) =
+        PassagePasskeyAuthentication.authenticate(
             transactionId,
             activity,
             appId,
         )
-    }
 }
