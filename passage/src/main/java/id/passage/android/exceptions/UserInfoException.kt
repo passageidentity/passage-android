@@ -1,5 +1,6 @@
 package id.passage.android.exceptions
 
+import id.passage.android.model.Model401Code
 import id.passage.android.model.Model403Code
 import id.passage.android.model.Model404Code
 import id.passage.client.infrastructure.ClientException
@@ -30,6 +31,9 @@ public open class UserInfoException(
             val error = parseClientException(e)
             val message = error?.error ?: ""
             return when (error?.code) {
+                Model401Code.invalidAccessToken.toString() -> {
+                    UserInfoUnauthorizedException(message)
+                }
                 Model403Code.identifierNotVerified.toString() -> {
                     UserInfoForbiddenException(message)
                 }
@@ -56,6 +60,13 @@ public class UserInfoAppNotFoundException(
  */
 
 public class UserInfoForbiddenException(
+    message: String,
+) : UserInfoException(message)
+
+/**
+ * Thrown when identifier is unauthorized
+ */
+public class UserInfoUnauthorizedException(
     message: String,
 ) : UserInfoException(message)
 

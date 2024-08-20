@@ -10,8 +10,8 @@ import id.passage.android.IntegrationTestConfig.Companion.DEACTIVATED_USER_EMAIL
 import id.passage.android.IntegrationTestConfig.Companion.EXISTING_USER_EMAIL_MAGIC_LINK
 import id.passage.android.exceptions.MagicLinkActivateInvalidException
 import id.passage.android.exceptions.MagicLinkActivateUserNotActiveException
-import id.passage.android.exceptions.NewLoginMagicLinkInvalidIdentifierException
-import id.passage.android.exceptions.NewRegisterMagicLinkInvalidIdentifierException
+import id.passage.android.exceptions.MagicLinkLoginException
+import id.passage.android.exceptions.MagicLinkRegisterException
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -45,7 +45,7 @@ internal class PassageMagicLinkTests {
     @After
     fun tearDown() {
         runTest {
-            passage.signOutCurrentUser()
+            passage.currentUser.logout()
         }
     }
 
@@ -55,7 +55,7 @@ internal class PassageMagicLinkTests {
             try {
                 val date = System.currentTimeMillis()
                 val identifier = "authentigator+$date@passage.id"
-                passage.newRegisterMagicLink(identifier, null)
+                passage.magicLink.register(identifier, null)
             } catch (e: Exception) {
                 fail(e.message)
             }
@@ -65,10 +65,10 @@ internal class PassageMagicLinkTests {
     fun testRegisterExistingUserMagicLink() =
         runTest {
             try {
-                passage.newRegisterMagicLink(EXISTING_USER_EMAIL_MAGIC_LINK, null)
+                passage.magicLink.register(EXISTING_USER_EMAIL_MAGIC_LINK, null)
                 fail("Test should throw NewRegisterMagicLinkInvalidIdentifierException")
             } catch (e: Exception) {
-                assertThat(e is NewRegisterMagicLinkInvalidIdentifierException)
+                assertThat(e is MagicLinkRegisterException)
             }
         }
 
@@ -76,10 +76,10 @@ internal class PassageMagicLinkTests {
     fun testRegisterInvalidEmailAddressFormatMagicLink() =
         runTest {
             try {
-                passage.newRegisterMagicLink("invalid", null)
+                passage.magicLink.register("invalid", null)
                 fail("Test should throw NewRegisterMagicLinkInvalidIdentifierException")
             } catch (e: Exception) {
-                assertThat(e is NewRegisterMagicLinkInvalidIdentifierException)
+                assertThat(e is MagicLinkRegisterException)
             }
         }
 
@@ -88,7 +88,7 @@ internal class PassageMagicLinkTests {
         runTest {
             try {
                 val identifier = EXISTING_USER_EMAIL_MAGIC_LINK
-                passage.newLoginMagicLink(identifier, null)
+                passage.magicLink.login(identifier, null)
             } catch (e: Exception) {
                 fail(e.message)
             }
@@ -98,10 +98,10 @@ internal class PassageMagicLinkTests {
     fun testInvalidLoginMagicLink() =
         runTest {
             try {
-                passage.newLoginMagicLink("Invalid@invalid.com", null)
+                passage.magicLink.login("Invalid@invalid.com", null)
                 fail("Test should throw NewLoginMagicLinkInvalidIdentifierException")
             } catch (e: Exception) {
-                assertThat(e is NewLoginMagicLinkInvalidIdentifierException)
+                assertThat(e is MagicLinkLoginException)
             }
         }
 
@@ -111,13 +111,13 @@ internal class PassageMagicLinkTests {
             try {
                 val date = System.currentTimeMillis()
                 val identifier = "authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net"
-                passage.newRegisterMagicLink(identifier, null)
+                passage.magicLink.register(identifier, null)
                 delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
                 val magicLink: String = MailosaurAPIClient.getMostRecentMagicLink()
                 if (magicLink == "") {
                     fail("Test Failed: Magic link is empty")
                 }
-                passage.magicLinkActivate(magicLink)
+                passage.magicLink.activate(magicLink)
             } catch (e: Exception) {
                 fail(e.toString())
             }
@@ -127,13 +127,13 @@ internal class PassageMagicLinkTests {
     fun testActivateLoginMagicLink(): Unit =
         runBlocking {
             try {
-                passage.newLoginMagicLink(EXISTING_USER_EMAIL_MAGIC_LINK, null)
+                passage.magicLink.login(EXISTING_USER_EMAIL_MAGIC_LINK, null)
                 delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
                 val magicLink: String = MailosaurAPIClient.getMostRecentMagicLink()
                 if (magicLink.isEmpty()) {
                     fail("Test failed: Mailosaur function returned an empty magic link")
                 }
-                passage.magicLinkActivate(magicLink)
+                passage.magicLink.activate(magicLink)
             } catch (e: Exception) {
                 fail(e.toString())
             }
@@ -146,9 +146,9 @@ internal class PassageMagicLinkTests {
                 try {
                     val date = System.currentTimeMillis()
                     val identifier = "authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net"
-                    passage.newRegisterMagicLink(identifier, null)
+                    passage.magicLink.register(identifier, null)
                     val magicLink = "Invalid"
-                    passage.magicLinkActivate(magicLink)
+                    passage.magicLink.activate(magicLink)
                     fail("Test failed: Mailosaur function returned an empty magic link")
                 } catch (e: Exception) {
                     assertThat(e is MagicLinkActivateInvalidException)
@@ -160,13 +160,13 @@ internal class PassageMagicLinkTests {
     fun testActivateDeactivatedUserMagicLink() =
         runTest {
             try {
-                passage.newLoginMagicLink(DEACTIVATED_USER_EMAIL_MAGIC_LINK, null)
+                passage.magicLink.login(DEACTIVATED_USER_EMAIL_MAGIC_LINK, null)
                 delay(IntegrationTestConfig.WAIT_TIME_MILLISECONDS)
                 val magicLink: String = MailosaurAPIClient.getMostRecentMagicLink()
                 if (magicLink.isEmpty()) {
                     fail("Mailosaur catched error; returning empty string")
                 }
-                passage.magicLinkActivate(magicLink)
+                passage.magicLink.activate(magicLink)
                 fail("Test should throw MagicLinkActivateUserNotActiveException")
             } catch (e: Exception) {
                 assertThat(e is MagicLinkActivateUserNotActiveException)

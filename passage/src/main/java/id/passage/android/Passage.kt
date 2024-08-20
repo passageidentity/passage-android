@@ -17,7 +17,7 @@ class Passage(
     var oneTimePasscode: PassageOneTimePasscode
     var social: PassageSocial
     var currentUser: PassageCurrentUser
-    private var tokenStore: PassageTokenStore
+    var tokenStore: PassageTokenStore
     private var passageClient: OkHttpClient
 
     // region CONSTANTS AND SINGLETON VARIABLES

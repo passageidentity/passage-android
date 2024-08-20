@@ -64,7 +64,7 @@ internal class PassageSocialTests {
                 val expectedState = "state="
                 val expectedCodeChallenge = "code_challenge="
 
-                passage.authorizeWith(SocialConnection.github)
+                passage.social.authorizeWith(SocialConnection.github)
 
                 intended(
                     allOf(
@@ -95,7 +95,7 @@ internal class PassageSocialTests {
         runTest {
             try {
                 val invalidAuthCode = "INVALID_AUTH_CODE"
-                passage.finishSocialAuthentication(invalidAuthCode)
+                passage.social.finish(invalidAuthCode)
                 fail("Test should throw FinishSocialAuthenticationInvalidRequestException")
             } catch (e: Exception) {
                 assertThat(e is FinishSocialAuthenticationInvalidRequestException)

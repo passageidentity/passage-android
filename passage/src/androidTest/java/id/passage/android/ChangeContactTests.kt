@@ -3,9 +3,9 @@ package id.passage.android
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import id.passage.android.IntegrationTestConfig.Companion.AUTH_TOEKN
-import id.passage.android.IntegrationTestConfig.Companion.CURRENT_USER
 import id.passage.android.exceptions.PassageUserRequestException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
+import id.passage.android.model.AuthResult
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import junit.framework.TestCase.fail
@@ -42,10 +42,10 @@ internal class ChangeContactTests {
             // make sure we have an authToken.
             assertNotEquals(AUTH_TOEKN, "")
             try {
-                Passage.setAuthToken(AUTH_TOEKN)
+                passage.tokenStore.setTokens(AuthResult(AUTH_TOEKN, ""))
                 val date = System.currentTimeMillis()
                 val identifier = "authentigator+$date@passage.id"
-                val response = CURRENT_USER.changeEmail(identifier)
+                val response = passage.currentUser.changeEmail(identifier)
                 assertNotNull(response.id)
             } catch (e: Exception) {
                 fail("Test failed due to unexpected exception: ${e.message}")
@@ -56,10 +56,10 @@ internal class ChangeContactTests {
     fun testChangeEmailUnAuthed() =
         runBlocking {
             try {
-                Passage.setAuthToken("")
+                passage.tokenStore.setTokens(AuthResult("invalid", ""))
                 val date = System.currentTimeMillis()
                 val identifier = "authentigator+$date@passage.id"
-                CURRENT_USER.changeEmail(identifier)
+                passage.currentUser.changeEmail(identifier)
                 fail("Test should throw PassageUserUnauthorizedException")
             } catch (e: Exception) {
                 assertTrue(e is PassageUserUnauthorizedException)
@@ -72,8 +72,8 @@ internal class ChangeContactTests {
             // make sure we have an authToken.
             assertNotEquals("", AUTH_TOEKN)
             try {
-                Passage.setAuthToken(AUTH_TOEKN)
-                val response = CURRENT_USER.changePhone("+14155552671")
+                passage.tokenStore.setTokens(AuthResult(AUTH_TOEKN, ""))
+                val response = passage.currentUser.changePhone("+14155552671")
                 assertNotNull(response.id)
             } catch (e: Exception) {
                 fail("Test failed due to unexpected exception: ${e.message}")
@@ -86,8 +86,8 @@ internal class ChangeContactTests {
             // make sure we have an authToken.
             assertNotEquals("", AUTH_TOEKN)
             try {
-                Passage.setAuthToken(AUTH_TOEKN)
-                val response = CURRENT_USER.changePhone("444")
+                passage.tokenStore.setTokens(AuthResult(AUTH_TOEKN, ""))
+                val response = passage.currentUser.changePhone("444")
                 assertNotNull(response.id)
                 fail("Test should throw PassageUserRequestException")
             } catch (e: Exception) {
@@ -99,8 +99,8 @@ internal class ChangeContactTests {
     fun testChangePhoneUnAuthed() =
         runBlocking {
             try {
-                Passage.setAuthToken("")
-                CURRENT_USER.changePhone("+14155552671")
+                passage.tokenStore.setTokens(AuthResult("invalid", ""))
+                passage.currentUser.changePhone("+14155552671")
                 fail("Test should throw PassageUserUnauthorizedException")
             } catch (e: Exception) {
                 assertTrue(e is PassageUserUnauthorizedException)

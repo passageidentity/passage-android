@@ -9,11 +9,13 @@ import id.passage.android.IntegrationTestConfig.Companion.APP_ID_OTP
 import id.passage.android.IntegrationTestConfig.Companion.EXISTING_USER_EMAIL_OTP
 import id.passage.android.IntegrationTestConfig.Companion.WAIT_TIME_MILLISECONDS
 import id.passage.android.exceptions.PassageUserUnauthorizedException
+import id.passage.android.exceptions.UserInfoUnauthorizedException
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,16 +35,16 @@ internal class TokenStoreTests {
                 }
             }
             // Log in user
-            val otpId = passage.newLoginOneTimePasscode(EXISTING_USER_EMAIL_OTP).otpId
+            val otpId = passage.oneTimePasscode.login(EXISTING_USER_EMAIL_OTP).otpId
             delay(WAIT_TIME_MILLISECONDS)
             val otp = MailosaurAPIClient.getMostRecentOneTimePasscode()
-            passage.oneTimePasscodeActivate(otp, otpId)
+            passage.oneTimePasscode.activate(otp, otpId)
         }
 
     @After
     fun teardown(): Unit =
         runBlocking {
-            passage.signOutCurrentUser()
+            passage.currentUser.logout()
         }
 
     @get:Rule
@@ -55,7 +57,7 @@ internal class TokenStoreTests {
     fun testCurrentUser_isNotNull() =
         runTest {
             try {
-                val currentUser = passage.getCurrentUser()
+                val currentUser = passage.currentUser.userInfo()
                 assertThat(currentUser).isNotNull()
             } catch (e: Exception) {
                 fail("Test failed due to unexpected exception: ${e.message}")
@@ -66,11 +68,11 @@ internal class TokenStoreTests {
     fun testCurrentUserAfterSignOut_isNull() =
         runTest {
             try {
-                passage.signOutCurrentUser()
-                val signedOutUser = passage.getCurrentUser()
-                assertThat(signedOutUser).isNull()
+                passage.currentUser.logout()
+                passage.currentUser.userInfo()
+                fail("Test should throw UserInfoUnauthorizedException")
             } catch (e: Exception) {
-                fail("Test failed due to unexpected exception: ${e.message}")
+                assertTrue(e is UserInfoUnauthorizedException)
             }
         }
 
@@ -89,7 +91,7 @@ internal class TokenStoreTests {
     fun authTokenAfterSignOut_isNull() =
         runTest {
             try {
-                passage.signOutCurrentUser()
+                passage.currentUser.logout()
                 val authToken = passage.tokenStore.authToken
                 assertThat(authToken).isNull()
             } catch (e: Exception) {
@@ -101,9 +103,9 @@ internal class TokenStoreTests {
     fun authTokenThrowsErrorAfterRevoke() =
         runTest {
             try {
-                val user = passage.getCurrentUser()
+                val user = passage.currentUser.userInfo()
                 passage.tokenStore.clearAndRevokeTokens()
-                user?.listDevicePasskeys()
+                passage.currentUser.passkeys()
                 fail("Test should throw PassageUserUnauthorizedException")
             } catch (e: Exception) {
                 assertThat(e is PassageUserUnauthorizedException)
