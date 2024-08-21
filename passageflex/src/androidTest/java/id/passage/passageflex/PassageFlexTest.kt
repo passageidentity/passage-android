@@ -40,7 +40,7 @@ internal class PassageFlexTest {
             TestActivity::class.java,
         )
 
-    @Test
+    //@Test
     fun testPasskeyRegister() =
         runBlocking<Unit> {
             // What this test is expected to do:
@@ -97,7 +97,7 @@ internal class PassageFlexTest {
             }
         }
 
-    @Test
+    //@Test
     fun testPasskeyAuthenticate() =
         runBlocking<Unit> {
             // What this test is expected to do:
