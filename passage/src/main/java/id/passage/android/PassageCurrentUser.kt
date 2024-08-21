@@ -261,6 +261,7 @@ class PassageCurrentUser(
         val idToken = tokenStore.idToken
         if (idToken != null) {
             HostedUtils.logout(activity, idToken)
+            tokenStore.setIdToken(null)
         }
         tokenStore.clearAndRevokeTokens()
     }

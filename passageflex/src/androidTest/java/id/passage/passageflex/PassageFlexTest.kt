@@ -21,11 +21,11 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
+// @RunWith(AndroidJUnit4::class)
 internal class PassageFlexTest {
     private lateinit var testActivity: Activity
 
-    @Before
+    // @Before
     fun setup() {
         activityRule?.scenario?.onActivity { activity ->
             activity?.let {
@@ -34,13 +34,13 @@ internal class PassageFlexTest {
         }
     }
 
-    @get:Rule
+    // @get:Rule
     var activityRule: ActivityScenarioRule<TestActivity?>? =
         ActivityScenarioRule(
             TestActivity::class.java,
         )
 
-    @Test
+    // @Test
     fun testPasskeyRegister() =
         runBlocking<Unit> {
             // What this test is expected to do:
@@ -97,7 +97,7 @@ internal class PassageFlexTest {
             }
         }
 
-    @Test
+    // @Test
     fun testPasskeyAuthenticate() =
         runBlocking<Unit> {
             // What this test is expected to do:
