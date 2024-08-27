@@ -39,8 +39,8 @@ class PassageApp(
      * @return PublicUserInfo?
      */
     suspend fun userExists(identifier: String): PublicUserInfo? {
+        // testing sonar
         val usersAPI = UsersAPI()
-        val usersAPI2 = UsersAPI()
         return try {
             usersAPI.checkUserIdentifier(Passage.appId, identifier).user
         } catch (e: Exception) {
