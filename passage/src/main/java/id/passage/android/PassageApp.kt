@@ -40,6 +40,7 @@ class PassageApp(
      */
     suspend fun userExists(identifier: String): PublicUserInfo? {
         val usersAPI = UsersAPI()
+        val usersAPI2 = UsersAPI()
         return try {
             usersAPI.checkUserIdentifier(Passage.appId, identifier).user
         } catch (e: Exception) {
