@@ -47,10 +47,10 @@ class PassageTokenStore(
     val authToken: String?
         get() = sharedPreferences.getString(PASSAGE_AUTH_TOKEN, null)
 
-    internal val idToken: String?
+    val idToken: String?
         get() = sharedPreferences.getString(PASSAGE_ID_TOKEN, null)
 
-    internal val refreshToken: String?
+    val refreshToken: String?
         get() = sharedPreferences.getString(PASSAGE_REFRESH_TOKEN, null)
 
     init {
