@@ -60,7 +60,7 @@ internal class PassageHostedTests {
                 val expectedState = "state="
                 val expectedCodeChallenge = "code_challenge="
 
-                passage.hosted.hostedAuthStart()
+                passage.hosted.start()
 
                 intended(
                     allOf(
@@ -86,7 +86,7 @@ internal class PassageHostedTests {
         runTest {
             try {
                 val invalidAuthCode = "INVALID_AUTH_CODE"
-                passage.hosted.hostedAuthFinish(invalidAuthCode, "")
+                passage.hosted.finish(invalidAuthCode, "")
                 fail("Test should throw FinishOIDCAuthenticationInvalidRequestException")
             } catch (e: Exception) {
                 assertThat(e is HostedAuthorizationError)

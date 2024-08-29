@@ -19,7 +19,7 @@ class PassageSocial(
      * Authorizes user via a supported third-party social provider.
      * @param connection The Social connection to use for authorization
      */
-    fun authorizeWith(connection: SocialConnection) {
+    fun authorize(connection: SocialConnection) {
         SocialUtils.openChromeTab(
             connection,
             Passage.authOrigin,

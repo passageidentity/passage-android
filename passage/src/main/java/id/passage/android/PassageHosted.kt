@@ -15,7 +15,7 @@ class PassageHosted(
      * If your Passage app is Hosted, use this method to register and log in your user.
      * This method will open up a Passage login experience on a Chrome tab.
      */
-    fun hostedAuthStart() {
+    fun start() {
         HostedUtils.openChromeTab(
             activity,
         )
@@ -31,7 +31,7 @@ class PassageHosted(
      * @throws HostedAuthorizationError
      */
 
-    suspend fun hostedAuthFinish(
+    suspend fun finish(
         code: String,
         state: String,
     ): Pair<AuthResult, String> {
