@@ -51,9 +51,6 @@ jobs:
           adb shell pm clear id.passage.authentikit || true
           adb shell pm clear id.passage.authentikit.test || true
 
-      - name: Wipe Emulator Data
-        run: adb emu wipe data
-
       - name: Create Fresh AVD
         uses: reactivecircus/android-emulator-runner@v2
         with:
