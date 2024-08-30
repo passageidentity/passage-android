@@ -51,6 +51,9 @@ jobs:
           disable-animations: false
           arch: x86_64
           script: echo "Generated AVD snapshot for caching."
+      
+      - name: uninstall previous test apps
+        run: adb uninstall "id.passage.authentikit.test" && adb uninstall "id.passage.android.test" && ./gradlew clean
 
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
