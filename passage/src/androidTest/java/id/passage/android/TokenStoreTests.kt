@@ -12,12 +12,12 @@ import id.passage.android.exceptions.PassageTokenException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import id.passage.android.exceptions.UserInfoUnauthorizedException
 import id.passage.android.model.AuthResult
+import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
