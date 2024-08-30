@@ -54,6 +54,7 @@ class Passage(
         social = PassageSocial(passageClient, activity, tokenStore)
         magicLink = PassageMagicLink(passageClient, tokenStore)
         currentUser = PassageCurrentUser(tokenStore, activity)
+        var test = "test
     }
 
     public fun overrideBasePath(newPath: String) {
