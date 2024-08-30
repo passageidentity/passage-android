@@ -50,11 +50,15 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
-          force-avd-creation: false
+          force-avd-creation: true
+          wipe-data: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
           arch: x86_64
           script: echo "Generated AVD snapshot for caching."
+
+      - name: Wipe Emulator Data
+        run: adb -s emulator-5554 emu kill && adb -s emulator-5554 emu start -wipe-data
 
       - name: Run tests
         uses: reactivecircus/android-emulator-runner@v2
