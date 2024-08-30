@@ -41,10 +41,13 @@ jobs:
             ~/.android/adb*
           key: avd-${{ matrix.api-level }}
 
-      - name: Uninstall existing APKs
+      - name: Force Uninstall APKs and Clear Data
         run: |
           adb uninstall id.passage.authentikit || true
           adb uninstall id.passage.authentikit.test || true
+          adb shell pm clear id.passage.authentikit || true
+          adb shell pm clear id.passage.authentikit.test || true
+
 
       - name: create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
