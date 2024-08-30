@@ -64,7 +64,7 @@ internal class PassageSocialTests {
                 val expectedState = "state="
                 val expectedCodeChallenge = "code_challenge="
 
-                passage.social.authorizeWith(SocialConnection.github)
+                passage.social.authorize(SocialConnection.github)
 
                 intended(
                     allOf(

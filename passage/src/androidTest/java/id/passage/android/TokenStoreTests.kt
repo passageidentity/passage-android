@@ -8,8 +8,11 @@ import id.passage.android.IntegrationTestConfig.Companion.API_BASE_URL
 import id.passage.android.IntegrationTestConfig.Companion.APP_ID_OTP
 import id.passage.android.IntegrationTestConfig.Companion.EXISTING_USER_EMAIL_OTP
 import id.passage.android.IntegrationTestConfig.Companion.WAIT_TIME_MILLISECONDS
+import id.passage.android.exceptions.PassageTokenException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import id.passage.android.exceptions.UserInfoUnauthorizedException
+import id.passage.android.model.AuthResult
+import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -24,6 +27,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 internal class TokenStoreTests {
     private lateinit var passage: Passage
+    private var refreshToken = ""
 
     @Before
     fun setup(): Unit =
@@ -38,7 +42,8 @@ internal class TokenStoreTests {
             val otpId = passage.oneTimePasscode.login(EXISTING_USER_EMAIL_OTP).otpId
             delay(WAIT_TIME_MILLISECONDS)
             val otp = MailosaurAPIClient.getMostRecentOneTimePasscode()
-            passage.oneTimePasscode.activate(otp, otpId)
+            val authResult = passage.oneTimePasscode.activate(otp, otpId)
+            refreshToken = authResult.authToken
         }
 
     @After
@@ -109,6 +114,59 @@ internal class TokenStoreTests {
                 fail("Test should throw PassageUserUnauthorizedException")
             } catch (e: Exception) {
                 assertThat(e is PassageUserUnauthorizedException)
+            }
+        }
+
+    @Test
+    fun getValidAuthTokenWithValidToken() =
+        runTest {
+            val result = passage.tokenStore.getValidAuthToken()
+            assertNotNull(result)
+        }
+
+    @Test
+    fun getValidAuthTokenWithInvalidToken() =
+        runTest {
+            try {
+                passage.tokenStore.setTokens(AuthResult("invalid", ""))
+                passage.tokenStore.getValidAuthToken()
+                fail("Test should throw PassageTokenException")
+            } catch (e: Exception) {
+                assertThat(e is PassageTokenException)
+            }
+        }
+
+    @Test
+    fun isAuthTokenValidWithValidToken() {
+        val validToken = IntegrationTestConfig.AUTH_TOEKN
+        val result = passage.tokenStore.isAuthTokenValid(validToken)
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun isAuthTokenValidWithInvalidToken() {
+        val invalidToken = "invalidAuthToken"
+        val result = passage.tokenStore.isAuthTokenValid(invalidToken)
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun revokedWithValidToken() =
+        runTest {
+            val validRefreshToken = refreshToken
+            passage.tokenStore.revokeRefreshToken(validRefreshToken)
+            // should not throw any error
+        }
+
+    @Test
+    fun refreshWithInvalidToken(): Unit =
+        runBlocking {
+            try {
+                val invalidRefreshToken = "invalid"
+                val authResult = passage.tokenStore.refreshAuthToken(invalidRefreshToken)
+                fail("Test should throw PassageTokenException")
+            } catch (e: Exception) {
+                assertThat(e is PassageTokenException)
             }
         }
 }
