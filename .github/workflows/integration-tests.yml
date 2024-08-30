@@ -41,6 +41,9 @@ jobs:
             ~/.android/adb*
           key: avd-${{ matrix.api-level }}
 
+      - name: Clean Build Directory
+        run: ./gradlew clean
+
       - name: Force Uninstall APKs and Clear Data
         run: |
           adb uninstall id.passage.authentikit || true
@@ -48,17 +51,20 @@ jobs:
           adb shell pm clear id.passage.authentikit || true
           adb shell pm clear id.passage.authentikit.test || true
 
+      - name: Wipe Emulator Data
+        run: adb emu wipe data
 
-      - name: create AVD and generate snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true'
+      - name: Create Fresh AVD
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           force-avd-creation: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: false
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
           arch: x86_64
-          script: echo "Generated AVD snapshot for caching."
+
+      - name: Reboot Emulator
+        run: adb reboot
 
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
