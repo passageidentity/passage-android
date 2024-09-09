@@ -74,7 +74,7 @@ jobs:
              -d "${close_xml}"
         
         # Wait for repository to close
-        sleep 60
+        sleep 120
         
         promote_xml="
         <promoteRequest>
