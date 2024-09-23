@@ -494,6 +494,7 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * @param codeChallengeMethod Code challenge method.
      * @param connectionType connection type; google, github, apple, or passage to login with
      * @param state The state to pass through to the redirect URI. (optional)
+     * @param loginHint Hint to the Authorization Server about the login identifier the end-user might use to log in. (optional)
      * @return void
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -502,8 +503,8 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * @throws ServerException If the API returns a server error response
      */
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun getAuthorize(appId: kotlin.String, redirectUri: kotlin.String, codeChallenge: kotlin.String, codeChallengeMethod: kotlin.String, connectionType: ConnectionType_getAuthorize, state: kotlin.String? = null) : Unit = withContext(Dispatchers.IO) {
-        val localVarResponse = getAuthorizeWithHttpInfo(appId = appId, redirectUri = redirectUri, codeChallenge = codeChallenge, codeChallengeMethod = codeChallengeMethod, connectionType = connectionType, state = state)
+    suspend fun getAuthorize(appId: kotlin.String, redirectUri: kotlin.String, codeChallenge: kotlin.String, codeChallengeMethod: kotlin.String, connectionType: ConnectionType_getAuthorize, state: kotlin.String? = null, loginHint: kotlin.String? = null) : Unit = withContext(Dispatchers.IO) {
+        val localVarResponse = getAuthorizeWithHttpInfo(appId = appId, redirectUri = redirectUri, codeChallenge = codeChallenge, codeChallengeMethod = codeChallengeMethod, connectionType = connectionType, state = state, loginHint = loginHint)
 
         return@withContext when (localVarResponse.responseType) {
             ResponseType.Success -> Unit
@@ -529,13 +530,14 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * @param codeChallengeMethod Code challenge method.
      * @param connectionType connection type; google, github, apple, or passage to login with
      * @param state The state to pass through to the redirect URI. (optional)
+     * @param loginHint Hint to the Authorization Server about the login identifier the end-user might use to log in. (optional)
      * @return ApiResponse<Unit?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun getAuthorizeWithHttpInfo(appId: kotlin.String, redirectUri: kotlin.String, codeChallenge: kotlin.String, codeChallengeMethod: kotlin.String, connectionType: ConnectionType_getAuthorize, state: kotlin.String?) : ApiResponse<Unit?> = withContext(Dispatchers.IO) {
-        val localVariableConfig = getAuthorizeRequestConfig(appId = appId, redirectUri = redirectUri, codeChallenge = codeChallenge, codeChallengeMethod = codeChallengeMethod, connectionType = connectionType, state = state)
+    suspend fun getAuthorizeWithHttpInfo(appId: kotlin.String, redirectUri: kotlin.String, codeChallenge: kotlin.String, codeChallengeMethod: kotlin.String, connectionType: ConnectionType_getAuthorize, state: kotlin.String?, loginHint: kotlin.String?) : ApiResponse<Unit?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = getAuthorizeRequestConfig(appId = appId, redirectUri = redirectUri, codeChallenge = codeChallenge, codeChallengeMethod = codeChallengeMethod, connectionType = connectionType, state = state, loginHint = loginHint)
 
         return@withContext request<Unit, Unit>(
             localVariableConfig
@@ -551,15 +553,19 @@ class OAuth2API(basePath: kotlin.String = defaultBasePath, client: OkHttpClient 
      * @param codeChallengeMethod Code challenge method.
      * @param connectionType connection type; google, github, apple, or passage to login with
      * @param state The state to pass through to the redirect URI. (optional)
+     * @param loginHint Hint to the Authorization Server about the login identifier the end-user might use to log in. (optional)
      * @return RequestConfig
      */
-    fun getAuthorizeRequestConfig(appId: kotlin.String, redirectUri: kotlin.String, codeChallenge: kotlin.String, codeChallengeMethod: kotlin.String, connectionType: ConnectionType_getAuthorize, state: kotlin.String?) : RequestConfig<Unit> {
+    fun getAuthorizeRequestConfig(appId: kotlin.String, redirectUri: kotlin.String, codeChallenge: kotlin.String, codeChallengeMethod: kotlin.String, connectionType: ConnectionType_getAuthorize, state: kotlin.String?, loginHint: kotlin.String?) : RequestConfig<Unit> {
         val localVariableBody = null
         val localVariableQuery: MultiValueMap = mutableMapOf<kotlin.String, kotlin.collections.List<kotlin.String>>()
             .apply {
                 put("redirect_uri", listOf(redirectUri.toString()))
                 if (state != null) {
                     put("state", listOf(state.toString()))
+                }
+                if (loginHint != null) {
+                    put("login_hint", listOf(loginHint.toString()))
                 }
                 put("code_challenge", listOf(codeChallenge.toString()))
                 put("code_challenge_method", listOf(codeChallengeMethod.toString()))

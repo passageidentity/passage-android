@@ -268,7 +268,7 @@ No authorization required
 
 <a name="getAuthorize"></a>
 # **getAuthorize**
-> getAuthorize(appId, redirectUri, codeChallenge, codeChallengeMethod, connectionType, state)
+> getAuthorize(appId, redirectUri, codeChallenge, codeChallengeMethod, connectionType, state, loginHint)
 
 Kick off OAuth2 flow
 
@@ -287,8 +287,9 @@ val codeChallenge : kotlin.String = codeChallenge_example // kotlin.String | Cod
 val codeChallengeMethod : kotlin.String = codeChallengeMethod_example // kotlin.String | Code challenge method.
 val connectionType : kotlin.String = connectionType_example // kotlin.String | connection type; google, github, apple, or passage to login with
 val state : kotlin.String = state_example // kotlin.String | The state to pass through to the redirect URI.
+val loginHint : kotlin.String = loginHint_example // kotlin.String | Hint to the Authorization Server about the login identifier the end-user might use to log in.
 try {
-    apiInstance.getAuthorize(appId, redirectUri, codeChallenge, codeChallengeMethod, connectionType, state)
+    apiInstance.getAuthorize(appId, redirectUri, codeChallenge, codeChallengeMethod, connectionType, state, loginHint)
 } catch (e: ClientException) {
     println("4xx response calling OAuth2API#getAuthorize")
     e.printStackTrace()
@@ -308,6 +309,7 @@ Name | Type | Description  | Notes
  **codeChallengeMethod** | **kotlin.String**| Code challenge method. |
  **connectionType** | **kotlin.String**| connection type; google, github, apple, or passage to login with | [enum: apple, github, google, passage]
  **state** | **kotlin.String**| The state to pass through to the redirect URI. | [optional]
+ **loginHint** | **kotlin.String**| Hint to the Authorization Server about the login identifier the end-user might use to log in. | [optional]
 
 ### Return type
 

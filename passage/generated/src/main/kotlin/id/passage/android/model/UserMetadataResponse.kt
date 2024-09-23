@@ -29,7 +29,7 @@ import com.squareup.moshi.JsonClass
 data class UserMetadataResponse (
 
     @Json(name = "user_metadata")
-    val userMetadata: kotlin.Any
+    val userMetadata: kotlin.Any?
 
 )
 
