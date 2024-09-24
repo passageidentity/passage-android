@@ -33,7 +33,7 @@ class PassageMagicLink(
         identifier: String,
         language: String? = null,
     ): MagicLink {
-        val registerAPI = RegisterAPI(Passage.BASE_PATH, passageClient)
+        val registerAPI = RegisterAPI(PassageClientService.basePath, passageClient)
         val request =
             RegisterMagicLinkRequest(
                 identifier = identifier,
@@ -62,7 +62,7 @@ class PassageMagicLink(
         identifier: String,
         language: String? = null,
     ): MagicLink {
-        val loginAPI = LoginAPI(Passage.BASE_PATH, passageClient)
+        val loginAPI = LoginAPI(PassageClientService.basePath, passageClient)
         val request =
             LoginMagicLinkRequest(
                 identifier = identifier,
@@ -87,7 +87,7 @@ class PassageMagicLink(
      * @throws MagicLinkActivateException
      */
     suspend fun activate(magicLink: String): AuthResult {
-        val magicLinkAPI = MagicLinkAPI(Passage.BASE_PATH, passageClient)
+        val magicLinkAPI = MagicLinkAPI(PassageClientService.basePath, passageClient)
         val request = ActivateMagicLinkRequest(magicLink)
         val response =
             try {
@@ -111,7 +111,7 @@ class PassageMagicLink(
      * @throws GetMagicLinkStatusException
      */
     suspend fun status(id: String): AuthResult {
-        val magicLinkAPI = MagicLinkAPI(Passage.BASE_PATH, passageClient)
+        val magicLinkAPI = MagicLinkAPI(PassageClientService.basePath, passageClient)
         val request = GetMagicLinkStatusRequest(id)
         val response =
             try {

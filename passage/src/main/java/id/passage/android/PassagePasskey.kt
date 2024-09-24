@@ -34,7 +34,7 @@ class PassagePasskey(
         options: PasskeyCreationOptions? = null,
     ): AuthResult {
         try {
-            val registerAPI = RegisterAPI(Passage.BASE_PATH, passageClient)
+            val registerAPI = RegisterAPI(PassageClientService.basePath, passageClient)
             // Get Create Credential challenge from Passage
             val authenticatorAttachment =
                 options?.authenticatorAttachment
@@ -71,7 +71,7 @@ class PassagePasskey(
      */
     suspend fun login(identifier: String? = null): AuthResult {
         try {
-            val loginAPI = LoginAPI(Passage.BASE_PATH, passageClient)
+            val loginAPI = LoginAPI(PassageClientService.basePath, passageClient)
             // Get Credential challenge from Passage
             val webauthnStartRequest = LoginWebAuthnStartRequest(identifier)
             val webauthnStartResponse = loginAPI.loginWebauthnStart(Passage.appId, webauthnStartRequest)

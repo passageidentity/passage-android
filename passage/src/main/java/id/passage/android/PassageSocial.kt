@@ -24,7 +24,7 @@ class PassageSocial(
             connection,
             Passage.authOrigin,
             activity,
-            authUrl = "${Passage.BASE_PATH}/apps/${Passage.appId}/social/authorize",
+            authUrl = "${PassageClientService.basePath}/apps/${Passage.appId}/social/authorize",
         )
     }
 
@@ -37,7 +37,7 @@ class PassageSocial(
      * @throws FinishSocialAuthenticationException
      */
     suspend fun finish(code: String): AuthResult {
-        val oauthAPI = OAuth2API(Passage.BASE_PATH, passageClient)
+        val oauthAPI = OAuth2API(PassageClientService.basePath, passageClient)
         val authResult =
             try {
                 oauthAPI.exchangeSocialToken(Passage.appId, code, SocialUtils.verifier).authResult

@@ -31,7 +31,7 @@ class PassageOneTimePasscode(
         identifier: String,
         language: String? = null,
     ): OneTimePasscode {
-        val registerAPI = RegisterAPI(Passage.BASE_PATH, passageClient)
+        val registerAPI = RegisterAPI(PassageClientService.basePath, passageClient)
         val request = RegisterOneTimePasscodeRequest(identifier, language)
         val response =
             try {
@@ -56,7 +56,7 @@ class PassageOneTimePasscode(
         identifier: String,
         language: String? = null,
     ): OneTimePasscode {
-        val loginAPI = LoginAPI(Passage.BASE_PATH, passageClient)
+        val loginAPI = LoginAPI(PassageClientService.basePath, passageClient)
         val request = LoginOneTimePasscodeRequest(identifier, language)
         val response =
             try {
@@ -81,7 +81,7 @@ class PassageOneTimePasscode(
         otp: String,
         otpId: String,
     ): AuthResult {
-        val otpAPI = OTPAPI(Passage.BASE_PATH, passageClient)
+        val otpAPI = OTPAPI(PassageClientService.basePath, passageClient)
         val request = ActivateOneTimePasscodeRequest(otp, otpId)
         val response =
             try {

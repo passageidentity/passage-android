@@ -1,7 +1,7 @@
 package id.passage.android
 
+import PassageClientService
 import android.app.Activity
-import android.webkit.WebSettings
 import id.passage.android.utils.ResourceUtils.Companion.getRequiredResourceFromApp
 import okhttp3.OkHttpClient
 
@@ -23,7 +23,6 @@ class Passage(
     // region CONSTANTS AND SINGLETON VARIABLES
     internal companion object {
         internal const val TAG = "Passage"
-        internal var BASE_PATH = "https://auth.passage.id/v1"
         internal lateinit var appId: String
         internal lateinit var authOrigin: String
     }
@@ -32,19 +31,7 @@ class Passage(
 
     init {
         authOrigin = getRequiredResourceFromApp(activity, "passage_auth_origin")
-        val userAgent = WebSettings.getDefaultUserAgent(activity) ?: "Android"
-        passageClient =
-            OkHttpClient
-                .Builder()
-                .addNetworkInterceptor { chain ->
-                    chain.proceed(
-                        chain
-                            .request()
-                            .newBuilder()
-                            .header("User-Agent", userAgent)
-                            .build(),
-                    )
-                }.build()
+        passageClient = PassageClientService.setup(activity)
         Companion.appId = appId
         tokenStore = PassageTokenStore(activity)
         app = PassageApp(passageClient)
@@ -53,10 +40,7 @@ class Passage(
         hosted = PassageHosted(activity, tokenStore)
         social = PassageSocial(passageClient, activity, tokenStore)
         magicLink = PassageMagicLink(passageClient, tokenStore)
-        currentUser = PassageCurrentUser(tokenStore, activity)
+        currentUser = PassageCurrentUser(tokenStore, activity, passageClient)
     }
 
-    public fun overrideBasePath(newPath: String) {
-        BASE_PATH = newPath
-    }
 }

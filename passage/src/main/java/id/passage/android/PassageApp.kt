@@ -1,5 +1,6 @@
 package id.passage.android
 
+import PassageClientService
 import id.passage.android.api.AppsAPI
 import id.passage.android.api.UsersAPI
 import id.passage.android.exceptions.AppInfoException
@@ -21,7 +22,7 @@ class PassageApp(
      * @throws AppInfoException
      */
     suspend fun info(): PassageAppInfo {
-        val appsAPI = AppsAPI(Passage.BASE_PATH, passageClient)
+        val appsAPI = AppsAPI(PassageClientService.basePath, passageClient)
         return try {
             appsAPI.getApp(Passage.appId)
         } catch (e: Exception) {
@@ -39,7 +40,7 @@ class PassageApp(
      * @return PublicUserInfo?
      */
     suspend fun userExists(identifier: String): PublicUserInfo? {
-        val usersAPI = UsersAPI()
+        val usersAPI = UsersAPI(PassageClientService.basePath, passageClient)
         return try {
             usersAPI.checkUserIdentifier(Passage.appId, identifier).user
         } catch (e: Exception) {
@@ -61,7 +62,7 @@ class PassageApp(
         identifier: String,
         userMetadata: Any?,
     ): PublicUserInfo {
-        val usersAPI = UsersAPI()
+        val usersAPI = UsersAPI(PassageClientService.basePath, passageClient)
         return try {
             usersAPI.createUser(Passage.appId, CreateUserParams(identifier, userMetadata)).user ?: throw Exception("User is null")
         } catch (e: Exception) {

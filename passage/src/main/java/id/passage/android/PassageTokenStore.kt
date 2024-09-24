@@ -85,7 +85,7 @@ class PassageTokenStore(
      * @throws PassageTokenException
      */
     suspend fun refreshAuthToken(refreshToken: String): AuthResult {
-        val api = TokensAPI(Passage.BASE_PATH)
+        val api = TokensAPI(PassageClientService.basePath)
         val request = RefreshAuthTokenRequest(refreshToken)
         val apiAuthResult =
             try {
@@ -105,7 +105,7 @@ class PassageTokenStore(
      * @throws PassageTokenException
      */
     suspend fun revokeRefreshToken(refreshToken: String) {
-        val api = TokensAPI(Passage.BASE_PATH)
+        val api = TokensAPI(PassageClientService.basePath)
         try {
             api.revokeRefreshToken(Passage.appId, refreshToken)
         } catch (e: Exception) {
@@ -179,19 +179,6 @@ class PassageTokenStore(
         }
         setAuthToken(null)
         setRefreshToken(null)
-    }
-
-    internal suspend fun attemptRefreshTokenStore() {
-        refreshToken?.let {
-            try {
-                val authResult = refreshAuthToken(it)
-                setTokens(authResult)
-            } catch (e: Exception) {
-                Log.e(Passage.TAG, e.message ?: "Exception: $e")
-            }
-        } ?: run {
-            ApiClient.accessToken = authToken
-        }
     }
 }
 
