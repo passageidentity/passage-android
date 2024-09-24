@@ -72,7 +72,7 @@ class PassagePasskey(
     suspend fun login(identifier: String? = null): AuthResult {
         try {
             val loginAPI = LoginAPI(Passage.BASE_PATH, passageClient)
-            // Get Credential challenge from Passage
+            // Get Credential challenge from Passage.
             val webauthnStartRequest = LoginWebAuthnStartRequest(identifier)
             val webauthnStartResponse = loginAPI.loginWebauthnStart(Passage.appId, webauthnStartRequest)
             // Use Credential challenge to prompt user to login with a passkey
