@@ -14,6 +14,7 @@ import id.passage.android.exceptions.*
 import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_MISSING
 import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_PARSING_FAILED
 import id.passage.android.exceptions.CredentialParsingException.Companion.CREDENTIAL_PARSING_FAILED
+import id.passage.android.model.CredentialAssertionChallenge
 import id.passage.android.model.CredentialAssertionChallenge1
 import id.passage.android.model.CredentialAssertionResponse
 import id.passage.android.model.CredentialAssertionResponseJsonAdapter
@@ -23,6 +24,8 @@ import id.passage.android.model.CredentialCreationResponse
 import id.passage.android.model.CredentialCreationResponseJsonAdapter
 import id.passage.android.model.ProtocolCredentialAssertion1PublicKey
 import id.passage.android.model.ProtocolCredentialAssertion1PublicKeyJsonAdapter
+import id.passage.android.model.ProtocolCredentialAssertionPublicKey
+import id.passage.android.model.ProtocolCredentialAssertionPublicKeyJsonAdapter
 
 class PasskeyUtils {
     companion object {
@@ -113,15 +116,15 @@ class PasskeyUtils {
          * @return String
          * @throws CredentialParsingException
          */
-        internal fun getCredentialOptionsJson(challenge: CredentialAssertionChallenge1): String {
+        internal fun getCredentialOptionsJson(challenge: CredentialAssertionChallenge): String {
             val credOptions = challenge.challenge.publicKey
             val moshi = Moshi.Builder().build()
-            val credOptionsAdapter = ProtocolCredentialAssertion1PublicKeyJsonAdapter(moshi)
+            val credOptionsAdapter = ProtocolCredentialAssertionPublicKeyJsonAdapter(moshi)
             // Passage API bug: Login API frequently returns challenge with non-url-safe characters
             // "+" and "/" that cause "Bad Base 64" exception to be thrown by the credential manager.
             val modifiedChallenge = credOptions.challenge.replace('+', '-').replace('/', '_')
             val modifiedCredOptions =
-                ProtocolCredentialAssertion1PublicKey(
+                ProtocolCredentialAssertionPublicKey(
                     allowCredentials = credOptions.allowCredentials,
                     challenge = modifiedChallenge,
                     extensions = credOptions.extensions,
