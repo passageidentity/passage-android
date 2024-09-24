@@ -27,10 +27,11 @@ docs/AuthenticateWebAuthnFinishWithTransactionRequest.md
 docs/AuthenticateWebAuthnStartWithTransactionRequest.md
 docs/AuthenticateWebAuthnStartWithTransactionResponse.md
 docs/AuthenticatorAttachment.md
+docs/CreatePasskeyReadinessRequest.md
 docs/CreateUserParams.md
+docs/CreateUserResponse.md
 docs/Credential.md
 docs/CredentialAssertionChallenge.md
-docs/CredentialAssertionChallenge1.md
 docs/CredentialAssertionResponse.md
 docs/CredentialAssertionResponseResponse.md
 docs/CredentialCreation.md
@@ -79,10 +80,8 @@ docs/OneTimePasscodeResponse.md
 docs/OpenIDAPI.md
 docs/OpenIdConfiguration.md
 docs/OtpAuthMethod.md
+docs/PasskeyReadinessAPI.md
 docs/ProtocolCredentialAssertion.md
-docs/ProtocolCredentialAssertion1.md
-docs/ProtocolCredentialAssertion1PublicKey.md
-docs/ProtocolCredentialAssertion1PublicKeyAllowCredentialsInner.md
 docs/ProtocolCredentialAssertionPublicKey.md
 docs/ProtocolCredentialAssertionPublicKeyAllowCredentialsInner.md
 docs/RefreshAuthTokenRequest.md
@@ -127,6 +126,7 @@ src/main/kotlin/id/passage/android/api/MagicLinkAPI.kt
 src/main/kotlin/id/passage/android/api/OAuth2API.kt
 src/main/kotlin/id/passage/android/api/OTPAPI.kt
 src/main/kotlin/id/passage/android/api/OpenIDAPI.kt
+src/main/kotlin/id/passage/android/api/PasskeyReadinessAPI.kt
 src/main/kotlin/id/passage/android/api/RegisterAPI.kt
 src/main/kotlin/id/passage/android/api/TokensAPI.kt
 src/main/kotlin/id/passage/android/api/UsersAPI.kt
@@ -143,10 +143,11 @@ src/main/kotlin/id/passage/android/model/AuthenticateWebAuthnFinishWithTransacti
 src/main/kotlin/id/passage/android/model/AuthenticateWebAuthnStartWithTransactionRequest.kt
 src/main/kotlin/id/passage/android/model/AuthenticateWebAuthnStartWithTransactionResponse.kt
 src/main/kotlin/id/passage/android/model/AuthenticatorAttachment.kt
+src/main/kotlin/id/passage/android/model/CreatePasskeyReadinessRequest.kt
 src/main/kotlin/id/passage/android/model/CreateUserParams.kt
+src/main/kotlin/id/passage/android/model/CreateUserResponse.kt
 src/main/kotlin/id/passage/android/model/Credential.kt
 src/main/kotlin/id/passage/android/model/CredentialAssertionChallenge.kt
-src/main/kotlin/id/passage/android/model/CredentialAssertionChallenge1.kt
 src/main/kotlin/id/passage/android/model/CredentialAssertionResponse.kt
 src/main/kotlin/id/passage/android/model/CredentialAssertionResponseResponse.kt
 src/main/kotlin/id/passage/android/model/CredentialCreation.kt
@@ -201,9 +202,6 @@ src/main/kotlin/id/passage/android/model/OneTimePasscodeResponse.kt
 src/main/kotlin/id/passage/android/model/OpenIdConfiguration.kt
 src/main/kotlin/id/passage/android/model/OtpAuthMethod.kt
 src/main/kotlin/id/passage/android/model/ProtocolCredentialAssertion.kt
-src/main/kotlin/id/passage/android/model/ProtocolCredentialAssertion1.kt
-src/main/kotlin/id/passage/android/model/ProtocolCredentialAssertion1PublicKey.kt
-src/main/kotlin/id/passage/android/model/ProtocolCredentialAssertion1PublicKeyAllowCredentialsInner.kt
 src/main/kotlin/id/passage/android/model/ProtocolCredentialAssertionPublicKey.kt
 src/main/kotlin/id/passage/android/model/ProtocolCredentialAssertionPublicKeyAllowCredentialsInner.kt
 src/main/kotlin/id/passage/android/model/RefreshAuthTokenRequest.kt

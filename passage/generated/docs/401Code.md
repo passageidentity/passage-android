@@ -12,6 +12,8 @@
 
     * `invalidAccessToken` (value: `"invalid_access_token"`)
 
+    * `invalidRefreshToken` (value: `"invalid_refresh_token"`)
+
     * `exceededAttempts` (value: `"exceeded_attempts"`)
 
 

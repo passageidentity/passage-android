@@ -20,6 +20,7 @@ import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
 import id.passage.android.model.CreateUserParams
+import id.passage.android.model.CreateUserResponse
 import id.passage.android.model.Model400Error
 import id.passage.android.model.Model404Error
 import id.passage.android.model.Model500Error
@@ -133,7 +134,7 @@ class UsersAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * Create a user
      * @param appId App ID
      * @param createUserParams user options
-     * @return UserResponse
+     * @return CreateUserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -142,11 +143,11 @@ class UsersAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun createUser(appId: kotlin.String, createUserParams: CreateUserParams) : UserResponse = withContext(Dispatchers.IO) {
+    suspend fun createUser(appId: kotlin.String, createUserParams: CreateUserParams) : CreateUserResponse = withContext(Dispatchers.IO) {
         val localVarResponse = createUserWithHttpInfo(appId = appId, createUserParams = createUserParams)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as UserResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as CreateUserResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -165,16 +166,16 @@ class UsersAPI(basePath: kotlin.String = defaultBasePath, client: OkHttpClient =
      * Create a user
      * @param appId App ID
      * @param createUserParams user options
-     * @return ApiResponse<UserResponse?>
+     * @return ApiResponse<CreateUserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun createUserWithHttpInfo(appId: kotlin.String, createUserParams: CreateUserParams) : ApiResponse<UserResponse?> = withContext(Dispatchers.IO) {
+    suspend fun createUserWithHttpInfo(appId: kotlin.String, createUserParams: CreateUserParams) : ApiResponse<CreateUserResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = createUserRequestConfig(appId = appId, createUserParams = createUserParams)
 
-        return@withContext request<CreateUserParams, UserResponse>(
+        return@withContext request<CreateUserParams, CreateUserResponse>(
             localVariableConfig
         )
     }

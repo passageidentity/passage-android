@@ -77,6 +77,7 @@ Class | Method | HTTP request | Description
 *OAuth2API* | [**oauth2CallbackDefaultDev**](docs/OAuth2API.md#oauth2callbackdefaultdev) | **GET** /social/oauth2_callback | Handle OAuth2 callback for the default developer credentials
 *OTPAPI* | [**activateOneTimePasscode**](docs/OTPAPI.md#activateonetimepasscode) | **POST** /apps/{app_id}/otp/activate | Authenticate OTP
 *OpenIDAPI* | [**getOpenIdConfiguration**](docs/OpenIDAPI.md#getopenidconfiguration) | **GET** /apps/{app_id}/.well-known/openid-configuration | Get OpenID Configuration
+*PasskeyReadinessAPI* | [**createPasskeyReadiness**](docs/PasskeyReadinessAPI.md#createpasskeyreadiness) | **POST** /analytics/passkey-readiness | Create Passkey Readiness Analytics
 *RegisterAPI* | [**registerMagicLink**](docs/RegisterAPI.md#registermagiclink) | **POST** /apps/{app_id}/register/magic-link | Register with Magic Link
 *RegisterAPI* | [**registerOneTimePasscode**](docs/RegisterAPI.md#registeronetimepasscode) | **POST** /apps/{app_id}/register/otp | Register with OTP
 *RegisterAPI* | [**registerWebauthnFinish**](docs/RegisterAPI.md#registerwebauthnfinish) | **POST** /apps/{app_id}/register/webauthn/finish | Finish WebAuthn Registration
@@ -105,10 +106,11 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.AuthenticateWebAuthnStartWithTransactionRequest](docs/AuthenticateWebAuthnStartWithTransactionRequest.md)
  - [id.passage.android.model.AuthenticateWebAuthnStartWithTransactionResponse](docs/AuthenticateWebAuthnStartWithTransactionResponse.md)
  - [id.passage.android.model.AuthenticatorAttachment](docs/AuthenticatorAttachment.md)
+ - [id.passage.android.model.CreatePasskeyReadinessRequest](docs/CreatePasskeyReadinessRequest.md)
  - [id.passage.android.model.CreateUserParams](docs/CreateUserParams.md)
+ - [id.passage.android.model.CreateUserResponse](docs/CreateUserResponse.md)
  - [id.passage.android.model.Credential](docs/Credential.md)
  - [id.passage.android.model.CredentialAssertionChallenge](docs/CredentialAssertionChallenge.md)
- - [id.passage.android.model.CredentialAssertionChallenge1](docs/CredentialAssertionChallenge1.md)
  - [id.passage.android.model.CredentialAssertionResponse](docs/CredentialAssertionResponse.md)
  - [id.passage.android.model.CredentialAssertionResponseResponse](docs/CredentialAssertionResponseResponse.md)
  - [id.passage.android.model.CredentialCreation](docs/CredentialCreation.md)
@@ -163,9 +165,6 @@ Class | Method | HTTP request | Description
  - [id.passage.android.model.OpenIdConfiguration](docs/OpenIdConfiguration.md)
  - [id.passage.android.model.OtpAuthMethod](docs/OtpAuthMethod.md)
  - [id.passage.android.model.ProtocolCredentialAssertion](docs/ProtocolCredentialAssertion.md)
- - [id.passage.android.model.ProtocolCredentialAssertion1](docs/ProtocolCredentialAssertion1.md)
- - [id.passage.android.model.ProtocolCredentialAssertion1PublicKey](docs/ProtocolCredentialAssertion1PublicKey.md)
- - [id.passage.android.model.ProtocolCredentialAssertion1PublicKeyAllowCredentialsInner](docs/ProtocolCredentialAssertion1PublicKeyAllowCredentialsInner.md)
  - [id.passage.android.model.ProtocolCredentialAssertionPublicKey](docs/ProtocolCredentialAssertionPublicKey.md)
  - [id.passage.android.model.ProtocolCredentialAssertionPublicKeyAllowCredentialsInner](docs/ProtocolCredentialAssertionPublicKeyAllowCredentialsInner.md)
  - [id.passage.android.model.RefreshAuthTokenRequest](docs/RefreshAuthTokenRequest.md)
@@ -197,6 +196,13 @@ Class | Method | HTTP request | Description
 
 <a name="documentation-for-authorization"></a>
 ## Documentation for Authorization
+
+<a name="ApiKeyAuth"></a>
+### ApiKeyAuth
+
+- **Type**: API key
+- **API key parameter name**: X-API-KEY
+- **Location**: HTTP header
 
 <a name="bearerAuth"></a>
 ### bearerAuth

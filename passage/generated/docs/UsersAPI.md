@@ -59,7 +59,7 @@ No authorization required
 
 <a name="createUser"></a>
 # **createUser**
-> UserResponse createUser(appId, createUserParams)
+> CreateUserResponse createUser(appId, createUserParams)
 
 Create User
 
@@ -75,7 +75,7 @@ val apiInstance = UsersAPI()
 val appId : kotlin.String = appId_example // kotlin.String | App ID
 val createUserParams : CreateUserParams =  // CreateUserParams | user options
 try {
-    val result : UserResponse = apiInstance.createUser(appId, createUserParams)
+    val result : CreateUserResponse = apiInstance.createUser(appId, createUserParams)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling UsersAPI#createUser")
@@ -95,7 +95,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**UserResponse**](UserResponse.md)
+[**CreateUserResponse**](CreateUserResponse.md)
 
 ### Authorization
 

@@ -23,8 +23,8 @@ import com.squareup.moshi.JsonClass
  * 
  *
  * @param id CredentialID The ID of a credential to allow/disallow.
- * @param transports The authenticator transports that can be used.
  * @param type The valid credential types.
+ * @param transports The authenticator transports that can be used.
  */
 @JsonClass(generateAdapter = true)
 
@@ -34,13 +34,13 @@ data class ProtocolCredentialAssertionPublicKeyAllowCredentialsInner (
     @Json(name = "id")
     val id: kotlin.String,
 
-    /* The authenticator transports that can be used. */
-    @Json(name = "transports")
-    val transports: kotlin.collections.List<kotlin.String>,
-
     /* The valid credential types. */
     @Json(name = "type")
-    val type: kotlin.String
+    val type: kotlin.String,
+
+    /* The authenticator transports that can be used. */
+    @Json(name = "transports")
+    val transports: kotlin.collections.List<kotlin.String>? = null
 
 )
 
