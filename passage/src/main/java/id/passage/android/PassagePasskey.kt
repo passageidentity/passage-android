@@ -35,7 +35,7 @@ class PassagePasskey(
     ): AuthResult {
         try {
             val registerAPI = RegisterAPI(Passage.BASE_PATH, passageClient)
-            // Get Create Credential challenge from Passage.
+            // Get Create Credential challenge from Passage
             val authenticatorAttachment =
                 options?.authenticatorAttachment
                     ?: AuthenticatorAttachment.platform
