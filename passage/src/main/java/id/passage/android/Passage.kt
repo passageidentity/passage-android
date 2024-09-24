@@ -42,5 +42,4 @@ class Passage(
         magicLink = PassageMagicLink(passageClient, tokenStore)
         currentUser = PassageCurrentUser(tokenStore, activity, passageClient)
     }
-
 }

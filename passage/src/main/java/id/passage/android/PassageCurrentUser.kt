@@ -28,7 +28,7 @@ import okhttp3.OkHttpClient
 class PassageCurrentUser(
     private val tokenStore: PassageTokenStore,
     private val activity: Activity,
-    private val passageClient: OkHttpClient
+    private val passageClient: OkHttpClient,
 ) {
     /**
      * Get Current User

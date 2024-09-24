@@ -1,9 +1,8 @@
 import android.app.Activity
-import okhttp3.OkHttpClient
 import id.passage.android.utils.ResourceUtils
+import okhttp3.OkHttpClient
 
 internal object PassageClientService {
-
     private const val PACKAGE_VERSION_NUMBER = "2.0.0"
     private const val DEFAULT_BASE_PATH = "https://auth.passage.id/v1"
     lateinit var basePath: String
@@ -12,18 +11,20 @@ internal object PassageClientService {
         basePath = ResourceUtils.getOptionalResourceFromApp(activity, "clientApiBasePath") ?: DEFAULT_BASE_PATH
         val userAgent = getUserAgentInfo()
 
-        return OkHttpClient.Builder()
+        return OkHttpClient
+            .Builder()
             .addNetworkInterceptor { chain ->
                 val originalRequest = chain.request()
-                val requestBuilder = originalRequest.newBuilder()
-                    .header("User-Agent", userAgent)
-                    .header("Passage-Version", "kotlin $PACKAGE_VERSION_NUMBER")
-                    .header("Base-Path", basePath)
+                val requestBuilder =
+                    originalRequest
+                        .newBuilder()
+                        .header("User-Agent", userAgent)
+                        .header("Passage-Version", "kotlin $PACKAGE_VERSION_NUMBER")
+                        .header("Base-Path", basePath)
 
                 val modifiedRequest = requestBuilder.build()
                 chain.proceed(modifiedRequest)
-            }
-            .build()
+            }.build()
     }
 
     private fun getUserAgentInfo(): String {

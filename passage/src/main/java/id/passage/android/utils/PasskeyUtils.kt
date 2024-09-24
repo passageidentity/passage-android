@@ -15,15 +15,12 @@ import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLE
 import id.passage.android.exceptions.CredentialParsingException.Companion.CHALLENGE_PARSING_FAILED
 import id.passage.android.exceptions.CredentialParsingException.Companion.CREDENTIAL_PARSING_FAILED
 import id.passage.android.model.CredentialAssertionChallenge
-import id.passage.android.model.CredentialAssertionChallenge1
 import id.passage.android.model.CredentialAssertionResponse
 import id.passage.android.model.CredentialAssertionResponseJsonAdapter
 import id.passage.android.model.CredentialCreationChallenge
 import id.passage.android.model.CredentialCreationPublicKeyJsonAdapter
 import id.passage.android.model.CredentialCreationResponse
 import id.passage.android.model.CredentialCreationResponseJsonAdapter
-import id.passage.android.model.ProtocolCredentialAssertion1PublicKey
-import id.passage.android.model.ProtocolCredentialAssertion1PublicKeyJsonAdapter
 import id.passage.android.model.ProtocolCredentialAssertionPublicKey
 import id.passage.android.model.ProtocolCredentialAssertionPublicKeyJsonAdapter
 

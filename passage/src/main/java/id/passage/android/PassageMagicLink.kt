@@ -37,7 +37,7 @@ class PassageMagicLink(
         val request =
             RegisterMagicLinkRequest(
                 identifier = identifier,
-                language = language
+                language = language,
             )
         val magicLink =
             try {
@@ -66,7 +66,7 @@ class PassageMagicLink(
         val request =
             LoginMagicLinkRequest(
                 identifier = identifier,
-                language = language
+                language = language,
             )
         val response =
             try {
