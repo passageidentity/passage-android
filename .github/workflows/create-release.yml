@@ -134,26 +134,32 @@ jobs:
           sed -i "s/versionCode .*/versionCode $new_version_code/" passage/build.gradle
           echo "Updated to patch version $new_version with version code $new_version_code"
 
-      - name: Update version in README - major release
+      - name: Update version in README and PassageClientService - major release
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-major }}
           sed -i "s/implementation 'id\.passage\.android:passage:[0-9]*\.[0-9]*\.[0-9]*'/implementation 'id.passage.android:passage:$new_version'/" README.md
           echo "Updated README to version $new_version"
+          sed -i "s/private const val PACKAGE_VERSION_NUMBER = \"[0-9]*\.[0-9]*\.[0-9]*\"/private const val PACKAGE_VERSION_NUMBER = \"$new_version\"/" passage/src/main/java/id/passage/android/services/PassageClientService.kt
+          echo "Updated PassageClientService to version $new_version"
 
-      - name: Update version in README - minor release
+      - name: Update version in README and PassageClientService - minor release
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-minor }}
           sed -i "s/implementation 'id\.passage\.android:passage:[0-9]*\.[0-9]*\.[0-9]*'/implementation 'id.passage.android:passage:$new_version'/" README.md
           echo "Updated README to version $new_version"
+          sed -i "s/private const val PACKAGE_VERSION_NUMBER = \"[0-9]*\.[0-9]*\.[0-9]*\"/private const val PACKAGE_VERSION_NUMBER = \"$new_version\"/" passage/src/main/java/id/passage/android/services/PassageClientService.kt
+          echo "Updated PassageClientService to version $new_version"
 
-      - name: Update version in README - patch release
+      - name: Update version in README and PassageClientService - patch release
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-patch }}
           sed -i "s/implementation 'id\.passage\.android:passage:[0-9]*\.[0-9]*\.[0-9]*'/implementation 'id.passage.android:passage:$new_version'/" README.md
           echo "Updated README to version $new_version"
+          sed -i "s/private const val PACKAGE_VERSION_NUMBER = \"[0-9]*\.[0-9]*\.[0-9]*\"/private const val PACKAGE_VERSION_NUMBER = \"$new_version\"/" passage/src/main/java/id/passage/android/services/PassageClientService.kt
+          echo "Updated PassageClientService to version $new_version"     
 
       - name: Commit major version change
         uses: stefanzweifel/git-auto-commit-action@v4

@@ -16,9 +16,9 @@ internal class IntegrationTestConfig {
         const val AUTH_TOEKN = BuildConfig.OTP_TEST_USER_AUTH_TOKEN
         val CURRENT_USER =
             PublicUserInfo(
-                email = "authentigator+1724103897318@ncor7c1m.mailosaur.net",
+                email = "authentigator+1727293832645@ncor7c1m.mailosaur.net",
                 emailVerified = true,
-                id = "vIfrBSgiQ8Ql6lEdzHyV3biS",
+                id = "ZN2JTd6NqbTAvN45SbjUzqVn",
                 phone = "",
                 phoneVerified = false,
                 status = UserStatus.active,

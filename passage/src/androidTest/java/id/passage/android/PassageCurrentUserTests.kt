@@ -26,7 +26,6 @@ internal class PassageCurrentUserTests {
         activityRule?.scenario?.onActivity { activity ->
             activity?.let {
                 passage = Passage(it, IntegrationTestConfig.APP_ID_OTP)
-                passage.overrideBasePath(IntegrationTestConfig.API_BASE_URL)
             }
         }
     }

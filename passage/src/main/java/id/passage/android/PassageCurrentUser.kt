@@ -23,10 +23,12 @@ import id.passage.android.utils.Passkey
 import id.passage.android.utils.PasskeyCreationOptions
 import id.passage.android.utils.PasskeyUtils
 import id.passage.android.utils.SocialConnection
+import okhttp3.OkHttpClient
 
 class PassageCurrentUser(
     private val tokenStore: PassageTokenStore,
     private val activity: Activity,
+    private val passageClient: OkHttpClient,
 ) {
     /**
      * Get Current User
@@ -38,7 +40,7 @@ class PassageCurrentUser(
      * @throws PassageUserException
      */
     suspend fun userInfo(): CurrentUserInfo {
-        val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
+        val currentUserAPI = CurrentuserAPI(PassageClientService.basePath, passageClient)
         try {
             return currentUserAPI.getCurrentuser(Passage.appId).user
         } catch (e: Exception) {
@@ -59,7 +61,7 @@ class PassageCurrentUser(
         newEmail: String,
         language: String? = null,
     ): MagicLink {
-        val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
+        val currentUserAPI = CurrentuserAPI(PassageClientService.basePath, passageClient)
         val request = UpdateUserEmailRequest(newEmail, language, null, null)
         val response =
             try {
@@ -83,7 +85,7 @@ class PassageCurrentUser(
         newPhone: String,
         language: String? = null,
     ): MagicLink {
-        val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
+        val currentUserAPI = CurrentuserAPI(PassageClientService.basePath, passageClient)
         val request = UpdateUserPhoneRequest(language, null, newPhone, null)
         val response =
             try {
@@ -102,7 +104,7 @@ class PassageCurrentUser(
      * @throws PassageUserException
      */
     suspend fun passkeys(): List<Passkey> {
-        val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
+        val currentUserAPI = CurrentuserAPI(PassageClientService.basePath, passageClient)
         return try {
             currentUserAPI.getCurrentuserDevices(Passage.appId).devices
         } catch (e: Exception) {
@@ -121,7 +123,7 @@ class PassageCurrentUser(
      */
     suspend fun addPasskey(options: PasskeyCreationOptions? = null): Passkey {
         try {
-            val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
+            val currentUserAPI = CurrentuserAPI(PassageClientService.basePath, passageClient)
             // Get Create Credential challenge from Passage
             val authenticatorAttachment =
                 options?.authenticatorAttachment
@@ -154,7 +156,7 @@ class PassageCurrentUser(
      * @throws PassageUserException
      */
     suspend fun deletePasskey(passkeyId: String) {
-        val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
+        val currentUserAPI = CurrentuserAPI(PassageClientService.basePath, passageClient)
         try {
             currentUserAPI.deleteCurrentuserDevice(Passage.appId, passkeyId)
         } catch (e: Exception) {
@@ -176,7 +178,7 @@ class PassageCurrentUser(
         passkeyId: String,
         friendlyName: String,
     ): Passkey {
-        val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
+        val currentUserAPI = CurrentuserAPI(PassageClientService.basePath, passageClient)
         val request = UpdateDeviceRequest(friendlyName = friendlyName)
         return try {
             currentUserAPI.updateCurrentuserDevice(Passage.appId, passkeyId, request).device
@@ -193,7 +195,7 @@ class PassageCurrentUser(
      * @throws PassageUserException If an error occurs during the retrieval process
      */
     suspend fun socialConnections(): UserSocialConnections {
-        val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
+        val currentUserAPI = CurrentuserAPI(PassageClientService.basePath)
         try {
             return currentUserAPI.getCurrentuserSocialConnections(Passage.appId).socialConnections
         } catch (e: Exception) {
@@ -209,7 +211,7 @@ class PassageCurrentUser(
      * @throws PassageUserException If an error occurs during the deletion process
      */
     suspend fun deleteSocialConnection(socialConnectionType: SocialConnection) {
-        val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
+        val currentUserAPI = CurrentuserAPI(PassageClientService.basePath, passageClient)
         try {
             return currentUserAPI.deleteCurrentuserSocialConnection(Passage.appId, socialConnectionType)
         } catch (e: Exception) {
@@ -225,7 +227,7 @@ class PassageCurrentUser(
      * @return Metadata? containing the current user's metadata, null if retrieval fails
      */
     suspend fun metadata(): Metadata? {
-        val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
+        val currentUserAPI = CurrentuserAPI(PassageClientService.basePath, passageClient)
         return try {
             currentUserAPI.getCurrentuserMetadata(Passage.appId)
         } catch (e: Exception) {
@@ -242,7 +244,7 @@ class PassageCurrentUser(
      * @return CurrentUserInfo? containing the updated user information, null if the update fails
      */
     suspend fun updateMetadata(metadata: Metadata): CurrentUserInfo? {
-        val currentUserAPI = CurrentuserAPI(Passage.BASE_PATH)
+        val currentUserAPI = CurrentuserAPI(PassageClientService.basePath, passageClient)
         val request = UpdateMetadataRequest(userMetadata = metadata.userMetadata)
         return try {
             currentUserAPI.updateCurrentuserMetadata(Passage.appId, request).user
