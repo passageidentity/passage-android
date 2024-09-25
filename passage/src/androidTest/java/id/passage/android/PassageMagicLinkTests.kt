@@ -4,7 +4,6 @@ import MailosaurAPIClient
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import id.passage.android.IntegrationTestConfig.Companion.API_BASE_URL
 import id.passage.android.IntegrationTestConfig.Companion.APP_ID_MAGIC_LINK
 import id.passage.android.IntegrationTestConfig.Companion.DEACTIVATED_USER_EMAIL_MAGIC_LINK
 import id.passage.android.IntegrationTestConfig.Companion.EXISTING_USER_EMAIL_MAGIC_LINK
@@ -31,7 +30,6 @@ internal class PassageMagicLinkTests {
         activityRule?.scenario?.onActivity { activity ->
             activity?.let {
                 passage = Passage(it, APP_ID_MAGIC_LINK)
-                passage.overrideBasePath(API_BASE_URL)
             }
         }
     }

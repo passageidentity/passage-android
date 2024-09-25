@@ -12,7 +12,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.google.common.truth.Truth.assertThat
-import id.passage.android.IntegrationTestConfig.Companion.API_BASE_URL
 import id.passage.android.IntegrationTestConfig.Companion.APP_ID_OIDC
 import id.passage.android.exceptions.HostedAuthorizationError
 import junit.framework.TestCase.fail
@@ -35,7 +34,6 @@ internal class PassageHostedTests {
         activityRule?.scenario?.onActivity { activity ->
             activity?.let {
                 passage = Passage(it, APP_ID_OIDC)
-                passage.overrideBasePath(API_BASE_URL)
             }
         }
     }

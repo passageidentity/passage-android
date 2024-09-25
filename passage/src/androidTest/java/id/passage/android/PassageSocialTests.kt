@@ -36,7 +36,6 @@ internal class PassageSocialTests {
         activityRule?.scenario?.onActivity { activity ->
             activity?.let {
                 passage = Passage(it, APP_ID_OTP)
-                passage.overrideBasePath(API_BASE_URL)
             }
         }
     }
