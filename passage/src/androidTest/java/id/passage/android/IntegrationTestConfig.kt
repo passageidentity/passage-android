@@ -24,7 +24,7 @@ internal class IntegrationTestConfig {
                 status = UserStatus.active,
                 userMetadata = null,
                 webauthn = false,
-                webauthnTypes = emptyList()
+                webauthnTypes = emptyList(),
             )
     }
 }
