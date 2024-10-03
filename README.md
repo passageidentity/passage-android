@@ -55,4 +55,4 @@ authentikit.passkey.evaluateReadiness()
 -->
 
 ## Documentation
-To get started using Passage in your Android app, please visit our [Passage Docs](https://docs.passage.id/mobile/android/).
+To get started using Passage in your Android app, please visit our [Passage Docs](https://docs.passage.id/complete/android/add-passage).
