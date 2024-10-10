@@ -17,6 +17,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -163,6 +164,20 @@ internal class TokenStoreTests {
                 val invalidRefreshToken = "invalid"
                 val authResult = passage.tokenStore.refreshAuthToken(invalidRefreshToken)
                 fail("Test should throw PassageTokenException")
+            } catch (e: Exception) {
+                assertThat(e is PassageTokenException)
+            }
+        }
+
+    @Test
+    fun refreshWithValidToken(): Unit =
+        runBlocking {
+            try {
+                val currentRefreshToken = refreshToken
+                val authResult = passage.tokenStore.refreshAuthToken(currentRefreshToken)
+                val newStoredRefreshToken = passage.tokenStore.refreshToken
+                assertNotNull(authResult)
+                assertNotSame(currentRefreshToken, newStoredRefreshToken)
             } catch (e: Exception) {
                 assertThat(e is PassageTokenException)
             }
