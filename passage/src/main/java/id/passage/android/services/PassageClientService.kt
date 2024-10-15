@@ -3,7 +3,7 @@ import id.passage.android.utils.ResourceUtils
 import okhttp3.OkHttpClient
 
 internal object PassageClientService {
-    private const val PACKAGE_VERSION_NUMBER = "2.0.1"
+    private const val PACKAGE_VERSION_NUMBER = "2.0.2"
     private const val DEFAULT_BASE_PATH = "https://auth.passage.id/v1"
     lateinit var basePath: String
 
