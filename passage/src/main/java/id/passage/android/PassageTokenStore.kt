@@ -93,6 +93,7 @@ class PassageTokenStore(
             } catch (e: Exception) {
                 throw PassageTokenException.convert(e)
             }
+        setTokens(apiAuthResult)
         return apiAuthResult
     }
 
