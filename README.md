@@ -1,6 +1,6 @@
 ![passage-android](https://storage.googleapis.com/passage-docs/github-md-assets/passage-android.png)
 
-[![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white)](#) [![Kotlin](https://img.shields.io/badge/Kotlin-%237F52FF.svg?logo=kotlin&logoColor=white)](#) ![GitHub License](https://img.shields.io/github/license/passageidentity/passage-node)
+[![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white)](#) [![Kotlin](https://img.shields.io/badge/Kotlin-%237F52FF.svg?logo=kotlin&logoColor=white)](#) ![GitHub License](https://img.shields.io/github/license/passageidentity/passage-android)
 ![Static Badge](https://img.shields.io/badge/Built_by_1Password-grey?logo=1password)
 
 ## About
@@ -15,7 +15,7 @@ Use [Passkey Ready](https://docs.passage.id/passkey-ready) to determine if your 
 
 ### In passage-android
 
-Use passage-android to implement Passkey Complete into your Node.js backend to authenticate requests and manage users.
+Use passage-android to implement Passkey Complete into your Android application to authenticate requests and manage users.
 
 | Product                                                                                                                                  | Compatible |
 | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
