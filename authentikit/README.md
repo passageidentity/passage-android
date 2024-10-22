@@ -13,69 +13,17 @@ Use [Passkey Complete](https://docs.passage.id/complete) as a standalone passwor
 
 Use [Passkey Ready](https://docs.passage.id/passkey-ready) to determine if your users are ready for passkeys.
 
-### In passage-android
+### In passage-android/authentikit
 
-Use passage-android to implement [passage-android/passage](https://github.com/passageidentity/passage-android/passage) in your Android application to authenticate requests and manage users, [passage-android/passageflex](https://github.com/passageidentity/passage-android/passageflex) in your existing auth to use passkeys for registration, authentication, or added security on sensitive user actions, and [passage-android/authentikit](https://github.com/passageidentity/passage-android/authentikit) to gather data on your users' passkey readiness.
+Use passage-android/authentikit to implement Passkey Ready in your Android application to gather data on your users' passkey readiness.
 
-| Product                                                                                                                                  | Compatible |
-| ---------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| ![Passkey Flex](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-flex-icon.png) Passkey **Flex**             | ✅         |
-| ![Passkey Complete](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-complete-icon.png) Passkey **Complete** | ✅         |
-| ![Passkey Ready](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-ready-icon.png) Passkey **Ready**          | ✅         |
+| Product                                                                                                                                  | Compatible                                                                                                                   |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| ![Passkey Flex](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-flex-icon.png) Passkey **Flex**             | ✖️ For Passkey Flex, check out [passage-android/passageflex](https://github.com/passageidentity/passage-android/passageflex) |
+| ![Passkey Complete](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-complete-icon.png) Passkey **Complete** | ✖️ For Passkey Complete, check out [passaage-android/passage](https://github.com/passageidentity/passage-android/passage)    |
+| ![Passkey Ready](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-ready-icon.png) Passkey **Ready**          | ✅                                                                                                                           |
 
 ## Getting Started
-
-### Passkey Complete
-
-#### Check Prerequisites
-
-<p>
- You'll need a free Passage account and a Passkey Complete app set up in <a href="https://console.passage.id/">Passage Console</a> to get started. <br />
- <sub><a href="https://docs.passage.id/home#passage-console">Learn more about Passage Console →</a></sub>
-</p>
-
-#### Install
-
-```gradle
-implementation 'id.passage.android:passage:2.0.1'
-```
-
-#### Initialize
-
-```kotlin
-val passage = Passage(activity, "YOUR_PASSAGE_APP_ID")
-```
-
-#### Go Passwordless
-
-Find all core functions, user management details, and more implementation guidance on our [Passkey Complete Android Documentation](https://docs.passage.id/complete/android/add-passage) page.
-
-### Passkey Flex
-
-#### Check Prerequisites
-
-<p>
- You'll need a free Passage account and a Passkey Flex app set up in <a href="https://console.passage.id/">Passage Console</a> to get started. <br />
- <sub><a href="https://docs.passage.id/home#passage-console">Learn more about Passage Console →</a></sub>
-</p>
-
-#### Install
-
-```gradle
-implementation 'id.passage.android:passageflex:0.2.0'
-```
-
-#### Initialize
-
-```kotlin
-val passageFlex = PassageFlex(activity, "YOUR_PASSAGE_APP_ID")
-```
-
-#### Go Passwordless
-
-Find all core functions, user management details, and more implementation guidance on our [Passkey Flex Android Documentation](https://docs.passage.id/flex/android/config) page.
-
-### Authentikit
 
 #### Check Prerequisites
 
