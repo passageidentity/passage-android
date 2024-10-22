@@ -28,7 +28,7 @@ Use passage-android/authentikit to implement Passkey Ready in your Android appli
 #### Check Prerequisites
 
 <p>
- You'll need a free Passage account and a Passkey Complete or Passkey Flex app set up in <a href="https://console.passage.id/">Passage Console</a> to get started. <br />
+ You'll need a free Passage account and Organization set up via <a href="https://console.passage.id/">Passage Console</a> to get started. <br />
  <sub><a href="https://docs.passage.id/home#passage-console">Learn more about Passage Console →</a></sub>
 </p>
 
