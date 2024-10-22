@@ -1,4 +1,4 @@
-![passage-android](https://storage.googleapis.com/passage-docs/github-md-assets/passage-android.png)
+![passage-android-flex](https://storage.googleapis.com/passage-docs/github-md-assets/passage-android-flex.png)
 
 [![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white)](#) [![Kotlin](https://img.shields.io/badge/Kotlin-%237F52FF.svg?logo=kotlin&logoColor=white)](#) ![GitHub License](https://img.shields.io/github/license/passageidentity/passage-android)
 ![Static Badge](https://img.shields.io/badge/Built_by_1Password-grey?logo=1password)
@@ -15,13 +15,13 @@ Use [Passkey Ready](https://docs.passage.id/passkey-ready) to determine if your 
 
 ### In passage-android/passageflex
 
-Use passage-android/passageflex to implement [Passkey Flex](https://github.com/passageidentity/passage-android/passageflex) in your existing auth to use passkeys for registration, authentication, or added security on sensitive user actions.
+Use passage-android/passageflex to implement [Passkey Flex](https://github.com/passageidentity/passage-android/tree/main/passageflex) in your existing auth to use passkeys for registration, authentication, or added security on sensitive user actions.
 
-| Product                                                                                                                                  | Compatible                                                                                                                    |
-| ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| ![Passkey Flex](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-flex-icon.png) Passkey **Flex**             | ✅                                                                                                                            |
-| ![Passkey Complete](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-complete-icon.png) Passkey **Complete** | ✖️ For Passkey Complete, check out [passage-android/passage](https://github.com/passageidentity/passage-android/passage)      |
-| ![Passkey Ready](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-ready-icon.png) Passkey **Ready**          | ✖️ For Passkey Ready, check out [passage-android/authentikit](https://github.com/passageidentity/passage-android/authentikit) |
+| Product                                                                                                                                  | Compatible                                                                                                                              |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Passkey Flex](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-flex-icon.png) Passkey **Flex**             | ✅                                                                                                                                      |
+| ![Passkey Complete](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-complete-icon.png) Passkey **Complete** | ✖️ For Passkey Complete, check out [passage-android/passage](https://github.com/passageidentity/passage-android/tree/main/passage)      |
+| ![Passkey Ready](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-ready-icon.png) Passkey **Ready**          | ✖️ For Passkey Ready, check out [passage-android/authentikit](https://github.com/passageidentity/passage-android/tree/main/authentikit) |
 
 ## Getting Started
 

@@ -15,7 +15,7 @@ Use [Passkey Ready](https://docs.passage.id/passkey-ready) to determine if your 
 
 ### In passage-android
 
-Use passage-android to implement [passage-android/passage](https://github.com/passageidentity/passage-android/passage) in your Android application to authenticate requests and manage users, [passage-android/passageflex](https://github.com/passageidentity/passage-android/passageflex) in your existing auth to use passkeys for registration, authentication, or added security on sensitive user actions, and [passage-android/authentikit](https://github.com/passageidentity/passage-android/authentikit) to gather data on your users' passkey readiness.
+Use passage-android to implement [passage-android/passage](https://github.com/passageidentity/passage-android/tree/main/passage) in your Android application to authenticate requests and manage users, [passage-android/passageflex](https://github.com/passageidentity/passage-android/tree/main/passageflex) in your existing auth to use passkeys for registration, authentication, or added security on sensitive user actions, and [passage-android/authentikit](https://github.com/passageidentity/passage-android/tree/main/authentikit) to gather data on your users' passkey readiness.
 
 | Product                                                                                                                                  | Compatible |
 | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
