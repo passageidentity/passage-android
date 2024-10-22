@@ -37,7 +37,7 @@ Use passage-android to implement [passage-android/passage](https://github.com/pa
 #### Install
 
 ```gradle
-implementation 'id.passage.android:passage:2.0.1'
+implementation 'id.passage.android:passage:2.0.2'
 ```
 
 #### Initialize
