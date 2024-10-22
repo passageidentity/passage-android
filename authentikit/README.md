@@ -20,7 +20,7 @@ Use passage-android/authentikit to implement Passkey Ready in your Android appli
 | Product                                                                                                                                  | Compatible                                                                                                                   |
 | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | ![Passkey Flex](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-flex-icon.png) Passkey **Flex**             | ✖️ For Passkey Flex, check out [passage-android/passageflex](https://github.com/passageidentity/passage-android/passageflex) |
-| ![Passkey Complete](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-complete-icon.png) Passkey **Complete** | ✖️ For Passkey Complete, check out [passaage-android/passage](https://github.com/passageidentity/passage-android/passage)    |
+| ![Passkey Complete](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-complete-icon.png) Passkey **Complete** | ✖️ For Passkey Complete, check out [passage-android/passage](https://github.com/passageidentity/passage-android/passage)     |
 | ![Passkey Ready](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-ready-icon.png) Passkey **Ready**          | ✅                                                                                                                           |
 
 ## Getting Started

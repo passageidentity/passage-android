@@ -20,7 +20,7 @@ Use passage-android/passageflex to implement [Passkey Flex](https://github.com/p
 | Product                                                                                                                                  | Compatible                                                                                                                    |
 | ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | ![Passkey Flex](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-flex-icon.png) Passkey **Flex**             | ✅                                                                                                                            |
-| ![Passkey Complete](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-complete-icon.png) Passkey **Complete** | ✖️ For Passkey Complete, check out [passaage-android/passage](https://github.com/passageidentity/passage-android/passage)     |
+| ![Passkey Complete](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-complete-icon.png) Passkey **Complete** | ✖️ For Passkey Complete, check out [passage-android/passage](https://github.com/passageidentity/passage-android/passage)      |
 | ![Passkey Ready](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-ready-icon.png) Passkey **Ready**          | ✖️ For Passkey Ready, check out [passage-android/authentikit](https://github.com/passageidentity/passage-android/authentikit) |
 
 ## Getting Started
