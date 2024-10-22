@@ -46,7 +46,7 @@ val passageFlex = PassageFlex(activity, "YOUR_PASSAGE_APP_ID")
 
 ### Go Passwordless
 
-Find all core functions, user management details, and more implementation guidance on our [Passkey Flex Android Documentation](https://docs.passage.id/flex/android/config) page.
+Find all core functions and more implementation guidance on our [Passkey Flex Android Documentation](https://docs.passage.id/flex/android/config) page.
 
 ## Support & Feedback
 
