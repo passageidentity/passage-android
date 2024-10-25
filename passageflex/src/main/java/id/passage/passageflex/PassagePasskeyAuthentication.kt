@@ -10,6 +10,7 @@ import id.passage.android.passageflex.model.RegisterWebAuthnFinishWithTransactio
 import id.passage.android.passageflex.model.RegisterWebAuthnStartWithTransactionRequest
 import id.passage.passageflex.exceptions.AuthenticateException
 import id.passage.passageflex.exceptions.RegisterException
+import id.passage.passageflex.models.PasskeyCreationOptions
 
 object PassagePasskeyAuthentication {
     private const val BASE_PATH = "https://auth.passage.id/v1"
@@ -18,7 +19,7 @@ object PassagePasskeyAuthentication {
         transactionId: String,
         activity: Activity,
         appId: String,
-        authenticatorAttachment: AuthenticatorAttachment = AuthenticatorAttachment.platform,
+        options: PasskeyCreationOptions?,
         apiBasePath: String? = null,
     ): String {
         try {
@@ -27,7 +28,7 @@ object PassagePasskeyAuthentication {
             val startRequest =
                 RegisterWebAuthnStartWithTransactionRequest(
                     transactionId,
-                    authenticatorAttachment,
+                    options?.authenticatorAttachment ?: AuthenticatorAttachment.platform,
                 )
             val startResponse =
                 registerAPI

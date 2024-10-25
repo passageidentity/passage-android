@@ -1,7 +1,7 @@
 package id.passage.passageflex
 
 import android.app.Activity
-import id.passage.android.passageflex.model.AuthenticatorAttachment
+import id.passage.passageflex.models.PasskeyCreationOptions
 
 /**
  * The base class for utilizing Android's native passkey APIs and Passage Flex APIs together.
@@ -17,21 +17,19 @@ public class PassageFlexPasskey(
      * register a new passkey for use with your app.
      *
      * @param transactionId The Passage transaction id provided by your app's server.
-     * @param authenticatorAttachment (Optional) The type of authentication that will be used in
-     * this WebAuthN flow request. Defaults to `AuthenticatorAttachment.platform`. Use
-     * `AuthenticatorAttachment.cross-platform` for physical security key registration.
+     * @param options optional configuration for passkey creation
      * @return A single-use "nonce" from Passage server to be exchanged for an authentication
      * token on your app's server.
      * @throws RegisterException
      */
     public suspend fun register(
         transactionId: String,
-        authenticatorAttachment: AuthenticatorAttachment = AuthenticatorAttachment.platform,
+        options: PasskeyCreationOptions?,
     ) = PassagePasskeyAuthentication.register(
         transactionId,
         activity,
         appId,
-        authenticatorAttachment,
+        options,
     )
 
     /**
