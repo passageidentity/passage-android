@@ -11,6 +11,7 @@ import id.passage.android.passageflex.model.AuthenticatorAttachment
 import id.passage.passageflex.exceptions.AuthenticateCancellationException
 import id.passage.passageflex.exceptions.AuthenticateException
 import id.passage.passageflex.exceptions.RegisterException
+import id.passage.passageflex.models.PasskeyCreationOptions
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -68,7 +69,7 @@ internal class PassageFlexTest {
                             transactionId = transactionId,
                             activity = testActivity,
                             appId = FlexTestConfig.APP_ID,
-                            authenticatorAttachment = AuthenticatorAttachment.platform,
+                            options = PasskeyCreationOptions(AuthenticatorAttachment.platform),
                             apiBasePath = FlexTestConfig.API_BASE_URL,
                         )
                     } catch (e: RegisterException) {
