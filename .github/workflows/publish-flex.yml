@@ -1,8 +1,7 @@
-name: Publish Passage Flex Package
+name: Publish Flex Package
 
 on:
-  repository_dispatch:
-    types: [publish]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -11,8 +10,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.client_payload.ref }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v2
@@ -48,9 +45,12 @@ jobs:
           OSSRH_USERNAME: ${{ secrets.OSSRH_TOKEN_ID }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
         run: |
-          response=$(curl -u ${OSSRH_USERNAME}:${OSSRH_PASSWORD} -X GET "https://s01.oss.sonatype.org/service/local/staging/profile_repositories")
+          response=$(curl -u ${{ secrets.OSSRH_USERNAME }}:${{ secrets.OSSRH_PASSWORD }} -X GET "https://s01.oss.sonatype.org/service/local/staging/profile_repositories")
+          echo "Response: $response"
+          
           repo_id=$(echo ${response} | xmllint --xpath "string(//stagingProfileRepository/repositoryId)" -)
-          echo "::set-output name=repo_id::${repo_id}"
+          echo "Repository ID: $repo_id"
+          echo "::set-output name=repo_id::$repo_id"
 
       - name: Close and Release Repository
         env:
