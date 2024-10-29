@@ -24,7 +24,7 @@ public class PassageFlexPasskey(
      */
     public suspend fun register(
         transactionId: String,
-        options: PasskeyCreationOptions?,
+        options: PasskeyCreationOptions? = null,
     ) = PassagePasskeyAuthentication.register(
         transactionId,
         activity,
