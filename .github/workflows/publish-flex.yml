@@ -31,10 +31,7 @@ jobs:
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_TOKEN_ID }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-        run: |
-          echo "ossrhUsername=${{ env.OSSRH_USERNAME }}" >> gradle.properties
-          echo "ossrhPassword=${{ env.OSSRH_PASSWORD }}" >> gradle.properties  
-          ./gradlew :passageflex:publish
+        run:  ./gradlew :passageflex:publish
 
       - name: Wait for Staging Repository to be Created
         run: sleep 60
