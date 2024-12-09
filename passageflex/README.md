@@ -35,7 +35,7 @@ Use passage-android/passageflex to implement [Passkey Flex](https://github.com/p
 ### Install
 
 ```gradle
-implementation 'id.passage.android:passageflex:0.2.0'
+implementation 'id.passage.android:passageflex:1.0.0'
 ```
 
 ### Initialize
