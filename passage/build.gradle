@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "id.passage.android"
-version = "2.0.2"
+version = "2.0.3"
 
 task wrapper(type: Wrapper) {
     gradleVersion = '7.5'  // Updated to a more recent version
@@ -26,8 +26,8 @@ android {
     defaultConfig {
         minSdk 28 // Minimum support for Credentials Manager - ie passkeys
         targetSdk 34
-        versionCode 21
-        versionName "2.0.2"
+        versionCode 22
+        versionName "2.0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
