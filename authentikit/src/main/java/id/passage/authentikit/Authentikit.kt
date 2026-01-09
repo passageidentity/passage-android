@@ -2,6 +2,10 @@ package id.passage.authentikit
 
 import android.content.Context
 
+@Deprecated(
+  message = "This SDK is no longer supported.",
+  level = DeprecationLevel.WARNING
+)
 public class Authentikit(
     context: Context,
     clientSideKey: String,

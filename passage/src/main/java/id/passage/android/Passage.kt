@@ -5,6 +5,10 @@ import android.app.Activity
 import id.passage.android.utils.ResourceUtils.Companion.getRequiredResourceFromApp
 import okhttp3.OkHttpClient
 
+@Deprecated(
+  message = "This SDK is no longer supported.",
+  level = DeprecationLevel.WARNING
+)
 class Passage(
     activity: Activity,
     appId: String,
